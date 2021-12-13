@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Victim index{% endblock %}
+
+{% block body %}
+    <h1>Victim index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th>Age</th>
+                <th>Weigth</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for victim in victims %}
+            <tr>
+                <td>{{ victim.id }}</td>
+                <td>{{ victim.firstname }}</td>
+                <td>{{ victim.lastname }}</td>
+                <td>{{ victim.age }}</td>
+                <td>{{ victim.weigth }}</td>
+                <td>
+                    <a href="{{ path('admin_victim_show', {'id': victim.id}) }}">show</a>
+                    <a href="{{ path('admin_victim_edit', {'id': victim.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('admin_victim_new') }}">Create new</a>
+{% endblock %}
