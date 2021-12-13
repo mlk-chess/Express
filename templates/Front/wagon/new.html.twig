@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Wagon{% endblock %}
+
+{% block body %}
+    <h1>Create new Wagon</h1>
+
+    {{ include('Front/wagon/_form.html.twig') }}
+
+    <a href="{{ path('wagon_index') }}">back to list</a>
+{% endblock %}

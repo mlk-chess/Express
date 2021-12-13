@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Wagon index{% endblock %}
+
+{% block body %}
+    <h1>Wagon index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Classe</th>
+                <th>Type</th>
+                <th>PlaceNb</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for wagon in wagons %}
+            <tr>
+                <td>{{ wagon.id }}</td>
+                <td>{{ wagon.classe }}</td>
+                <td>{{ wagon.type }}</td>
+                <td>{{ wagon.placeNb }}</td>
+                <td>
+                    <a href="{{ path('wagon_show', {'id': wagon.id}) }}">show</a>
+                    <a href="{{ path('wagon_edit', {'id': wagon.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('wagon_new') }}">Create new</a>
+{% endblock %}
