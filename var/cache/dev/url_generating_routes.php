@@ -14,5 +14,13 @@ return [
     '_profiler_router' => [['token'], ['_controller' => 'web_profiler.controller.router::panelAction'], [], [['text', '/router'], ['variable', '/', '[^/]++', 'token', true], ['text', '/_profiler']], [], []],
     '_profiler_exception' => [['token'], ['_controller' => 'web_profiler.controller.exception_panel::body'], [], [['text', '/exception'], ['variable', '/', '[^/]++', 'token', true], ['text', '/_profiler']], [], []],
     '_profiler_exception_css' => [['token'], ['_controller' => 'web_profiler.controller.exception_panel::stylesheet'], [], [['text', '/exception.css'], ['variable', '/', '[^/]++', 'token', true], ['text', '/_profiler']], [], []],
+    'place_index' => [[], ['_controller' => 'App\\Controller\\Front\\PlaceController::index'], [], [['text', '/place']], [], []],
+    'place_show' => [['id'], ['_controller' => 'App\\Controller\\Front\\PlaceController::show'], ['id' => '\\d+'], [['variable', '/', '\\d+', 'id', true], ['text', '/place']], [], []],
+    'place_create' => [[], ['_controller' => 'App\\Controller\\Front\\PlaceController::create'], [], [['text', '/place/create']], [], []],
+    'admin_place_index' => [[], ['_controller' => 'App\\Controller\\Back\\PlaceController::index'], [], [['text', '/admin/place']], [], []],
+    'admin_place_show' => [['id'], ['_controller' => 'App\\Controller\\Back\\PlaceController::show'], ['id' => '\\d+'], [['variable', '/', '\\d+', 'id', true], ['text', '/admin/place']], [], []],
+    'admin_place_create' => [[], ['_controller' => 'App\\Controller\\Back\\PlaceController::create'], [], [['text', '/admin/place/create']], [], []],
+    'admin_place_edit' => [['id'], ['_controller' => 'App\\Controller\\Back\\PlaceController::edit'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/admin/place/edit']], [], []],
+    'admin_place_remove' => [['id', 'token'], ['_controller' => 'App\\Controller\\Back\\PlaceController::remove'], [], [['variable', '/', '[^/]++', 'token', true], ['variable', '/', '[^/]++', 'id', true], ['text', '/admin/place/remove']], [], []],
     '_preview_error' => [['code', '_format'], ['_controller' => 'error_controller::preview', '_format' => 'html'], ['code' => '\\d+'], [['variable', '.', '[^/]++', '_format', true], ['variable', '/', '\\d+', 'code', true], ['text', '/_error']], [], []],
 ];
