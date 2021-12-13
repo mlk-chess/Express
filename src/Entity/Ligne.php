@@ -37,6 +37,11 @@ class Ligne
      */
     private $LatitudeGareA;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=LigneTrain::class, inversedBy="ligne")
+     */
+    private $ligneTrain;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -86,6 +91,18 @@ class Ligne
     public function setLatitudeGareA(string $LatitudeGareA): self
     {
         $this->LatitudeGareA = $LatitudeGareA;
+
+        return $this;
+    }
+
+    public function getLigneTrain(): ?LigneTrain
+    {
+        return $this->ligneTrain;
+    }
+
+    public function setLigneTrain(?LigneTrain $ligneTrain): self
+    {
+        $this->ligneTrain = $ligneTrain;
 
         return $this;
     }

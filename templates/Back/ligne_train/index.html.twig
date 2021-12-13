@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}LigneTrain index{% endblock %}
+
+{% block body %}
+    <h1>LigneTrain index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>HoraireA</th>
+                <th>HoraireD</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for ligne_train in ligne_trains %}
+            <tr>
+                <td>{{ ligne_train.id }}</td>
+                <td>{{ ligne_train.horaireA ? ligne_train.horaireA|date('H:i:s') : '' }}</td>
+                <td>{{ ligne_train.horaireD ? ligne_train.horaireD|date('H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('admin_ligne_train_show', {'id': ligne_train.id}) }}">show</a>
+                    <a href="{{ path('admin_ligne_train_edit', {'id': ligne_train.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('admin_ligne_train_new') }}">Create new</a>
+{% endblock %}

@@ -42,7 +42,10 @@ class LigneController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'ligne_show', methods: ['GET'])]
+//    #[Route('/{id}', name: 'ligne_show', methods: ['GET'], requirements: ['id':'\d+'])]
+    /**
+     * @Route("/{id}", name="ligne_show", requirements={"id"="\d+"})
+     */
     public function show(Ligne $ligne): Response
     {
         return $this->render('Back/ligne/show.html.twig', [

@@ -34,6 +34,11 @@ class Train
      */
     private $wagons;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=LigneTrain::class, inversedBy="train")
+     */
+    private $ligneTrain;
+
     public function __construct()
     {
         $this->wagons = new ArrayCollection();
@@ -101,5 +106,17 @@ class Train
     public function __toString()
     {
         return $this->nom;
+    }
+
+    public function getLigneTrain(): ?LigneTrain
+    {
+        return $this->ligneTrain;
+    }
+
+    public function setLigneTrain(?LigneTrain $ligneTrain): self
+    {
+        $this->ligneTrain = $ligneTrain;
+
+        return $this;
     }
 }
