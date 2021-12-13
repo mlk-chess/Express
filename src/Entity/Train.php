@@ -97,4 +97,9 @@ class Train
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->nom;
+    }
 }
