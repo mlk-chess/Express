@@ -22,7 +22,7 @@ class Train
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $nom;
+    private $name;
 
     /**
      * @ORM\Column(type="text")
@@ -34,9 +34,15 @@ class Train
      */
     private $wagons;
 
+    /**
+     * @ORM\OneToMany(targetEntity=LineTrain::class, mappedBy="train")
+     */
+    private $lineTrains;
+
     public function __construct()
     {
         $this->wagons = new ArrayCollection();
+        $this->lineTrains = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -44,17 +50,23 @@ class Train
         return $this->id;
     }
 
-    public function getNom(): ?string
+    /**
+     * @return mixed
+     */
+    public function getName()
     {
-        return $this->nom;
+        return $this->name;
     }
 
-    public function setNom(string $nom): self
+    /**
+     * @param mixed $name
+     */
+    public function setName($name): void
     {
-        $this->nom = $nom;
-
-        return $this;
+        $this->name = $name;
     }
+
+
 
     public function getDescription(): ?string
     {
@@ -100,6 +112,36 @@ class Train
 
     public function __toString()
     {
-        return $this->nom;
+        return $this->name;
+    }
+
+    /**
+     * @return Collection|LineTrain[]
+     */
+    public function getLineTrains(): Collection
+    {
+        return $this->lineTrains;
+    }
+
+    public function addLineTrain(LineTrain $lineTrain): self
+    {
+        if (!$this->lineTrains->contains($lineTrain)) {
+            $this->lineTrains[] = $lineTrain;
+            $lineTrain->setTrain($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLineTrain(LineTrain $lineTrain): self
+    {
+        if ($this->lineTrains->removeElement($lineTrain)) {
+            // set the owning side to null (unless already changed)
+            if ($lineTrain->getTrain() === $this) {
+                $lineTrain->setTrain(null);
+            }
+        }
+
+        return $this;
     }
 }

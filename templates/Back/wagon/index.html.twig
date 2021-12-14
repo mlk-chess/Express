@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_back.html.twig' %}
 
 {% block title %}Wagon index{% endblock %}
 
@@ -19,7 +19,7 @@
         {% for wagon in wagons %}
             <tr>
                 <td>{{ wagon.id }}</td>
-                <td>{{ wagon.classe }}</td>
+                <td>{{ wagon.class }}</td>
                 <td>{{ wagon.type }}</td>
                 <td>{{ wagon.placeNb }}</td>
                 <td>

@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_back.html.twig' %}
 
 {% block title %}Train index{% endblock %}
 
@@ -18,7 +18,7 @@
         {% for train in trains %}
             <tr>
                 <td>{{ train.id }}</td>
-                <td>{{ train.nom }}</td>
+                <td>{{ train.name }}</td>
                 <td>{{ train.description }}</td>
                 <td>
                     <a href="{{ path('admin_train_show', {'id': train.id}) }}">show</a>

@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_back.html.twig' %}
 
 {% block title %}Option index{% endblock %}
 
@@ -20,8 +20,8 @@
         {% for option in options %}
             <tr>
                 <td>{{ option.id }}</td>
-                <td>{{ option.nom }}</td>
-                <td>{{ option.prix }}</td>
+                <td>{{ option.name }}</td>
+                <td>{{ option.price }}</td>
                 <td>{{ option.description }}</td>
                 <td>{{ option.type }}</td>
                 <td>

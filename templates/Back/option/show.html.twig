@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_back.html.twig' %}
 
 {% block title %}Option{% endblock %}
 
@@ -13,11 +13,11 @@
             </tr>
             <tr>
                 <th>Nom</th>
-                <td>{{ option.nom }}</td>
+                <td>{{ option.name }}</td>
             </tr>
             <tr>
                 <th>Prix</th>
-                <td>{{ option.prix }}</td>
+                <td>{{ option.price }}</td>
             </tr>
             <tr>
                 <th>Description</th>

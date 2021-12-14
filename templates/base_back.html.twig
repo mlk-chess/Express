@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}BACK!{% endblock %}</title>
+    <!-- Compiled and minified CSS -->
+
+    {# Run `composer require symfony/webpack-encore-bundle`
+           and uncomment the following Encore helpers to start using Symfony UX #}
+    {% block stylesheets %}
+        {#{{ encore_entry_link_tags('app') }}#}
+    {% endblock %}
+
+    {% block javascripts %}
+        {#{{ encore_entry_script_tags('app') }}#}
+    {% endblock %}
+</head>
+<body>
+{#{%  for label, messages in app.flashes() %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+            {{  message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endfor %}#}
+
+
+<script>
+    {%  for label, messages in app.flashes() %}
+        {% for message in messages %}
+
+            M.toast({html: '{{ message }}', classes: '{{ label }}'})
+
+        {% endfor %}
+    {% endfor %}
+</script>
+BACK
+{% block body %}{% endblock %}
+
+
+</body>
+</html>

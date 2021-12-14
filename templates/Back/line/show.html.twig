@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Line{% endblock %}
+
+{% block body %}
+    <h1>Line</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ line.id }}</td>
+            </tr>
+            <tr>
+                <th>Longitude_departure</th>
+                <td>{{ line.longitudeDeparture }}</td>
+            </tr>
+            <tr>
+                <th>Latitude_departure</th>
+                <td>{{ line.latitudeDeparture }}</td>
+            </tr>
+            <tr>
+                <th>Longitude_arrival</th>
+                <td>{{ line.longitudeArrival }}</td>
+            </tr>
+            <tr>
+                <th>Latitude_arrival</th>
+                <td>{{ line.latitudeArrival }}</td>
+            </tr>
+            <tr>
+                <th>Name_station_departure</th>
+                <td>{{ line.nameStationDeparture }}</td>
+            </tr>
+            <tr>
+                <th>Name_station_arrival</th>
+                <td>{{ line.nameStationArrival }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('admin_line_index') }}">back to list</a>
+
+    <a href="{{ path('admin_line_edit', {'id': line.id}) }}">edit</a>
+
+    {{ include('Back/line/_delete_form.html.twig') }}
+{% endblock %}
