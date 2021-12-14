@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/ligne')]
+#[Route('/line')]
 class LigneController extends AbstractController
 {
     #[Route('/', name: 'ligne_index', methods: ['GET'])]
