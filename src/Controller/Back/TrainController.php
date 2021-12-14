@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TrainController extends AbstractController
 {
     #[Route('/', name: 'train_index', methods: ['GET'])]
+
     public function index(TrainRepository $trainRepository): Response
     {
         return $this->render('Back/train/index.html.twig', [
