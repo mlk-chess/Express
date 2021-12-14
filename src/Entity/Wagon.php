@@ -20,7 +20,7 @@ class Wagon
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $classe;
+    private $class;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -42,14 +42,14 @@ class Wagon
         return $this->id;
     }
 
-    public function getClasse(): ?string
+    public function getClass(): ?string
     {
         return $this->classe;
     }
 
-    public function setClasse(string $classe): self
+    public function setClass(string $class): self
     {
-        $this->classe = $classe;
+        $this->class = $class;
 
         return $this;
     }

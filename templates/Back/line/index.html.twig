@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Line index{% endblock %}
+
+{% block body %}
+    <h1>Line index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Longitude_departure</th>
+                <th>Latitude_departure</th>
+                <th>Longitude_arrival</th>
+                <th>Latitude_arrival</th>
+                <th>Name_station_departure</th>
+                <th>Name_station_arrival</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for line in lines %}
+            <tr>
+                <td>{{ line.id }}</td>
+                <td>{{ line.longitudeDeparture }}</td>
+                <td>{{ line.latitudeDeparture }}</td>
+                <td>{{ line.longitudeArrival }}</td>
+                <td>{{ line.latitudeArrival }}</td>
+                <td>{{ line.nameStationDeparture }}</td>
+                <td>{{ line.nameStationArrival }}</td>
+                <td>
+                    <a href="{{ path('admin_line_show', {'id': line.id}) }}">show</a>
+                    <a href="{{ path('admin_line_edit', {'id': line.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('admin_line_new') }}">Create new</a>
+{% endblock %}

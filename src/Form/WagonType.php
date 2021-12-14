@@ -12,7 +12,7 @@ class WagonType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('classe')
+            ->add('class')
             ->add('type')
             ->add('placeNb')
             ->add('train')

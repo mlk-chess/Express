@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New LineTrain{% endblock %}
+
+{% block body %}
+    <h1>Create new LineTrain</h1>
+
+    {{ include('Back/line_train/_form.html.twig') }}
+
+    <a href="{{ path('admin_line_train_index') }}">back to list</a>
+{% endblock %}
