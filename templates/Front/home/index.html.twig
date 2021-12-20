@@ -22,35 +22,6 @@
 
 
 
-    <script>
-        let villes = {
-            "Paris": { "lat": 48.852969, "lon": 2.349903 },
-            "Brest": { "lat": 48.383, "lon": -4.500 },
-            "Quimper": { "lat": 48.000, "lon": -4.100 },
-            "Bayonne": { "lat": 43.500, "lon": -1.467 }
-        };
-
-        let tableauMarqueurs = [];
-
-
-        let map = L.map('map').setView([48.856614, 2.3522219], 7);
-
-
-
-        L.tileLayer('https://api.maptiler.com/maps/basic/{z}/{x}/{y}.png?key=Wh74TSnYGDH5Hqr4lM9e', {
-            // Il est toujours bien de laisser le lien vers la source des données
-            attribution: 'données © <a href="//osm.org/copyright">OpenStreetMap</a>/ODbL - rendu <a href="//openstreetmap.fr">OSM France</a>',
-            minZoom: 1,
-            maxZoom: 20
-        }).addTo(map);
-
-
-
-        let marker = L.marker([48.856614, 2.3522219]).addTo(map);
-
-
-     
-
-    </script>
+    <script src="{{ asset('home.js') }}"></script>
 
 {% endblock %}
