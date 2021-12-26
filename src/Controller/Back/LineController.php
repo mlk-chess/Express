@@ -28,6 +28,7 @@ class LineController extends AbstractController
         $line = new Line();
         $form = $this->createForm(LineType::class, $line);
         $form->handleRequest($request);
+        $message = "";
 
 
         if (Helper::checkStationJsonFile($line->getNameStationArrival()) &&
@@ -57,14 +58,22 @@ class LineController extends AbstractController
                         $entityManager->flush();
                         return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
                     }
+                }else{
+                    $message = "Cette ligne existe déjà !";
                 }
 
+            }else{
+                $message = "Gare de départ et gare d'arrivée identique !";
             }
+        }else{
+
+            $message = "La gare n'existe pas !";
         }
 
         return $this->renderForm('Back/line/new.html.twig', [
             'line' => $line,
             'form' => $form,
+            'message' => $message
         ]);
     }
 

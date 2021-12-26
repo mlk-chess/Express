@@ -5,9 +5,7 @@
 {% block body %}
     <h1>Create new Line</h1>
 
-    {% if (message != null) %}
-            <h1>{{ message }}</h1>
-    {% endif %}
+    <p>{{ message }}</p>
 
     {{ include('Back/line/_form.html.twig') }}
 
