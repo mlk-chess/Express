@@ -1,9 +1,12 @@
+let stations;
+
 $.ajax({
     type: 'GET',
     url: '/home/stations',
     data: '',
     success: function(data) {
-        loadMarkers(JSON.parse(data));
+        stations = JSON.parse(data);
+        loadMarkers();
     },
     error: function (xhr, ajaxOptions, thrownError){
         alert(xhr.responseText);
@@ -15,7 +18,7 @@ $.ajax({
 
 
 
-function loadMarkers(stations){
+function loadMarkers(){
     let map = L.map('map').setView([46.227638, 2.213749], 6);
 
     L.tileLayer('https://api.maptiler.com/maps/basic/{z}/{x}/{y}.png?key=Wh74TSnYGDH5Hqr4lM9e', {
@@ -68,4 +71,31 @@ function loadMarkers(stations){
 
 function selectStation(){
     console.log('test');
+}
+
+
+const departureStation = document.getElementById('departureStation');
+const listStations = document.getElementById('listStations');
+
+departureStation.addEventListener('keyup', handleKeyPress);
+
+function handleKeyPress(e) {
+    let html = '';
+
+    if (departureStation.value.length !== 0) {
+        if (departureStation.value.length % 2 === 0) {
+
+            let regexSearch = "\^(.)*" + departureStation.value.toLowerCase() + "(.)*\$";
+
+            for (let key in stations) {
+                if (stations[key].Nom_Gare.toLowerCase().search(regexSearch) === 0) {
+                    html += "<p>" + stations[key].Nom_Gare + "</p>";
+                }
+            }
+            listStations.innerHTML = html;
+        }
+    }else {
+        listStations.innerHTML = '';
+        console.log('dzdd');
+    }
 }
