@@ -33,7 +33,7 @@ class WagonController extends AbstractController
             $entityManager->persist($wagon);
             $entityManager->flush();
 
-            return $this->redirectToRoute('wagon_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_wagon_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('Back/wagon/new.html.twig', [
@@ -59,7 +59,7 @@ class WagonController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('wagon_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_wagon_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('Back/wagon/edit.html.twig', [
@@ -77,6 +77,6 @@ class WagonController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('wagon_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin_wagon_index', [], Response::HTTP_SEE_OTHER);
     }
 }

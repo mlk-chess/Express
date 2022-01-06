@@ -44,7 +44,7 @@ class Wagon
 
     public function getClass(): ?string
     {
-        return $this->classe;
+        return $this->class;
     }
 
     public function setClass(string $class): self

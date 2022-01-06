@@ -34,7 +34,7 @@ class TrainController extends AbstractController
             $entityManager->persist($train);
             $entityManager->flush();
 
-            return $this->redirectToRoute('train_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('Back/train/new.html.twig', [
@@ -60,7 +60,7 @@ class TrainController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('train_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('Back/train/edit.html.twig', [
@@ -78,6 +78,6 @@ class TrainController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('Back/train_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
     }
 }

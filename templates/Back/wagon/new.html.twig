@@ -3,9 +3,9 @@
 {% block title %}New Wagon{% endblock %}
 
 {% block body %}
-    <h1>Create new Wagon</h1>
+    <h1>Nouveau Wagon</h1>
 
-    {{ include('Front/wagon/_form.html.twig') }}
+    {{ include('Back/wagon/_form.html.twig') }}
 
-    <a href="{{ path('wagon_index') }}">back to list</a>
+    <a href="{{ path('admin_wagon_index') }}">back to list</a>
 {% endblock %}

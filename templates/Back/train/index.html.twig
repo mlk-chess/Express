@@ -21,17 +21,20 @@
                 <td>{{ train.name }}</td>
                 <td>{{ train.description }}</td>
                 <td>
-                    <a href="{{ path('admin_train_show', {'id': train.id}) }}">show</a>
-                    <a href="{{ path('admin_train_edit', {'id': train.id}) }}">edit</a>
+                    <a href="{{ path('admin_train_edit', {'id': train.id}) }}">Editer</a>
+                    <form method="post" action="{{ path('admin_train_delete', {'id': train.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ train.id) }}">
+                        <button class="btn">Supprimer</button>
+                    </form>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="4">Aucun train existant</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('admin_train_new') }}">Create new</a>
+    <a href="{{ path('admin_train_new') }}">Nouveau train</a>
 {% endblock %}
