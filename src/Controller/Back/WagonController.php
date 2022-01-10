@@ -33,6 +33,8 @@ class WagonController extends AbstractController
             $entityManager->persist($wagon);
             $entityManager->flush();
 
+            $this->addFlash('green', "Le Wagon à bien été créer.");
+
             return $this->redirectToRoute('admin_wagon_index', [], Response::HTTP_SEE_OTHER);
         }
 

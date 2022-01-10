@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Repository\TrainRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -21,6 +22,7 @@ class Train
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="error.not.blank")
      */
     private $name;
 
