@@ -23,7 +23,10 @@
                 <td>{{ wagon.type }}</td>
                 <td>{{ wagon.placeNb }}</td>
                 <td>
-                    <a href="{{ path('admin_wagon_edit', {'id': wagon.id}) }}">Editer</a>
+                    <form method="post" action="{{ path('admin_wagon_edit', {'id': wagon.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ wagon.id) }}">
+                        <button class="btn">Editer</button>
+                    </form>
                     {{ include('Back/wagon/_delete_form.html.twig') }}
                 </td>
             </tr>

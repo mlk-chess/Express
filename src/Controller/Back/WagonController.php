@@ -77,6 +77,7 @@ class WagonController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($wagon);
             $entityManager->flush();
+            $this->addFlash('green', "Le Wagon à bien été supprimer.");
         }
 
         return $this->redirectToRoute('admin_wagon_index', [], Response::HTTP_SEE_OTHER);

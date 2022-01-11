@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -35,6 +37,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Train::class, mappedBy="owner")
+     */
+    private $trains;
+
+    public function __construct()
+    {
+        $this->trains = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -123,5 +135,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection|Train[]
+     */
+    public function getTrains(): Collection
+    {
+        return $this->trains;
+    }
+
+    public function addTrain(Train $train): self
+    {
+        if (!$this->trains->contains($train)) {
+            $this->trains[] = $train;
+            $train->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrain(Train $train): self
+    {
+        if ($this->trains->removeElement($train)) {
+            // set the owning side to null (unless already changed)
+            if ($train->getOwner() === $this) {
+                $train->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 }
