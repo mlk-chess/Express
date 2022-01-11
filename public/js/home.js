@@ -52,7 +52,7 @@ function loadMarkers(){
 
         let marker = L.marker([stations[key].Latitude, stations[key].Longitude], {icon: icon});
 
-         let popup = L.popup({
+        let popup = L.popup({
             autoClose: true,
             closeOnEscapeKey: false,
             closeOnClick: true,
@@ -89,7 +89,7 @@ function handleKeyPress(e) {
 
             for (let key in stations) {
                 if (stations[key].Nom_Gare.toLowerCase().search(regexSearch) === 0) {
-                    html += "<p>" + stations[key].Nom_Gare + "</p>";
+                    html += "<li onclick='addStation(\""+stations[key].Nom_Gare+"\")'>" + stations[key].Nom_Gare + "</li>";
                 }
             }
             listStations.innerHTML = html;
@@ -98,4 +98,8 @@ function handleKeyPress(e) {
         listStations.innerHTML = '';
         console.log('dzdd');
     }
+}
+
+function addStation(station) {
+    departureStation.value = station;
 }
