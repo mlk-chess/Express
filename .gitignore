@@ -1,5 +1,4 @@
 .idea/
-docker-compose.yml
 
 # Cache and logs (Symfony2)
 /app/cache/*

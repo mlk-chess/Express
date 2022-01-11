@@ -89,7 +89,7 @@ function handleKeyPress(e) {
 
             for (let key in stations) {
                 if (stations[key].Nom_Gare.toLowerCase().search(regexSearch) === 0) {
-                    html += "<li onclick='addStation(\""+stations[key].Nom_Gare+"\")'>" + stations[key].Nom_Gare + "</li>";
+                    html += "<p>" + stations[key].Nom_Gare + "</p>";
                 }
             }
             listStations.innerHTML = html;
@@ -98,8 +98,4 @@ function handleKeyPress(e) {
         listStations.innerHTML = '';
         console.log('dzdd');
     }
-}
-
-function addStation(station) {
-    departureStation.value = station;
 }
