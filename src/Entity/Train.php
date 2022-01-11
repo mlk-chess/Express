@@ -1,18 +1,24 @@
 <?php
 
 namespace App\Entity;
+use App\Entity\Traits\TimestampableTrait;
+
 use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Repository\TrainRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 
 /**
  * @ORM\Entity(repositoryClass=TrainRepository::class)
  */
 class Train
 {
+    use TimestampableTrait;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -32,9 +38,35 @@ class Train
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity=Wagon::class, mappedBy="train")
+     * @ORM\OneToMany(targetEntity=Wagon::class, mappedBy="train", cascade={"remove"})
      */
     private $wagons;
+
+    /**
+     * @return string|null
+     */
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param string|null $slug
+     */
+    public function setSlug(?string $slug): void
+    {
+        $this->slug = $slug;
+    }
+
+    /**
+     * @var string|null
+     *
+     * @Gedmo\Slug(fields={"name"})
+     * @ORM\Column(length=128, unique=true)
+     */
+    #[ORM\Column(length: 128, unique: true)]
+    #[Gedmo\Slug(fields: ['name'])]
+    private $slug;
 
     /**
      * @ORM\OneToMany(targetEntity=LineTrain::class, mappedBy="train")
@@ -43,9 +75,11 @@ class Train
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="trains")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
+     * @Gedmo\Blameable(on="create")
      */
     private $owner;
+
 
     public function __construct()
     {

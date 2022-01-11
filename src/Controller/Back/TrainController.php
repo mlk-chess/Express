@@ -8,22 +8,27 @@ use App\Repository\TrainRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
+
 
 #[Route('/train')]
 class TrainController extends AbstractController
 {
     #[Route('/', name: 'train_index', methods: ['GET'])]
-
     public function index(TrainRepository $trainRepository): Response
     {
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
-        if (in_array('SOCIETE', $userConnected->getRoles())){
-
+        if (in_array('COMPANY', $userConnected->getRoles())){
+            return $this->render('Back/train/index.html.twig', [
+                'trains' => $trainRepository->findBy(array('owner' => $userConnected->getId()))
+                ]);
+        }else{
+            return $this->render('Back/train/index.html.twig', [
+                'trains' => $trainRepository->findAll(),
+            ]);
         }
-        return $this->render('Back/train/index.html.twig', [
-            'trains' => $trainRepository->findAll(),
-        ]);
+
     }
 
     #[Route('/new', name: 'train_new', methods: ['GET','POST'])]
@@ -82,6 +87,9 @@ class TrainController extends AbstractController
     public function delete(Request $request, Train $train): Response
     {
         if ($this->isCsrfTokenValid('delete'.$train->getId(), $request->request->get('_token'))) {
+
+            //dd($train);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($train);
             $entityManager->flush();

@@ -25,6 +25,32 @@
             </tr>
         </tbody>
     </table>
+    <hr>
+    <h4>Liste des wagons</h4>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Classe</th>
+        <th>Type</th>
+        <th>Nb places</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for wagon in train.wagons %}
+        <tr>
+            <td>{{ wagon.id }}</td>
+            <td>{{ wagon.class }}</td>
+            <td>{{ wagon.type }}</td>
+            <td>{{ wagon.placeNb }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="4">Aucun train existant</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
 
     <a href="{{ path('wagon_index') }}">back to list</a>
 

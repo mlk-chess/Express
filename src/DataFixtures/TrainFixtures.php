@@ -24,8 +24,11 @@ class TrainFixtures extends Fixture
 
             $manager->flush();
         }
-
-
-
+    }
+    public function getDependencies()
+    {
+        return [
+            UserFixtures::class,
+        ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\TimestampableTrait;
 use App\Repository\WagonRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,6 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Wagon
 {
+
+    use TimestampableTrait;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -36,6 +40,11 @@ class Wagon
      * @ORM\ManyToOne(targetEntity=Train::class, inversedBy="wagons")
      */
     private $train;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="wagons")
+     */
+    private $owner;
 
     public function getId(): ?int
     {
@@ -86,6 +95,18 @@ class Wagon
     public function setTrain(?Train $train): self
     {
         $this->train = $train;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
 
         return $this;
     }

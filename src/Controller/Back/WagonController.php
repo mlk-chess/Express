@@ -15,10 +15,18 @@ class WagonController extends AbstractController
 {
     #[Route('/', name: 'wagon_index', methods: ['GET'])]
     public function index(WagonRepository $wagonRepository): Response
-    {
-        return $this->render('Back/wagon/index.html.twig', [
-            'wagons' => $wagonRepository->findAll(),
-        ]);
+    {  $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
+        if (in_array('COMPANY', $userConnected->getRoles())){
+            return $this->render('Back/wagon/index.html.twig', [
+                'wagons' => $wagonRepository->findBy(array('owner' => $userConnected->getId()))
+            ]);
+        }else{
+            return $this->render('Back/wagon/index.html.twig', [
+                'wagons' => $wagonRepository->findAll(),
+            ]);
+        }
+
     }
 
     #[Route('/new', name: 'wagon_new', methods: ['GET','POST'])]
@@ -27,8 +35,10 @@ class WagonController extends AbstractController
         $wagon = new Wagon();
         $form = $this->createForm(WagonType::class, $wagon);
         $form->handleRequest($request);
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $wagon->setOwner($userConnected);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($wagon);
             $entityManager->flush();

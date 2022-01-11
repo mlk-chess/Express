@@ -43,9 +43,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $trains;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Wagon::class, mappedBy="owner")
+     */
+    private $wagons;
+
     public function __construct()
     {
         $this->trains = new ArrayCollection();
+        $this->wagons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -161,6 +167,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($train->getOwner() === $this) {
                 $train->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Wagon[]
+     */
+    public function getWagons(): Collection
+    {
+        return $this->wagons;
+    }
+
+    public function addWagon(Wagon $wagon): self
+    {
+        if (!$this->wagons->contains($wagon)) {
+            $this->wagons[] = $wagon;
+            $wagon->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWagon(Wagon $wagon): self
+    {
+        if ($this->wagons->removeElement($wagon)) {
+            // set the owning side to null (unless already changed)
+            if ($wagon->getOwner() === $this) {
+                $wagon->setOwner(null);
             }
         }
 

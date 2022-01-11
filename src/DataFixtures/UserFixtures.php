@@ -29,10 +29,21 @@ class UserFixtures extends Fixture
         $user->setEmail("samy@samy.samy");
         $user->setPassword("$2y$13\$bgbUP.CqQremvnMIN1yu4e0viUcl/w4VlvVrGN8CfcoGElTQjzsWS");
         //$user->setPassword($this->encodePassword->hashPassword($user, 'samy'))
+        $user->setRoles(["ROLE_ADMIN", "ROLE_SUPER_ADMIN"]);
+
+        $manager->persist($user);
+
+        $manager->flush();
+
+        $user = new User();
+        $user->setEmail("soc@soc.soc");
+        $user->setPassword("$2y$13\$bgbUP.CqQremvnMIN1yu4e0viUcl/w4VlvVrGN8CfcoGElTQjzsWS");
+        //$user->setPassword($this->encodePassword->hashPassword($user, 'samy'))
         $user->setRoles(["ROLE_ADMIN"]);
 
         $manager->persist($user);
 
         $manager->flush();
+
     }
 }
