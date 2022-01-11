@@ -65,9 +65,6 @@ class LineController extends AbstractController
             }else{
                 $message = "Gare de départ et gare d'arrivée identique !";
             }
-        }else{
-
-            $message = "La gare n'existe pas !";
         }
 
         return $this->renderForm('Back/line/new.html.twig', [
@@ -91,10 +88,16 @@ class LineController extends AbstractController
         $form = $this->createForm(LineType::class, $line);
         $form->handleRequest($request);
 
+        if (Helper::checkStationJsonFile($line->getNameStationArrival()) &&
+            Helper::checkStationJsonFile($line->getNameStationDeparture())) {
+
+
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
+            //return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('Back/line/edit.html.twig', [
