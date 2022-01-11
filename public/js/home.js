@@ -59,7 +59,7 @@ function loadMarkers(){
             closeButton: false,
             className: 'marker',
             maxWidth: 400
-        }).setContent(stations[key].Nom_Gare+'</p><br/><button onclick="selectStation()">Choisir</button>');
+        }).setContent(stations[key].Nom_Gare+'</p><br/><button onclick=\'selectDepartureStation("'+stations[key].Nom_Gare+'")\'>Gare de départ</button><br/><button onclick=\'selectArrivalStation("'+stations[key].Nom_Gare+'")\'>Gare d\'arrivée</button>');
 
         marker.bindPopup(popup);
 
@@ -69,37 +69,75 @@ function loadMarkers(){
 
 }
 
-function selectStation(){
-    console.log('test');
-}
 
+const departureStationInput = document.getElementById('departureStationInput');
+const arrivalStationInput = document.getElementById('arrivalStationInput');
+
+const listStationsDeparture = document.getElementById('listStationsDeparture');
+const listStationsArrival = document.getElementById('listStationsArrival');
 
 const departureStation = document.getElementById('departureStation');
-const listStations = document.getElementById('listStations');
+const arrivalStation = document.getElementById('arrivalStation');
 
-departureStation.addEventListener('keyup', handleKeyPress);
+departureStationInput.addEventListener('keyup', function(){
+    handleKeyPress(departureStationInput, listStationsDeparture, true)
+});
 
-function handleKeyPress(e) {
+departureStationInput.addEventListener('focus', function(){
+    listStationsArrival.innerHTML = '';
+});
+
+arrivalStationInput.addEventListener('keyup', function(){
+    handleKeyPress(arrivalStationInput, listStationsArrival, false)
+});
+
+arrivalStationInput.addEventListener('focus', function(){
+    listStationsDeparture.innerHTML = '';
+});
+
+function handleKeyPress(input, list, type) {
     let html = '';
 
-    if (departureStation.value.length !== 0) {
-        if (departureStation.value.length % 2 === 0) {
+    if (input.value.length !== 0) {
+        if (input.value.length % 2 === 0) {
 
-            let regexSearch = "\^(.)*" + departureStation.value.toLowerCase() + "(.)*\$";
+            let regexSearch = "\^(.)*" + input.value.toLowerCase() + "(.)*\$";
 
             for (let key in stations) {
                 if (stations[key].Nom_Gare.toLowerCase().search(regexSearch) === 0) {
-                    html += "<li onclick='addStation(\""+stations[key].Nom_Gare+"\")'>" + stations[key].Nom_Gare + "</li>";
+                    html += "<li onclick='addStation(\""+stations[key].Nom_Gare+"\", "+type+")'>" + stations[key].Nom_Gare + "</li>";
                 }
             }
-            listStations.innerHTML = html;
+            list.innerHTML = html;
         }
     }else {
-        listStations.innerHTML = '';
-        console.log('dzdd');
+        list.innerHTML = '';
     }
 }
 
-function addStation(station) {
-    departureStation.value = station;
+function addStation(station, type) {
+
+    if (type){
+        departureStation.innerHTML = "<p>"+station+"</p>";
+        listStationsDeparture.innerHTML = '';
+        departureStationInput.style.display = "none";
+    }else {
+        arrivalStation.innerHTML = "<p>"+station+"</p>";
+        listStationsArrival.innerHTML = '';
+        arrivalStationInput.style.display = "none";
+    }
+
+}
+
+
+function selectDepartureStation(name){
+    departureStation.innerHTML = "<p>"+name+"</p>";
+    listStationsDeparture.innerHTML = '';
+    departureStationInput.style.display = "none";
+}
+
+function selectArrivalStation(name){
+    arrivalStation.innerHTML = "<p>"+name+"</p>";
+    listStationsArrival.innerHTML = '';
+    arrivalStationInput.style.display = "none";
 }
