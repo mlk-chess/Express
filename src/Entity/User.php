@@ -36,6 +36,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $password;
 
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $company_name;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -127,5 +132,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __toString(){
         return $this->email;
+    }
+
+    public function getCompanyName(): ?string
+    {
+        return $this->company_name;
+    }
+
+    public function setCompanyName(?string $company_name): self
+    {
+        $this->company_name = $company_name;
+
+        return $this;
     }
 }
