@@ -1,0 +1,15 @@
+#updateDepartureStation {
+    display: none;
+}
+
+#updateDepartureStation:hover {
+    cursor: pointer;
+}
+
+#updateArrivalStation {
+    display: none;
+}
+
+#updateArrivalStation:hover {
+    cursor: pointer;
+}

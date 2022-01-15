@@ -79,6 +79,9 @@ const listStationsArrival = document.getElementById('listStationsArrival');
 const departureStation = document.getElementById('departureStation');
 const arrivalStation = document.getElementById('arrivalStation');
 
+const updateDepartureStation = document.getElementById('updateDepartureStation');
+const updateArrivalStation = document.getElementById('updateArrivalStation');
+
 departureStationInput.addEventListener('keyup', function(){
     handleKeyPress(departureStationInput, listStationsDeparture, true)
 });
@@ -93,6 +96,14 @@ arrivalStationInput.addEventListener('keyup', function(){
 
 arrivalStationInput.addEventListener('focus', function(){
     listStationsDeparture.innerHTML = '';
+});
+
+updateDepartureStation.addEventListener('click', function(){
+    clickUpdateDeparture();
+});
+
+updateArrivalStation.addEventListener('click', function(){
+    clickUpdateArrival();
 });
 
 function handleKeyPress(input, list, type) {
@@ -121,10 +132,12 @@ function addStation(station, type) {
         departureStation.innerHTML = "<p>"+station+"</p>";
         listStationsDeparture.innerHTML = '';
         departureStationInput.style.display = "none";
+        updateDepartureStation.style.display = "block";
     }else {
         arrivalStation.innerHTML = "<p>"+station+"</p>";
         listStationsArrival.innerHTML = '';
         arrivalStationInput.style.display = "none";
+        updateArrivalStation.style.display = "block";
     }
 
 }
@@ -134,10 +147,25 @@ function selectDepartureStation(name){
     departureStation.innerHTML = "<p>"+name+"</p>";
     listStationsDeparture.innerHTML = '';
     departureStationInput.style.display = "none";
+    updateDepartureStation.style.display = "block";
 }
 
 function selectArrivalStation(name){
     arrivalStation.innerHTML = "<p>"+name+"</p>";
     listStationsArrival.innerHTML = '';
     arrivalStationInput.style.display = "none";
+    updateArrivalStation.style.display = "block";
+}
+
+
+function clickUpdateDeparture() {
+    updateDepartureStation.style.display = "none";
+    departureStation.innerHTML = '';
+    departureStationInput.style.display = "block";
+}
+
+function clickUpdateArrival() {
+    updateArrivalStation.style.display = "none";
+    arrivalStation.innerHTML = '';
+    arrivalStationInput.style.display = "block";
 }
