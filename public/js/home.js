@@ -1,3 +1,7 @@
+////////////////////////////
+//      MAP     //
+////////////////////////////
+
 let stations;
 
 $.ajax({
@@ -70,6 +74,12 @@ function loadMarkers(){
 }
 
 
+
+////////////////////////////
+//      INPUT     //
+////////////////////////////
+
+
 const departureStationInput = document.getElementById('departureStationInput');
 const arrivalStationInput = document.getElementById('arrivalStationInput');
 
@@ -82,29 +92,40 @@ const arrivalStation = document.getElementById('arrivalStation');
 const updateDepartureStation = document.getElementById('updateDepartureStation');
 const updateArrivalStation = document.getElementById('updateArrivalStation');
 
+
+
+
+
+
 departureStationInput.addEventListener('keyup', function(){
     handleKeyPress(departureStationInput, listStationsDeparture, true)
-});
-
-departureStationInput.addEventListener('focus', function(){
-    listStationsArrival.innerHTML = '';
 });
 
 arrivalStationInput.addEventListener('keyup', function(){
     handleKeyPress(arrivalStationInput, listStationsArrival, false)
 });
 
+
+departureStationInput.addEventListener('focus', function(){
+    listStationsArrival.innerHTML = '';
+});
+
 arrivalStationInput.addEventListener('focus', function(){
     listStationsDeparture.innerHTML = '';
 });
 
+
 updateDepartureStation.addEventListener('click', function(){
-    clickUpdateDeparture();
+    clickUpdate(updateDepartureStation, departureStation, departureStationInput);
 });
 
 updateArrivalStation.addEventListener('click', function(){
-    clickUpdateArrival();
+    clickUpdate(updateArrivalStation, arrivalStation, arrivalStationInput);
 });
+
+
+
+
 
 function handleKeyPress(input, list, type) {
     let html = '';
@@ -158,14 +179,9 @@ function selectArrivalStation(name){
 }
 
 
-function clickUpdateDeparture() {
-    updateDepartureStation.style.display = "none";
-    departureStation.innerHTML = '';
-    departureStationInput.style.display = "block";
-}
-
-function clickUpdateArrival() {
-    updateArrivalStation.style.display = "none";
-    arrivalStation.innerHTML = '';
-    arrivalStationInput.style.display = "block";
+function clickUpdate(update, station, input) {
+    update.style.display = "none";
+    station.innerHTML = '';
+    input.style.display = "block";
+    input.value = '';
 }
