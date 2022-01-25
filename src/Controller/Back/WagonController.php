@@ -15,7 +15,8 @@ class WagonController extends AbstractController
 {
     #[Route('/', name: 'wagon_index', methods: ['GET'])]
     public function index(WagonRepository $wagonRepository): Response
-    {  $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+    {
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
 
         if (in_array('COMPANY', $userConnected->getRoles())){
             return $this->render('Back/wagon/index.html.twig', [

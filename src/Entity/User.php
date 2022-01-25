@@ -48,10 +48,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $wagons;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Option::class, mappedBy="owner")
+     */
+    private $options;
+
     public function __construct()
     {
         $this->trains = new ArrayCollection();
         $this->wagons = new ArrayCollection();
+        $this->options = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -197,6 +203,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($wagon->getOwner() === $this) {
                 $wagon->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Option[]
+     */
+    public function getOptions(): Collection
+    {
+        return $this->options;
+    }
+
+    public function addOption(Option $option): self
+    {
+        if (!$this->options->contains($option)) {
+            $this->options[] = $option;
+            $option->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOption(Option $option): self
+    {
+        if ($this->options->removeElement($option)) {
+            // set the owning side to null (unless already changed)
+            if ($option->getOwner() === $this) {
+                $option->setOwner(null);
             }
         }
 

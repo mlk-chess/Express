@@ -16,6 +16,7 @@ class OptionType extends AbstractType
             ->add('price')
             ->add('description')
             ->add('type')
+            ->add('wagon')
         ;
     }
 

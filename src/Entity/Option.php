@@ -6,6 +6,7 @@ use App\Repository\OptionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=OptionRepository::class)
@@ -72,14 +73,16 @@ class Option
     private $type;
 
     /**
-     * @ORM\OneToMany(targetEntity=Wagon::class, mappedBy="option")
+     * @ORM\ManyToOne(targetEntity=Wagon::class, inversedBy="options")
      */
-    private $wagons;
+    private $wagon;
 
-    public function __construct()
-    {
-        $this->wagons = new ArrayCollection();
-    }
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="options")
+     * @ORM\JoinColumn(nullable=true)
+     * @Gedmo\Blameable(on="create")
+     */
+    private $owner;
 
 
     public function getId(): ?int
@@ -112,33 +115,28 @@ class Option
         return $this;
     }
 
-    /**
-     * @return Collection|Wagon[]
-     */
-    public function getWagons(): Collection
+    public function getWagon(): ?Wagon
     {
-        return $this->wagons;
+        return $this->wagon;
     }
 
-    public function addWagon(Wagon $wagon): self
+    public function setWagon(?Wagon $wagon): self
     {
-        if (!$this->wagons->contains($wagon)) {
-            $this->wagons[] = $wagon;
-            $wagon->setOption($this);
-        }
+        $this->wagon = $wagon;
 
         return $this;
     }
 
-    public function removeWagon(Wagon $wagon): self
+    public function getOwner(): ?User
     {
-        if ($this->wagons->removeElement($wagon)) {
-            // set the owning side to null (unless already changed)
-            if ($wagon->getOption() === $this) {
-                $wagon->setOption(null);
-            }
-        }
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
 
         return $this;
     }
+
 }

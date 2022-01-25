@@ -30,33 +30,28 @@
 
     <hr>
     <h4>Option</h4>
-    {% if wagon.option is not null %}
+    {% if wagon.options is not null %}
         <table class="table">
+            <thead>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Prix</th>
+                <th>Description</th>
+            </thead>
             <tbody>
-                <tr>
-                    <th>Id</th>
-                    <td>{{ wagon.option.id }}</td>
-                </tr>
-                <tr>
-                    <th>Nom</th>
-                    <td>{{ wagon.option.name }}</td>
-                </tr>
-                <tr>
-                    <th>Type</th>
-                    <td>{{ wagon.option.type }}</td>
-                </tr>
-                <tr>
-                    <th>Prix</th>
-                    <td>{{ wagon.option.price }}</td>
-                </tr>
-                <tr>
-                    <th>Description</th>
-                    <td>{{ wagon.option.description }}</td>
-                </tr>
+            {% for option in wagon.options%}
+                <td>{{ option.id }}</td>
+                <td>{{ option.name }}</td>
+                <td>{{ option.type }}</td>
+                <td>{{ option.price }}</td>
+                <td>{{ option.description }}</td>
+
+            {% endfor %}
             </tbody>
         </table>
     {% endif %}
-    {% if wagon.option is null %}
+    {% if wagon.options is null %}
         <p>Aucune option liée au wagon</p>
     {% endif %}
     <br>

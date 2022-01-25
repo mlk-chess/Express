@@ -16,9 +16,19 @@ class OptionController extends AbstractController
     #[Route('/', name: 'option_index', methods: ['GET'])]
     public function index(OptionRepository $optionRepository): Response
     {
-        return $this->render('Back/option/index.html.twig', [
-            'options' => $optionRepository->findAll(),
-        ]);
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
+
+
+        if (in_array('COMPANY', $userConnected->getRoles())){
+            return $this->render('Back/option/index.html.twig', [
+                'options' => $optionRepository->findBy(array('owner' => $userConnected->getId()))
+            ]);
+        }else{
+            return $this->render('Back/option/index.html.twig', [
+                'options' => $optionRepository->findAll(),
+            ]);
+        }
     }
 
     #[Route('/create', name: 'option_new', methods: ['GET','POST'])]
@@ -77,6 +87,6 @@ class OptionController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('Back/option_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin_option_index', [], Response::HTTP_SEE_OTHER);
     }
 }

@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Entity\Traits\TimestampableTrait;
 use App\Repository\WagonRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -47,9 +49,15 @@ class Wagon
     private $owner;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Option::class, inversedBy="wagons")
+     * @ORM\OneToMany(targetEntity=Option::class, mappedBy="wagon")
      */
-    private $option;
+    private $options;
+
+    public function __construct()
+    {
+        $this->options = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -124,6 +132,40 @@ class Wagon
     public function setOption(?Option $option): self
     {
         $this->option = $option;
+
+        return $this;
+    }
+    public function __toString()
+    {
+        return $this->class;
+    }
+
+    /**
+     * @return Collection|Option[]
+     */
+    public function getOptions(): Collection
+    {
+        return $this->options;
+    }
+
+    public function addOption(Option $option): self
+    {
+        if (!$this->options->contains($option)) {
+            $this->options[] = $option;
+            $option->setWagon($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOption(Option $option): self
+    {
+        if ($this->options->removeElement($option)) {
+            // set the owning side to null (unless already changed)
+            if ($option->getWagon() === $this) {
+                $option->setWagon(null);
+            }
+        }
 
         return $this;
     }
