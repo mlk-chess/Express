@@ -26,7 +26,7 @@
                                 <div class="col">
                                     <a href="{{ path('admin_train_show', {'id': train.id}) }}"><button class="btn">Voir</button></a>
                                 </div>
-                                <div class="col ">
+                                <div class="col">
                                     <form method="post" action="{{ path('admin_train_edit', {'id': train.id}) }}">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ train.id) }}">
                                         <button class="btn">Modifier</button>

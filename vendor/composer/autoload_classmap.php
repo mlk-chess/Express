@@ -22,6 +22,7 @@ return array(
     'App\\Entity\\LineTrain' => $baseDir . '/src/Entity/LineTrain.php',
     'App\\Entity\\Option' => $baseDir . '/src/Entity/Option.php',
     'App\\Entity\\Train' => $baseDir . '/src/Entity/Train.php',
+    'App\\Entity\\Traits\\TimestampableTrait' => $baseDir . '/src/Entity/Traits/TimestampableTrait.php',
     'App\\Entity\\User' => $baseDir . '/src/Entity/User.php',
     'App\\Entity\\Wagon' => $baseDir . '/src/Entity/Wagon.php',
     'App\\Form\\LineTrainType' => $baseDir . '/src/Form/LineTrainType.php',

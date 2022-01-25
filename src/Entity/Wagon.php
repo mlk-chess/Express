@@ -46,6 +46,11 @@ class Wagon
      */
     private $owner;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Option::class, inversedBy="wagons")
+     */
+    private $option;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -107,6 +112,18 @@ class Wagon
     public function setOwner(?User $owner): self
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function getOption(): ?Option
+    {
+        return $this->option;
+    }
+
+    public function setOption(?Option $option): self
+    {
+        $this->option = $option;
 
         return $this;
     }

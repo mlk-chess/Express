@@ -641,6 +641,7 @@ class ComposerStaticInit4303646be4fbc26b5b1aa2bfb73bc15c
         'App\\Entity\\LineTrain' => __DIR__ . '/../..' . '/src/Entity/LineTrain.php',
         'App\\Entity\\Option' => __DIR__ . '/../..' . '/src/Entity/Option.php',
         'App\\Entity\\Train' => __DIR__ . '/../..' . '/src/Entity/Train.php',
+        'App\\Entity\\Traits\\TimestampableTrait' => __DIR__ . '/../..' . '/src/Entity/Traits/TimestampableTrait.php',
         'App\\Entity\\User' => __DIR__ . '/../..' . '/src/Entity/User.php',
         'App\\Entity\\Wagon' => __DIR__ . '/../..' . '/src/Entity/Wagon.php',
         'App\\Form\\LineTrainType' => __DIR__ . '/../..' . '/src/Form/LineTrainType.php',

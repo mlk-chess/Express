@@ -23,17 +23,23 @@
                 <td>{{ wagon.type }}</td>
                 <td>{{ wagon.placeNb }}</td>
                 <td>
-                    <div class="row valign-wrapper clear-10">
-                        <div class="center-align col">
-                            <form method="post" action="{{ path('admin_wagon_edit', {'id': wagon.id}) }}">
-                                <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ wagon.id) }}">
-                                <button class="btn">Editer</button>
-                            </form>
-                        </div>
-                        <div>
-                            {{ include('Back/wagon/_delete_form.html.twig') }}
+                    <div class="row">
+                        <div class="valign-wrapper">
+                            <div class="col ">
+                                <a href="{{ path('admin_wagon_show', {'id': wagon.id}) }}"><button class="btn">Voir</button></a>
+                            </div>
+                            <div class="col">
+                                <form method="post" action="{{ path('admin_wagon_edit', {'id': wagon.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ wagon.id) }}">
+                                    <button class="btn">Editer</button>
+                                </form>
+                            </div>
+                            <div class="col ">
+                                {{ include('Back/wagon/_delete_form.html.twig') }}
 
+                            </div>
                         </div>
+
                     </div>
 
                 </td>

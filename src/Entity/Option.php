@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\OptionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -69,6 +71,17 @@ class Option
      */
     private $type;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Wagon::class, mappedBy="option")
+     */
+    private $wagons;
+
+    public function __construct()
+    {
+        $this->wagons = new ArrayCollection();
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -95,6 +108,36 @@ class Option
     public function setType(string $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Wagon[]
+     */
+    public function getWagons(): Collection
+    {
+        return $this->wagons;
+    }
+
+    public function addWagon(Wagon $wagon): self
+    {
+        if (!$this->wagons->contains($wagon)) {
+            $this->wagons[] = $wagon;
+            $wagon->setOption($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWagon(Wagon $wagon): self
+    {
+        if ($this->wagons->removeElement($wagon)) {
+            // set the owning side to null (unless already changed)
+            if ($wagon->getOption() === $this) {
+                $wagon->setOption(null);
+            }
+        }
 
         return $this;
     }
