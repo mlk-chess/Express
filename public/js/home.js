@@ -80,8 +80,8 @@ function loadMarkers(){
 ////////////////////////////
 
 
-const departureStationInput = document.getElementById('departureStationInput');
-const arrivalStationInput = document.getElementById('arrivalStationInput');
+const departureStationInput = document.getElementById('home_departureStationInput');
+const arrivalStationInput = document.getElementById('home_arrivalStationInput');
 
 const listStationsDeparture = document.getElementById('listStationsDeparture');
 const listStationsArrival = document.getElementById('listStationsArrival');

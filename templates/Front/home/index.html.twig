@@ -29,13 +29,12 @@
         <li>Your template at <code><a href="{{ '/var/www/templates/home/index.html.twig'|file_link(0) }}">templates/home/index.html.twig</a></code></li>
     </ul>
 </div>
+    {{ include('Front/home/_form.html.twig') }}
 
 
-    <input type="text" placeholder="Gare de départ" id="departureStationInput">
     <div id="departureStation"></div>
     <i class="fas fa-edit" id="updateDepartureStation"></i>
 
-    <input type="text" placeholder="Gare d'arrivée" id="arrivalStationInput">
     <div id="arrivalStation"></div>
     <i class="fas fa-edit" id="updateArrivalStation"></i>
 
