@@ -6,6 +6,7 @@ use App\Entity\Option;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class OptionType extends AbstractType
 {
@@ -13,7 +14,7 @@ class OptionType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('price')
+            ->add('price', NumberType::class)
             ->add('description')
             ->add('type')
             ->add('wagon')
