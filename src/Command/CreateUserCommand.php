@@ -69,11 +69,13 @@ class CreateUserCommand extends Command
 
         if ($input->getOption('admin-user')) {
             $user->setRoles(['ROLE_ADMIN']);
+        }else{
+            $user->setRoles([""]);
         }
 
         $this->manager->persist($user);
         $this->manager->flush();
-        //dump($user);
+        dump($pwd);
 
         $io->success('You have created your new User');
 
