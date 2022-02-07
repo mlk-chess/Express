@@ -5,7 +5,6 @@ namespace App\Controller\Back;
 use App\Entity\Wagon;
 use App\Form\WagonType;
 use App\Repository\WagonRepository;
-use App\Service\ApiMailerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,9 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class WagonController extends AbstractController
 {
     #[Route('/', name: 'wagon_index', methods: ['GET'])]
-    public function index(WagonRepository $wagonRepository, ApiMailerService $mailerService): Response
+    public function index(WagonRepository $wagonRepository): Response
     {
-        dd($mailerService->test());
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
 
         if (in_array('COMPANY', $userConnected->getRoles())){
