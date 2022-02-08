@@ -35,16 +35,21 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
-            if(!empty($user->getCompanyName()) && $user->getCompanyName() !== null){
+            if ((strlen($user->getCompanyName()) < 2 || strlen($user->getCompanyName()) > 50))
+                $list_err[] = 'Le nom de la société doit être une chaine de caractère compris entre 2 et 50 caractères';
+            if (strlen($user->getPassword()) < 6 || strlen($user->getPassword()) > 50)
+                $list_err[] = 'Le mot de passe doit faire entre 6 et 50 caractères';
+
+            if(empty($list_err)) {
+                $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
+                $user->setPlainPassword($user->getPassword());
+
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);
                 $entityManager->flush();
-
                 return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
-            }else{
-                $this->addFlash('green', 'Le nom de la société ne doit pas être vide');
             }
+            else foreach($list_err as $err) $this->addFlash('red', $err);
         }
 
         return $this->renderForm('Back/user/new.html.twig', [

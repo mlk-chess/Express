@@ -177,7 +177,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function __toString(){
-        return $this->email;
+        return $this->company_name;
     }
 
     public function getCompanyName(): ?string
