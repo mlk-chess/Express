@@ -27,7 +27,6 @@ class WagonController extends AbstractController
                 'wagons' => $wagonRepository->findAll(),
             ]);
         }
-
     }
 
     #[Route('/new', name: 'wagon_new', methods: ['GET','POST'])]

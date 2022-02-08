@@ -35,8 +35,8 @@ class PasswordHasherSubscriber implements EventSubscriberInterface
     {
         $em = $args->getEntityManager();
         $unitOfWork = $em->getUnitOfWork();
-
         foreach ($unitOfWork->getScheduledEntityInsertions() as $obj){
+
             if ($obj instanceof User && $obj->getPlainPassword()){
                 $obj->setPassword($this->userPasswordHasher->hashPassword($obj, $obj->getPlainPassword()));
             }
