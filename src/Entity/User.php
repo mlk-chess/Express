@@ -86,7 +86,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->wagons = new ArrayCollection();
         $this->options = new ArrayCollection();
     }
->>>>>>> b69f549c87b86bee516c81eede36e9da81c99c72
 
     public function getId(): ?int
     {
@@ -192,7 +191,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return trim($this);
     }
-    
+
     /**
      * @return Collection|Train[]
      */
