@@ -12,10 +12,12 @@ class LineTrainType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('schedule_departure')
-            ->add('schedule_arrival')
             ->add('train')
             ->add('line')
+            ->add('date_departure')
+            ->add('date_arrival')
+            ->add('time_departure')
+            ->add('time_arrival')
         ;
     }
 
