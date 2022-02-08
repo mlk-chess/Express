@@ -21,10 +21,46 @@
             </tr>
         </tbody>
     </table>
+    <br>
+    <div class="valign-wrapper row">
+        <div class="col">
+            <form method="post" action="{{ path('admin_train_edit', {'id': train.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ train.id) }}">
+                <button class="btn">Modifier</button>
+            </form>
+        </div>
+        <div>
+            {{ include('Back/train/_delete_form.html.twig') }}
+        </div>
 
-    <a href="{{ path('admin_train_index') }}">back to list</a>
+    </div>
 
-    <a href="{{ path('admin_train_edit', {'id': train.id}) }}">edit</a>
+    <h3>Liste des wagons</h3>
 
-    {{ include('Back/train/_delete_form.html.twig') }}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Classe</th>
+            <th>Type</th>
+            <th>Nb places</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for wagon in train.wagons %}
+            <tr>
+                <td>{{ wagon.id }}</td>
+                <td>{{ wagon.class }}</td>
+                <td>{{ wagon.type }}</td>
+                <td>{{ wagon.placeNb }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Aucun train existant</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
 {% endblock %}

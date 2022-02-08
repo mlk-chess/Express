@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -40,7 +42,51 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
      */
-    private $company_name;
+        private $company_name;
+    /*
+     *
+     * @var string The cleared password
+     */
+    private $plainPassword;
+
+    /**
+     * @return string
+     */
+    public function getPlainPassword(): string
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param string $plainPassword
+     */
+    public function setPlainPassword(string $plainPassword): void
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
+    /**
+     * @ORM\OneToMany(targetEntity=Train::class, mappedBy="owner")
+     */
+    private $trains;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Wagon::class, mappedBy="owner")
+     */
+    private $wagons;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Option::class, mappedBy="owner")
+     */
+    private $options;
+
+    public function __construct()
+    {
+        $this->trains = new ArrayCollection();
+        $this->wagons = new ArrayCollection();
+        $this->options = new ArrayCollection();
+    }
+>>>>>>> b69f549c87b86bee516c81eede36e9da81c99c72
 
     public function getId(): ?int
     {
@@ -145,5 +191,95 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->company_name = $company_name;
 
         return trim($this);
+    }
+    
+    /**
+     * @return Collection|Train[]
+     */
+    public function getTrains(): Collection
+    {
+        return $this->trains;
+    }
+
+    public function addTrain(Train $train): self
+    {
+        if (!$this->trains->contains($train)) {
+            $this->trains[] = $train;
+            $train->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrain(Train $train): self
+    {
+        if ($this->trains->removeElement($train)) {
+            // set the owning side to null (unless already changed)
+            if ($train->getOwner() === $this) {
+                $train->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Wagon[]
+     */
+    public function getWagons(): Collection
+    {
+        return $this->wagons;
+    }
+
+    public function addWagon(Wagon $wagon): self
+    {
+        if (!$this->wagons->contains($wagon)) {
+            $this->wagons[] = $wagon;
+            $wagon->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWagon(Wagon $wagon): self
+    {
+        if ($this->wagons->removeElement($wagon)) {
+            // set the owning side to null (unless already changed)
+            if ($wagon->getOwner() === $this) {
+                $wagon->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Option[]
+     */
+    public function getOptions(): Collection
+    {
+        return $this->options;
+    }
+
+    public function addOption(Option $option): self
+    {
+        if (!$this->options->contains($option)) {
+            $this->options[] = $option;
+            $option->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOption(Option $option): self
+    {
+        if ($this->options->removeElement($option)) {
+            // set the owning side to null (unless already changed)
+            if ($option->getOwner() === $this) {
+                $option->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 }

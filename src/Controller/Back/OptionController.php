@@ -16,9 +16,19 @@ class OptionController extends AbstractController
     #[Route('/', name: 'option_index', methods: ['GET'])]
     public function index(OptionRepository $optionRepository): Response
     {
-        return $this->render('Front/option/index.html.twig', [
-            'options' => $optionRepository->findAll(),
-        ]);
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
+
+
+        if (in_array('COMPANY', $userConnected->getRoles())){
+            return $this->render('Back/option/index.html.twig', [
+                'options' => $optionRepository->findBy(array('owner' => $userConnected->getId()))
+            ]);
+        }else{
+            return $this->render('Back/option/index.html.twig', [
+                'options' => $optionRepository->findAll(),
+            ]);
+        }
     }
 
     #[Route('/create', name: 'option_new', methods: ['GET','POST'])]
@@ -33,10 +43,10 @@ class OptionController extends AbstractController
             $entityManager->persist($option);
             $entityManager->flush();
 
-            return $this->redirectToRoute('option_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_option_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('Front/option/new.html.twig', [
+        return $this->renderForm('Back/option/new.html.twig', [
             'option' => $option,
             'form' => $form,
         ]);
@@ -45,7 +55,7 @@ class OptionController extends AbstractController
     #[Route('/{id}', name: 'option_show', methods: ['GET'])]
     public function show(Option $option): Response
     {
-        return $this->render('Front/option/show.html.twig', [
+        return $this->render('Back/option/show.html.twig', [
             'option' => $option,
         ]);
     }
@@ -59,10 +69,10 @@ class OptionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('option_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_option_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('Front/option/edit.html.twig', [
+        return $this->renderForm('Back/option/edit.html.twig', [
             'option' => $option,
             'form' => $form,
         ]);
@@ -77,6 +87,6 @@ class OptionController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('Front/option_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin_option_index', [], Response::HTTP_SEE_OTHER);
     }
 }
