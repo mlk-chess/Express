@@ -16,6 +16,7 @@ class LineTrainController extends AbstractController
     #[Route('/', name: 'line_train_index', methods: ['GET'])]
     public function index(LineTrainRepository $lineTrainRepository): Response
     {
+
         return $this->render('Back/line_train/index.html.twig', [
             'line_trains' => $lineTrainRepository->findAll(),
         ]);
@@ -35,6 +36,7 @@ class LineTrainController extends AbstractController
 
             return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
         }
+
 
         return $this->renderForm('Back/line_train/new.html.twig', [
             'line_train' => $lineTrain,

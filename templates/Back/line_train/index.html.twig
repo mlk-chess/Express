@@ -1,14 +1,16 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_back.html.twig' %}
 
 {% block title %}LineTrain index{% endblock %}
 
 {% block body %}
-    <h1>LineTrain index</h1>
+    <h1>Voyage</h1>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Train</th>
+                <th>Ligne</th>
                 <th>Schedule_departure</th>
                 <th>Schedule_arrival</th>
                 <th>actions</th>
@@ -18,6 +20,8 @@
         {% for line_train in line_trains %}
             <tr>
                 <td>{{ line_train.id }}</td>
+                <td>{{ line_train.train.name }}</td>
+                <td>{{ line_train.line.nameStationDeparture }} - {{ line_train.line.nameStationArrival }}</td>
                 <td>{{ line_train.scheduleDeparture ? line_train.scheduleDeparture|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ line_train.scheduleArrival ? line_train.scheduleArrival|date('Y-m-d H:i:s') : '' }}</td>
                 <td>

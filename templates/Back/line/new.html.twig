@@ -5,8 +5,6 @@
 {% block body %}
     <h1>Créer une ligne</h1>
 
-    <p>{{ message }}</p>
-
     {{ include('Back/line/_form.html.twig') }}
 
     <a href="{{ path('admin_line_index') }}">Liste des lignes</a>
