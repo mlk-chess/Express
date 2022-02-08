@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Back;
 
 use App\Entity\User;
 use App\Form\TrainCompanyType;
@@ -17,16 +17,16 @@ class UserController extends AbstractController
 {
 
     /* Client */
-    #[Route('/', name: 'user_index', methods: ['GET'])]
+    #[Route('/', name: 'admin_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
-        return $this->render('user/index.html.twig', [
+        return $this->render('Back/user/index.html.twig', [
             'users' => $userRepository->findAll(),
         ]);
     }
 
     /* Create company */
-    #[Route('/new-company', name: 'user_company_new', methods: ['GET', 'POST'])]
+    #[Route('/new-company', name: 'admin_user_company_new', methods: ['GET', 'POST'])]
     public function new_train_company(Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = new User();
@@ -41,19 +41,19 @@ class UserController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
             }else{
-                $this->addFlash('error', 'Le nom de la société ne doit pas être vide');
+                $this->addFlash('green', 'Le nom de la société ne doit pas être vide');
             }
         }
 
-        return $this->renderForm('user/new.html.twig', [
+        return $this->renderForm('Back/user/new.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);
     }
 
-    #[Route('/new-user', name: 'user_new', methods: ['GET', 'POST'])]
+    #[Route('/new-user', name: 'admin_user_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $user = new User();
@@ -66,24 +66,24 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('user/new.html.twig', [
+        return $this->renderForm('Back/user/new.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'user_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'admin_user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
-        return $this->render('user/show.html.twig', [
+        return $this->render('Back/user/show.html.twig', [
             'user' => $user,
         ]);
     }
 
-    #[Route('/{id}/edit-train-company', name: 'user_edit_company', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit-train-company', name: 'admin_user_edit_company', methods: ['GET', 'POST'])]
     public function edit_train_company(Request $request, User $user): Response
     {
         $form = $this->createForm(TrainCompanyType::class, $user);
@@ -92,16 +92,16 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('user/edit.html.twig', [
+        return $this->renderForm('Back/user/edit.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'admin_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user): Response
     {
         $form = $this->createForm(UserType::class, $user);
@@ -110,16 +110,16 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('user/edit.html.twig', [
+        return $this->renderForm('Back/user/edit.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'user_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'admin_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user): Response
     {
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
@@ -128,7 +128,7 @@ class UserController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
     }
 
 }
