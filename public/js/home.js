@@ -80,6 +80,9 @@ function loadMarkers(){
 ////////////////////////////
 
 
+const departureStationSearch = document.getElementById('departureStationSearch');
+const arrivalStationSearch = document.getElementById('arrivalStationSearch');
+
 const departureStationInput = document.getElementById('home_departureStationInput');
 const arrivalStationInput = document.getElementById('home_arrivalStationInput');
 
@@ -97,30 +100,30 @@ const updateArrivalStation = document.getElementById('updateArrivalStation');
 
 
 
-departureStationInput.addEventListener('keyup', function(){
-    handleKeyPress(departureStationInput, listStationsDeparture, true)
+departureStationSearch.addEventListener('keyup', function(){
+    handleKeyPress(departureStationSearch, listStationsDeparture, true)
 });
 
-arrivalStationInput.addEventListener('keyup', function(){
-    handleKeyPress(arrivalStationInput, listStationsArrival, false)
+arrivalStationSearch.addEventListener('keyup', function(){
+    handleKeyPress(arrivalStationSearch, listStationsArrival, false)
 });
 
 
-departureStationInput.addEventListener('focus', function(){
+departureStationSearch.addEventListener('focus', function(){
     listStationsArrival.innerHTML = '';
 });
 
-arrivalStationInput.addEventListener('focus', function(){
+arrivalStationSearch.addEventListener('focus', function(){
     listStationsDeparture.innerHTML = '';
 });
 
 
 updateDepartureStation.addEventListener('click', function(){
-    clickUpdate(updateDepartureStation, departureStation, departureStationInput);
+    clickUpdate(updateDepartureStation, departureStation, departureStationSearch, departureStationInput);
 });
 
 updateArrivalStation.addEventListener('click', function(){
-    clickUpdate(updateArrivalStation, arrivalStation, arrivalStationInput);
+    clickUpdate(updateArrivalStation, arrivalStation, arrivalStationSearch, arrivalStationInput);
 });
 
 
@@ -151,13 +154,15 @@ function addStation(station, type) {
 
     if (type){
         departureStation.innerHTML = "<p>"+station+"</p>";
+        departureStationInput.value = station
         listStationsDeparture.innerHTML = '';
-        departureStationInput.style.display = "none";
+        departureStationSearch.style.display = "none";
         updateDepartureStation.style.display = "block";
     }else {
         arrivalStation.innerHTML = "<p>"+station+"</p>";
+        arrivalStationInput.value = station
         listStationsArrival.innerHTML = '';
-        arrivalStationInput.style.display = "none";
+        arrivalStationSearch.style.display = "none";
         updateArrivalStation.style.display = "block";
     }
 
@@ -166,22 +171,25 @@ function addStation(station, type) {
 
 function selectDepartureStation(name){
     departureStation.innerHTML = "<p>"+name+"</p>";
+    departureStationInput.value = name;
     listStationsDeparture.innerHTML = '';
-    departureStationInput.style.display = "none";
+    departureStationSearch.style.display = "none";
     updateDepartureStation.style.display = "block";
 }
 
 function selectArrivalStation(name){
     arrivalStation.innerHTML = "<p>"+name+"</p>";
+    arrivalStationInput.value = name;
     listStationsArrival.innerHTML = '';
-    arrivalStationInput.style.display = "none";
+    arrivalStationSearch.style.display = "none";
     updateArrivalStation.style.display = "block";
 }
 
 
-function clickUpdate(update, station, input) {
+function clickUpdate(update, station, search, input) {
     update.style.display = "none";
     station.innerHTML = '';
-    input.style.display = "block";
+    search.style.display = "block";
+    search.value = '';
     input.value = '';
 }
