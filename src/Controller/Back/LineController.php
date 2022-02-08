@@ -29,43 +29,45 @@ class LineController extends AbstractController
         $form = $this->createForm(LineType::class, $line);
         $form->handleRequest($request);
 
-        if (Helper::checkStationJsonFile($line->getNameStationArrival()) &&
-            Helper::checkStationJsonFile($line->getNameStationDeparture())){
+        if ($form->isSubmitted() && $form->isValid()) {
 
-            if($line->getNameStationArrival() !== $line->getNameStationDeparture() ){
+            if (Helper::checkStationJsonFile($line->getNameStationArrival()) &&
+                Helper::checkStationJsonFile($line->getNameStationDeparture())){
 
-                $getLine = $lineRepository->findOneBy([
-                    'name_station_departure' => $line->getNameStationDeparture(),
-                    'name_station_arrival' => $line->getNameStationArrival()
-                ]);
+                if($line->getNameStationArrival() !== $line->getNameStationDeparture() ){
 
-                $getLineDeparture = Helper::getLineByName('../public/stations.json',$line->getNameStationDeparture());
-                $getLineArrival = Helper::getLineByName('../public/stations.json',$line->getNameStationArrival());
+                    $getLine = $lineRepository->findOneBy([
+                        'name_station_departure' => $line->getNameStationDeparture(),
+                        'name_station_arrival' => $line->getNameStationArrival()
+                    ]);
 
-                if ($getLine == null){
+                    $getLineDeparture = Helper::getLineByName('../public/stations.json',$line->getNameStationDeparture());
+                    $getLineArrival = Helper::getLineByName('../public/stations.json',$line->getNameStationArrival());
 
-                    if ($form->isSubmitted() && $form->isValid()) {
-                        $entityManager = $this->getDoctrine()->getManager();
+                    if ($getLine == null){
 
-                        $line->setLatitudeDeparture($getLineDeparture['Latitude']);
-                        $line->setLatitudeArrival($getLineArrival['Latitude']);
-                        $line->setLongitudeDeparture($getLineDeparture['Longitude']);
-                        $line->setLongitudeArrival($getLineArrival['Longitude']);
+                            $entityManager = $this->getDoctrine()->getManager();
 
-                        $entityManager->persist($line);
-                        $entityManager->flush();
+                            $line->setLatitudeDeparture($getLineDeparture['Latitude']);
+                            $line->setLatitudeArrival($getLineArrival['Latitude']);
+                            $line->setLongitudeDeparture($getLineDeparture['Longitude']);
+                            $line->setLongitudeArrival($getLineArrival['Longitude']);
 
-                        $this->addFlash('green', "La ligne a été créée !");
-                        return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
+                            $entityManager->persist($line);
+                            $entityManager->flush();
+
+                            $this->addFlash('green', "La ligne a été créée !");
+                            return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
+                        
+                    }else{
+                        $message = "Cette ligne existe déjà !";
+                        $this->addFlash('red', $message);
                     }
+
                 }else{
-                    $message = "Cette ligne existe déjà !";
+                    $message = "Gare de départ et gare d'arrivée identique !";
                     $this->addFlash('red', $message);
                 }
-
-            }else{
-                $message = "Gare de départ et gare d'arrivée identique !";
-                $this->addFlash('red', $message);
             }
         }
 
@@ -105,7 +107,7 @@ class LineController extends AbstractController
                             $getLineDeparture = Helper::getLineByName('../public/stations.json',$line->getNameStationDeparture());
                             $getLineArrival = Helper::getLineByName('../public/stations.json',$line->getNameStationArrival());
             
-                            if ($getLine == null || $getLine->getId() != $id ){
+                            if ( $getLine->getId() == $id  || $getLine == null){
             
                                     $line->setLatitudeDeparture($getLineDeparture['Latitude']);
                                     $line->setLatitudeArrival($getLineArrival['Latitude']);
@@ -142,6 +144,7 @@ class LineController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($line);
             $entityManager->flush();
+            $this->addFlash('red', "La ligne a été supprimée");
         }
 
         return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
