@@ -18,7 +18,7 @@ class RegisterType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Votre email'
             ])
-            ->add('password', RepeatedType::class, [
+            ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'first_options' => [
                     'label' => 'Votre mot de passe'
