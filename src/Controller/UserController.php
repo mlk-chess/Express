@@ -30,18 +30,21 @@ class UserController extends AbstractController
     public function new_train_company(Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = new User();
-        $user->setRoles(['company']);
+        $user->setRoles(['COMPANY']);
         $form = $this->createForm(TrainCompanyType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
+            if(!empty($user->getCompanyName()) && $user->getCompanyName() !== null){
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($user);
+                $entityManager->flush();
 
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
+            }else{
+                $this->addFlash('error', 'Le nom de la société ne doit pas être vide');
+            }
         }
 
         return $this->renderForm('user/new.html.twig', [
@@ -54,7 +57,7 @@ class UserController extends AbstractController
     public function new(Request $request): Response
     {
         $user = new User();
-        $user->setRoles(['basic']);
+        $user->setRoles(['USER']);
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 

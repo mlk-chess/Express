@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -139,10 +140,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->company_name;
     }
 
-    public function setCompanyName(?string $company_name): self
+    public function setCompanyName(?string $company_name): string
     {
         $this->company_name = $company_name;
 
-        return $this;
+        return trim($this);
     }
 }
