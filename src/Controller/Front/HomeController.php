@@ -17,7 +17,6 @@ class HomeController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(Request $request): Response
     {
-
         $form = $this->createForm(HomeType::class);
         $form->handleRequest($request);
 
@@ -25,17 +24,20 @@ class HomeController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $repository = $entityManager->getRepository(LineTrain::class);
 
+
             $query = $repository->createQueryBuilder('lt')
                 ->select('lt, l')
                 ->leftJoin('lt.line', 'l')
                 ->andWhere('l.name_station_departure = :station_departure')
                 ->andWhere('l.name_station_arrival = :station_arrival')
+                ->andWhere('lt.date_departure = :date_departure')
+                ->andWhere('lt.time_departure >= :time_departure')
                 ->setParameters([
                     'station_departure'=> $form->get('departureStationInput')->getData(),
-                    'station_arrival'=> $form->get('arrivalStationInput')->getData()
+                    'station_arrival'=> $form->get('arrivalStationInput')->getData(),
+                    'date_departure'=> $form->get('date')->getData()->format('Y-m-d'),
+                    'time_departure'=> $form->get('time')->getData()->format('H:i:s')
                 ]);
-
-//            $travel = $repository->find(1);
 
 
             $q = $query->getQuery();
