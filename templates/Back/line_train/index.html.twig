@@ -11,8 +11,8 @@
                 <th>Id</th>
                 <th>Train</th>
                 <th>Ligne</th>
-                <th>Schedule_departure</th>
-                <th>Schedule_arrival</th>
+                <th>Date de départ</th>
+                <th>Date d'arrivée</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -22,8 +22,9 @@
                 <td>{{ line_train.id }}</td>
                 <td>{{ line_train.train.name }}</td>
                 <td>{{ line_train.line.nameStationDeparture }} - {{ line_train.line.nameStationArrival }}</td>
-                <td>{{ line_train.scheduleDeparture ? line_train.scheduleDeparture|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ line_train.scheduleArrival ? line_train.scheduleArrival|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ line_train.getDateDeparture()|date('d-m-Y')}} - {{line_train.getTimeDeparture()|date('H:i:s') }} </td>
+                <td>{{ line_train.getDateArrival()|date('d-m-Y')}} - {{line_train.getTimeArrival()|date('H:i:s') }} </td>
+               
                 <td>
                     <a href="{{ path('admin_line_train_show', {'id': line_train.id}) }}">show</a>
                     <a href="{{ path('admin_line_train_edit', {'id': line_train.id}) }}">edit</a>

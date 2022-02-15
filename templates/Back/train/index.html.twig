@@ -21,17 +21,17 @@
                 <td>{{ train.name }}</td>
                 <td>{{ train.description }}</td>
                 <td>
-                    <a href="{{ path('admin_train_show', {'id': train.id}) }}">show</a>
-                    <a href="{{ path('admin_train_edit', {'id': train.id}) }}">edit</a>
+                    <a href="{{ path('admin_train_show', {'id': train.id}) }}">Voir</a>
+                    <a href="{{ path('admin_train_edit', {'id': train.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="4">Aucune donnée</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('admin_train_new') }}">Create new</a>
+    <a href="{{ path('admin_train_new') }}">Créer un nouveau train</a>
 {% endblock %}

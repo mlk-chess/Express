@@ -102,12 +102,14 @@ class LineController extends AbstractController
                                 'name_station_departure' => $line->getNameStationDeparture(),
                                 'name_station_arrival' => $line->getNameStationArrival()
                             ]);
+
+                         
                             
 
                             $getLineDeparture = Helper::getLineByName('../public/stations.json',$line->getNameStationDeparture());
                             $getLineArrival = Helper::getLineByName('../public/stations.json',$line->getNameStationArrival());
             
-                            if ( $getLine->getId() == $id  || $getLine == null){
+                            if ( $getLine == null || $getLine->getId() == $id ){
             
                                     $line->setLatitudeDeparture($getLineDeparture['Latitude']);
                                     $line->setLatitudeArrival($getLineArrival['Latitude']);

@@ -5,9 +5,9 @@
 {% block body %}
     <h1>Edit Train</h1>
 
-    {{ include('Back/train/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('Back/train/_form.html.twig', {'button_label': 'Modifier'}) }}
 
-    <a href="{{ path('admin_train_index') }}">back to list</a>
+    <a href="{{ path('admin_train_index') }}">Retour</a>
 
     {{ include('Back/train/_delete_form.html.twig') }}
 {% endblock %}

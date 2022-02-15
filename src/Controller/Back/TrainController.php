@@ -23,18 +23,32 @@ class TrainController extends AbstractController
     }
 
     #[Route('/new', name: 'train_new', methods: ['GET','POST'])]
-    public function new(Request $request): Response
+    public function new(Request $request, TrainRepository $trainRepository): Response
     {
         $train = new Train();
         $form = $this->createForm(TrainType::class, $train);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($train);
-            $entityManager->flush();
 
-            return $this->redirectToRoute('train_index', [], Response::HTTP_SEE_OTHER);
+            $getTrain = $trainRepository->findOneBy([
+                'name' => $train->getName()
+            ]);
+
+            if($getTrain == null ){
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($train);
+                $entityManager->flush();
+    
+                $this->addFlash('green', "Le train a été créé !");
+                return $this->redirectToRoute('train_index', [], Response::HTTP_SEE_OTHER);
+
+            }else{
+                $this->addFlash('red', "Ce train existe déjà !");
+            }
+
+        
         }
 
         return $this->renderForm('Back/train/new.html.twig', [
@@ -52,15 +66,28 @@ class TrainController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'train_edit', methods: ['GET','POST'])]
-    public function edit(Request $request, Train $train): Response
+    public function edit(Request $request, int $id, Train $train, TrainRepository $trainRepository): Response
     {
         $form = $this->createForm(TrainType::class, $train);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('train_index', [], Response::HTTP_SEE_OTHER);
+            $getTrain = $trainRepository->findOneBy([
+                'name' => $train->getName()
+            ]);
+            
+
+            if( $getTrain == null || $getTrain->getId() == $id  ){
+
+                $this->getDoctrine()->getManager()->flush();
+                $this->addFlash('green', "Le train a été modifié !");
+                return $this->redirectToRoute('train_index', [], Response::HTTP_SEE_OTHER);
+
+            }else{
+                $this->addFlash('red', "Ce train existe déjà !");
+            }
+        
         }
 
         return $this->renderForm('Back/train/edit.html.twig', [
@@ -76,6 +103,7 @@ class TrainController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($train);
             $entityManager->flush();
+            $this->addFlash('green', "Le train a été supprimé !");
         }
 
         return $this->redirectToRoute('Back/train_index', [], Response::HTTP_SEE_OTHER);
