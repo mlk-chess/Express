@@ -21,41 +21,56 @@ class HomeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $repository = $entityManager->getRepository(LineTrain::class);
+            if ($form->get('departureStationInput')->getData() == null || $form->get('arrivalStationInput')->getData() == null){
+                $this->addFlash(
+                    'notice',
+                    'Your changes were saved!'
+                );
+                return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
+            }else {
+                $entityManager = $this->getDoctrine()->getManager();
+                $repository = $entityManager->getRepository(LineTrain::class);
 
 
-            $query = $repository->createQueryBuilder('lt')
-                ->select('lt, l')
-                ->leftJoin('lt.line', 'l')
-                ->andWhere('l.name_station_departure = :station_departure')
-                ->andWhere('l.name_station_arrival = :station_arrival')
-                ->andWhere('lt.date_departure = :date_departure')
-                ->andWhere('lt.time_departure >= :time_departure')
-                ->setParameters([
-                    'station_departure'=> $form->get('departureStationInput')->getData(),
-                    'station_arrival'=> $form->get('arrivalStationInput')->getData(),
-                    'date_departure'=> $form->get('date')->getData()->format('Y-m-d'),
-                    'time_departure'=> $form->get('time')->getData()->format('H:i:s')
+                $query = $repository->createQueryBuilder('lt')
+                    ->select('lt, l')
+                    ->leftJoin('lt.line', 'l')
+                    ->andWhere('l.name_station_departure = :station_departure')
+                    ->andWhere('l.name_station_arrival = :station_arrival')
+                    ->andWhere('lt.date_departure = :date_departure')
+                    ->andWhere('lt.time_departure >= :time_departure')
+                    ->setParameters([
+                        'station_departure' => $form->get('departureStationInput')->getData(),
+                        'station_arrival' => $form->get('arrivalStationInput')->getData(),
+                        'date_departure' => $form->get('date')->getData()->format('Y-m-d'),
+                        'time_departure' => $form->get('time')->getData()->format('H:i:s')
+                    ]);
+
+
+                $q = $query->getQuery();
+
+                $travels = $q->execute();
+
+                if (count($travels) === 0){
+                    $noTravels = true;
+                } else {
+                    $noTravels = false;
+                }
+
+                return $this->renderForm('Front/home/index.html.twig', [
+                    'controller_name' => 'HomeController',
+                    'form' => $form,
+                    'travels' => $travels,
+                    'noTravels' => $noTravels
                 ]);
-
-
-            $q = $query->getQuery();
-
-            $travels = $q->execute();
-            dd($travels);
-
-            return $this->renderForm('Front/home/index.html.twig', [
-                'controller_name' => 'HomeController',
-                'form' => $form,
-                'travels' => $travels
-            ]);
+            }
         }
 
         return $this->renderForm('Front/home/index.html.twig', [
             'controller_name' => 'HomeController',
             'form' => $form,
-            'travels' => false
+            'travels' => false,
+            'noTravels' => false
         ]);
     }
 
