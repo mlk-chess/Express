@@ -4,11 +4,11 @@ namespace App\Controller\Front;
 
 use App\Entity\LineTrain;
 use App\Form\HomeType;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
 
 
 #[Route('/home')]
@@ -21,49 +21,58 @@ class HomeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('departureStationInput')->getData() == null || $form->get('arrivalStationInput')->getData() == null){
-                $this->addFlash(
-                    'notice',
-                    'Your changes were saved!'
-                );
+            if ($form->get('departureStationInput')->getData() == null || $form->get('arrivalStationInput')->getData() == null) {
+                $this->addFlash('red', "La gare de départ et la gare d'arrivée doivent être remplis");
+
                 return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
-            }else {
-                $entityManager = $this->getDoctrine()->getManager();
-                $repository = $entityManager->getRepository(LineTrain::class);
-
-
-                $query = $repository->createQueryBuilder('lt')
-                    ->select('lt, l')
-                    ->leftJoin('lt.line', 'l')
-                    ->andWhere('l.name_station_departure = :station_departure')
-                    ->andWhere('l.name_station_arrival = :station_arrival')
-                    ->andWhere('lt.date_departure = :date_departure')
-                    ->andWhere('lt.time_departure >= :time_departure')
-                    ->setParameters([
-                        'station_departure' => $form->get('departureStationInput')->getData(),
-                        'station_arrival' => $form->get('arrivalStationInput')->getData(),
-                        'date_departure' => $form->get('date')->getData()->format('Y-m-d'),
-                        'time_departure' => $form->get('time')->getData()->format('H:i:s')
-                    ]);
-
-
-                $q = $query->getQuery();
-
-                $travels = $q->execute();
-
-                if (count($travels) === 0){
-                    $noTravels = true;
-                } else {
-                    $noTravels = false;
-                }
-
-                return $this->renderForm('Front/home/index.html.twig', [
-                    'controller_name' => 'HomeController',
-                    'form' => $form,
-                    'travels' => $travels,
-                    'noTravels' => $noTravels
-                ]);
             }
+
+            $date = new DateTime($form->get('date')->getData()->format('d-m-Y'));
+            $time = new DateTime($form->get('time')->getData()->format('H:i:s'));
+            $date->setTime($time->format('H'), $time->format('i'), $time->format('s'));
+
+            if ($date->format('d-m-Y H:i:s') <= date('d-m-Y H:i:s', time())) {
+                $this->addFlash('red', "La date et l'heure ne sont pas valides");
+
+                return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
+            }
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $repository = $entityManager->getRepository(LineTrain::class);
+
+
+            $query = $repository->createQueryBuilder('lt')
+                ->select('lt, l')
+                ->leftJoin('lt.line', 'l')
+                ->andWhere('l.name_station_departure = :station_departure')
+                ->andWhere('l.name_station_arrival = :station_arrival')
+                ->andWhere('lt.date_departure = :date_departure')
+                ->andWhere('lt.time_departure >= :time_departure')
+                ->setParameters([
+                    'station_departure' => $form->get('departureStationInput')->getData(),
+                    'station_arrival' => $form->get('arrivalStationInput')->getData(),
+                    'date_departure' => $form->get('date')->getData()->format('Y-m-d'),
+                    'time_departure' => $form->get('time')->getData()->format('H:i:s')
+                ]);
+
+
+            $q = $query->getQuery();
+
+            $travels = $q->execute();
+
+            if (count($travels) === 0) {
+                $noTravels = true;
+            } else {
+                $noTravels = false;
+            }
+
+            return $this->renderForm('Front/home/index.html.twig', [
+                'controller_name' => 'HomeController',
+                'form' => $form,
+                'travels' => $travels,
+                'noTravels' => $noTravels
+            ]);
+
         }
 
         return $this->renderForm('Front/home/index.html.twig', [
@@ -79,5 +88,36 @@ class HomeController extends AbstractController
     {
         $json = file_get_contents("../templates/Front/home/stations.json");
         return new Response($json);
+    }
+
+    #[Route('/options', name: 'options')]
+    public function getOptions(Request $request): Response
+    {
+        $data = $request->request->get('id');
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $repository = $entityManager->getRepository(LineTrain::class);
+
+//
+//        $query = $repository->createQueryBuilder('lt')
+//            ->select('lt, l')
+//            ->leftJoin('lt.line', 'l')
+//            ->andWhere('l.name_station_departure = :station_departure')
+//            ->andWhere('l.name_station_arrival = :station_arrival')
+//            ->andWhere('lt.date_departure = :date_departure')
+//            ->andWhere('lt.time_departure >= :time_departure')
+//            ->setParameters([
+//                'station_departure' => $form->get('departureStationInput')->getData(),
+//                'station_arrival' => $form->get('arrivalStationInput')->getData(),
+//                'date_departure' => $form->get('date')->getData()->format('Y-m-d'),
+//                'time_departure' => $form->get('time')->getData()->format('H:i:s')
+//            ]);
+
+
+        $q = $query->getQuery();
+
+        $travels = $q->execute();
+
+        return new Response(true);
     }
 }

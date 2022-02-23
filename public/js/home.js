@@ -193,3 +193,29 @@ function clickUpdate(update, station, search, input) {
     search.value = '';
     input.value = '';
 }
+
+
+////////////////////////////
+//      OPTIONS     //
+////////////////////////////
+
+function displayOptions(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/home/options',
+        data: {
+            id: id
+        },
+        success: function(data) {
+            console.log(data)
+        },
+        error: function (xhr, ajaxOptions, thrownError){
+            alert(xhr.responseText);
+            alert(ajaxOptions);
+            alert(thrownError);
+            alert(xhr.status);
+        }
+    });
+
+    document.getElementById('optionContainer').style.display = "block";
+}
