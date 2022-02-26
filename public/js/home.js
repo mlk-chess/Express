@@ -229,7 +229,7 @@ function dataOptions(data) {
             '<p>Nom : ' + element.name +'</p>' +
             '<p>Type : ' + element.type +'</p>' +
             '<p>Description : ' + element.description +'</p>' +
-            '<p>Prix : ' + element.prime +'</p>';
+            '<p>Prix : ' + element.price +'</p>';
 
         optionsContainer.appendChild(html);
     });
