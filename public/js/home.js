@@ -207,7 +207,7 @@ function displayOptions(id) {
             id: id
         },
         success: function(data) {
-            console.log(data)
+            console.log(JSON.parse(data));
         },
         error: function (xhr, ajaxOptions, thrownError){
             alert(xhr.responseText);
