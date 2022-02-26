@@ -207,7 +207,7 @@ function displayOptions(id) {
             id: id
         },
         success: function(data) {
-            console.log(JSON.parse(data));
+            dataOptions(JSON.parse(data));
         },
         error: function (xhr, ajaxOptions, thrownError){
             alert(xhr.responseText);
@@ -218,4 +218,19 @@ function displayOptions(id) {
     });
 
     document.getElementById('optionContainer').style.display = "block";
+}
+
+function dataOptions(data) {
+    let optionsContainer = document.getElementById('options');
+
+    data.forEach( function (element) {
+        let html = document.createElement('div');
+        html.innerHTML =
+            '<p>Nom : ' + element.name +'</p>' +
+            '<p>Type : ' + element.type +'</p>' +
+            '<p>Description : ' + element.description +'</p>' +
+            '<p>Prix : ' + element.prime +'</p>';
+
+        optionsContainer.appendChild(html);
+    });
 }

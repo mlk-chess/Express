@@ -107,7 +107,7 @@ class HomeController extends AbstractController
             ->leftjoin('wagon.train', 'train')
             ->where('train.id = :id_train')
             ->setParameters([
-                'id_train' => 1,
+                'id_train' => $data,
             ]);
 
 
@@ -115,7 +115,22 @@ class HomeController extends AbstractController
 
         $options = $q->execute();
 
-        $options = json_encode($options);
+        $output = [];
+
+        if(count($options) !== 0){
+            foreach ($options as $option){
+
+                $output[]=array(
+                    "id" => $option->getId(),
+                    "name" => $option->getName(),
+                    "type" => $option->getType(),
+                    "description" => $option->getDescription(),
+                    "price" => $option->getPrice()
+                );
+            }
+        }
+
+        $options = json_encode($output);
 
         return new JsonResponse($options);
     }
