@@ -86,52 +86,58 @@ class HomeController extends AbstractController
     }
 
     #[Route('/stations', name: 'stations')]
-    public function getStations(): Response
+    public function getStations(Request $request): JsonResponse
     {
-        $json = file_get_contents("../templates/Front/home/stations.json");
-        return new Response($json);
+        if ($request->isXmlHttpRequest()) {
+            $json = file_get_contents("../templates/Front/home/stations.json");
+            return new JsonResponse($json);
+        }
+        return new JsonResponse(false);
     }
 
     #[Route('/options', name: 'options')]
     public function getOptions(Request $request): JsonResponse
     {
-        $data = $request->request->get('id');
+        if ($request->isXmlHttpRequest()) {
+            $data = $request->request->get('id');
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $repository = $entityManager->getRepository(Option::class);
-
-
-        $query = $repository->createQueryBuilder('option')
-            ->select('option, wagon, train')
-            ->leftjoin('option.wagon', 'wagon')
-            ->leftjoin('wagon.train', 'train')
-            ->where('train.id = :id_train')
-            ->setParameters([
-                'id_train' => $data,
-            ]);
+            $entityManager = $this->getDoctrine()->getManager();
+            $repository = $entityManager->getRepository(Option::class);
 
 
-        $q = $query->getQuery();
+            $query = $repository->createQueryBuilder('option')
+                ->select('option, wagon, train')
+                ->leftjoin('option.wagon', 'wagon')
+                ->leftjoin('wagon.train', 'train')
+                ->where('train.id = :id_train')
+                ->setParameters([
+                    'id_train' => $data,
+                ]);
 
-        $options = $q->execute();
 
-        $output = [];
+            $q = $query->getQuery();
 
-        if(count($options) !== 0){
-            foreach ($options as $option){
+            $options = $q->execute();
 
-                $output[]=array(
-                    "id" => $option->getId(),
-                    "name" => $option->getName(),
-                    "type" => $option->getType(),
-                    "description" => $option->getDescription(),
-                    "price" => $option->getPrice()
-                );
+            $output = [];
+
+            if (count($options) !== 0) {
+                foreach ($options as $option) {
+
+                    $output[] = array(
+                        "id" => $option->getId(),
+                        "name" => $option->getName(),
+                        "type" => $option->getType(),
+                        "description" => $option->getDescription(),
+                        "price" => $option->getPrice()
+                    );
+                }
             }
+
+            $options = json_encode($output);
+
+            return new JsonResponse($options);
         }
-
-        $options = json_encode($output);
-
-        return new JsonResponse($options);
+        return new JsonResponse(false);
     }
 }
