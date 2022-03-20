@@ -78,6 +78,7 @@ class ComposerStaticInit4303646be4fbc26b5b1aa2bfb73bc15c
             'Symfony\\Component\\OptionsResolver\\' => 34,
             'Symfony\\Component\\Notifier\\' => 27,
             'Symfony\\Component\\Mime\\' => 23,
+            'Symfony\\Component\\Mailer\\Bridge\\Sendinblue\\' => 43,
             'Symfony\\Component\\Mailer\\' => 25,
             'Symfony\\Component\\Intl\\' => 23,
             'Symfony\\Component\\HttpKernel\\' => 29,
@@ -343,6 +344,10 @@ class ComposerStaticInit4303646be4fbc26b5b1aa2bfb73bc15c
         'Symfony\\Component\\Mime\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/mime',
+        ),
+        'Symfony\\Component\\Mailer\\Bridge\\Sendinblue\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/sendinblue-mailer',
         ),
         'Symfony\\Component\\Mailer\\' => 
         array (
@@ -630,12 +635,12 @@ class ComposerStaticInit4303646be4fbc26b5b1aa2bfb73bc15c
         'App\\Controller\\Back\\LineTrainController' => __DIR__ . '/../..' . '/src/Controller/Back/LineTrainController.php',
         'App\\Controller\\Back\\OptionController' => __DIR__ . '/../..' . '/src/Controller/Back/OptionController.php',
         'App\\Controller\\Back\\TrainController' => __DIR__ . '/../..' . '/src/Controller/Back/TrainController.php',
+        'App\\Controller\\Back\\UserController' => __DIR__ . '/../..' . '/src/Controller/Back/UserController.php',
         'App\\Controller\\Back\\WagonController' => __DIR__ . '/../..' . '/src/Controller/Back/WagonController.php',
         'App\\Controller\\Front\\OptionController' => __DIR__ . '/../..' . '/src/Controller/Front/OptionController.php',
         'App\\Controller\\Front\\TrainController' => __DIR__ . '/../..' . '/src/Controller/Front/TrainController.php',
         'App\\Controller\\Front\\WagonController' => __DIR__ . '/../..' . '/src/Controller/Front/WagonController.php',
         'App\\Controller\\SecurityController' => __DIR__ . '/../..' . '/src/Controller/SecurityController.php',
-        'App\\Controller\\UserController' => __DIR__ . '/../..' . '/src/Controller/UserController.php',
         'App\\DataFixtures\\TrainFixtures' => __DIR__ . '/../..' . '/src/DataFixtures/TrainFixtures.php',
         'App\\DataFixtures\\UserFixtures' => __DIR__ . '/../..' . '/src/DataFixtures/UserFixtures.php',
         'App\\DataFixtures\\WagonFixtures' => __DIR__ . '/../..' . '/src/DataFixtures/WagonFixtures.php',
@@ -5400,6 +5405,9 @@ class ComposerStaticInit4303646be4fbc26b5b1aa2bfb73bc15c
         'Symfony\\Component\\Intl\\Util\\IcuVersion' => __DIR__ . '/..' . '/symfony/intl/Util/IcuVersion.php',
         'Symfony\\Component\\Intl\\Util\\IntlTestHelper' => __DIR__ . '/..' . '/symfony/intl/Util/IntlTestHelper.php',
         'Symfony\\Component\\Intl\\Util\\Version' => __DIR__ . '/..' . '/symfony/intl/Util/Version.php',
+        'Symfony\\Component\\Mailer\\Bridge\\Sendinblue\\Transport\\SendinblueApiTransport' => __DIR__ . '/..' . '/symfony/sendinblue-mailer/Transport/SendinblueApiTransport.php',
+        'Symfony\\Component\\Mailer\\Bridge\\Sendinblue\\Transport\\SendinblueSmtpTransport' => __DIR__ . '/..' . '/symfony/sendinblue-mailer/Transport/SendinblueSmtpTransport.php',
+        'Symfony\\Component\\Mailer\\Bridge\\Sendinblue\\Transport\\SendinblueTransportFactory' => __DIR__ . '/..' . '/symfony/sendinblue-mailer/Transport/SendinblueTransportFactory.php',
         'Symfony\\Component\\Mailer\\DataCollector\\MessageDataCollector' => __DIR__ . '/..' . '/symfony/mailer/DataCollector/MessageDataCollector.php',
         'Symfony\\Component\\Mailer\\DelayedEnvelope' => __DIR__ . '/..' . '/symfony/mailer/DelayedEnvelope.php',
         'Symfony\\Component\\Mailer\\Envelope' => __DIR__ . '/..' . '/symfony/mailer/Envelope.php',

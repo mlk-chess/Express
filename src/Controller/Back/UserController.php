@@ -9,8 +9,11 @@ use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 
 #[Route('/admin/user')]
 class UserController extends AbstractController
@@ -27,7 +30,7 @@ class UserController extends AbstractController
 
     /* Create company */
     #[Route('/new-company', name: 'admin_user_company_new', methods: ['GET', 'POST'])]
-    public function new_train_company(Request $request, UserPasswordHasherInterface $passwordHasher): Response
+    public function new_train_company(Request $request, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
     {
         $user = new User();
         $user->setRoles(['COMPANY']);
@@ -43,6 +46,23 @@ class UserController extends AbstractController
             if(empty($list_err)) {
                 $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
                 $user->setPlainPassword($user->getPassword());
+                $user->setStatus(0);
+
+                $email = (new TemplatedEmail())
+                    ->from('express@express.com')
+                    ->to('m.kajeiou123@gmail.com')
+                    //->cc('cc@example.com')
+                    //->bcc('bcc@example.com')
+                    //->replyTo('fabien@example.com')
+                    //->priority(Email::PRIORITY_HIGH)
+                    ->htmlTemplate('Emails/signup.html.twig')
+                    ->context([
+                        'expiration_date' => new \DateTime('+7 days'),
+                        'username' => $user->getUsername(),
+                    ])
+                    ->subject('Validation de votre compte');
+
+                $mailer->send($email);
 
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);

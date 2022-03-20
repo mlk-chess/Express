@@ -404,6 +404,13 @@
         <argument type="service" id=".service_locator.W9y3dzm.App\Controller\Back\TrainController"/>
       </call>
     </service>
+    <service id="App\Controller\Back\UserController" class="App\Controller\Back\UserController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.W9y3dzm.App\Controller\Back\UserController"/>
+      </call>
+    </service>
     <service id="App\Controller\Back\WagonController" class="App\Controller\Back\WagonController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
@@ -437,13 +444,6 @@
       <tag name="container.service_subscriber"/>
       <call method="setContainer">
         <argument type="service" id=".service_locator.W9y3dzm.App\Controller\SecurityController"/>
-      </call>
-    </service>
-    <service id="App\Controller\UserController" class="App\Controller\UserController" public="true" autowire="true" autoconfigure="true">
-      <tag name="controller.service_arguments"/>
-      <tag name="container.service_subscriber"/>
-      <call method="setContainer">
-        <argument type="service" id=".service_locator.W9y3dzm.App\Controller\UserController"/>
       </call>
     </service>
     <service id="App\DataFixtures\TrainFixtures" class="App\DataFixtures\TrainFixtures" autowire="true" autoconfigure="true">
@@ -1703,6 +1703,12 @@
       <argument type="service" id="monolog.logger.mailer" on-invalid="ignore"/>
     </service>
     <service id="mailer.transport_factory.sendmail" class="Symfony\Component\Mailer\Transport\SendmailTransportFactory">
+      <tag name="mailer.transport_factory"/>
+      <argument type="service" id="debug.event_dispatcher"/>
+      <argument type="service" id=".debug.http_client" on-invalid="ignore"/>
+      <argument type="service" id="monolog.logger.mailer" on-invalid="ignore"/>
+    </service>
+    <service id="mailer.transport_factory.sendinblue" class="Symfony\Component\Mailer\Bridge\Sendinblue\Transport\SendinblueTransportFactory">
       <tag name="mailer.transport_factory"/>
       <argument type="service" id="debug.event_dispatcher"/>
       <argument type="service" id=".debug.http_client" on-invalid="ignore"/>
@@ -5901,6 +5907,9 @@
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\Back\TrainController" class="App\Controller\Back\TrainController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\Back\TrainController" class="App\Controller\Back\TrainController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\Back\TrainController" class="App\Controller\Back\TrainController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\Back\UserController" class="App\Controller\Back\UserController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\Back\UserController" class="App\Controller\Back\UserController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\Back\UserController" class="App\Controller\Back\UserController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\Back\WagonController" class="App\Controller\Back\WagonController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\Back\WagonController" class="App\Controller\Back\WagonController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\Back\WagonController" class="App\Controller\Back\WagonController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -5916,9 +5925,6 @@
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\SecurityController" class="App\Controller\SecurityController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\SecurityController" class="App\Controller\SecurityController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\SecurityController" class="App\Controller\SecurityController" autowire="true" autoconfigure="true" abstract="true"/>
-    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\UserController" class="App\Controller\UserController" autowire="true" abstract="true"/>
-    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\UserController" class="App\Controller\UserController" autowire="true" abstract="true"/>
-    <service id=".abstract.instanceof.App\Controller\UserController" class="App\Controller\UserController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\FixturesBundle\ORMFixtureInterface.0.App\DataFixtures\TrainFixtures" class="App\DataFixtures\TrainFixtures" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\DataFixtures\TrainFixtures" class="App\DataFixtures\TrainFixtures" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\FixturesBundle\ORMFixtureInterface.0.App\DataFixtures\UserFixtures" class="App\DataFixtures\UserFixtures" autowire="true" abstract="true"/>
@@ -6322,6 +6328,25 @@
         <argument key="train" type="service_closure" id=".errored..service_locator.pjn1an4.App\Entity\Train"/>
       </argument>
     </service>
+    <service id=".service_locator..Ae5NXw" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.OAh91Z2" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="mailer" type="service_closure" id="mailer.mailer"/>
+        <argument key="passwordHasher" type="service_closure" id="security.user_password_hasher"/>
+      </argument>
+    </service>
+    <service id=".service_locator.ch4Jgvl" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="user" type="service_closure" id=".errored..service_locator.ch4Jgvl.App\Entity\User"/>
+      </argument>
+    </service>
     <service id=".service_locator.MfYQN.2" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -6340,25 +6365,7 @@
         <argument key="authenticationUtils" type="service_closure" id="security.authentication_utils"/>
       </argument>
     </service>
-    <service id=".service_locator..Ae5NXw" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator"/>
-      <argument type="collection">
-        <argument key="userRepository" type="service_closure" id="App\Repository\UserRepository"/>
-      </argument>
-    </service>
-    <service id=".service_locator.nWpr6Po" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator"/>
-      <argument type="collection">
-        <argument key="passwordHasher" type="service_closure" id="security.user_password_hasher"/>
-      </argument>
-    </service>
-    <service id=".service_locator.ch4Jgvl" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator"/>
-      <argument type="collection">
-        <argument key="user" type="service_closure" id=".errored..service_locator.ch4Jgvl.App\Entity\User"/>
-      </argument>
-    </service>
-    <service id=".service_locator.ufOoumF" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.ldsbEmJ" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\Back\LineController::delete" type="service_closure" id=".service_locator.AstblDq"/>
@@ -6377,6 +6384,12 @@
         <argument key="App\Controller\Back\TrainController::edit" type="service_closure" id=".service_locator.pjn1an4"/>
         <argument key="App\Controller\Back\TrainController::index" type="service_closure" id=".service_locator._cfD.eO"/>
         <argument key="App\Controller\Back\TrainController::show" type="service_closure" id=".service_locator.pjn1an4"/>
+        <argument key="App\Controller\Back\UserController::delete" type="service_closure" id=".service_locator.ch4Jgvl"/>
+        <argument key="App\Controller\Back\UserController::edit" type="service_closure" id=".service_locator.ch4Jgvl"/>
+        <argument key="App\Controller\Back\UserController::edit_train_company" type="service_closure" id=".service_locator.ch4Jgvl"/>
+        <argument key="App\Controller\Back\UserController::index" type="service_closure" id=".service_locator..Ae5NXw"/>
+        <argument key="App\Controller\Back\UserController::new_train_company" type="service_closure" id=".service_locator.OAh91Z2"/>
+        <argument key="App\Controller\Back\UserController::show" type="service_closure" id=".service_locator.ch4Jgvl"/>
         <argument key="App\Controller\Back\WagonController::delete" type="service_closure" id=".service_locator.kdcG4JN"/>
         <argument key="App\Controller\Back\WagonController::edit" type="service_closure" id=".service_locator.kdcG4JN"/>
         <argument key="App\Controller\Back\WagonController::index" type="service_closure" id=".service_locator.MfYQN.2"/>
@@ -6394,12 +6407,6 @@
         <argument key="App\Controller\Front\WagonController::index" type="service_closure" id=".service_locator.MfYQN.2"/>
         <argument key="App\Controller\Front\WagonController::show" type="service_closure" id=".service_locator.kdcG4JN"/>
         <argument key="App\Controller\SecurityController::login" type="service_closure" id=".service_locator.UDgw6Ol"/>
-        <argument key="App\Controller\UserController::delete" type="service_closure" id=".service_locator.ch4Jgvl"/>
-        <argument key="App\Controller\UserController::edit" type="service_closure" id=".service_locator.ch4Jgvl"/>
-        <argument key="App\Controller\UserController::edit_train_company" type="service_closure" id=".service_locator.ch4Jgvl"/>
-        <argument key="App\Controller\UserController::index" type="service_closure" id=".service_locator..Ae5NXw"/>
-        <argument key="App\Controller\UserController::new_train_company" type="service_closure" id=".service_locator.nWpr6Po"/>
-        <argument key="App\Controller\UserController::show" type="service_closure" id=".service_locator.ch4Jgvl"/>
         <argument key="App\Kernel::loadRoutes" type="service_closure" id=".service_locator.KfbR3DY"/>
         <argument key="App\Kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.KfbR3DY"/>
         <argument key="App\Kernel::terminate" type="service_closure" id=".service_locator.KfwZsne"/>
@@ -6422,6 +6429,12 @@
         <argument key="App\Controller\Back\TrainController:edit" type="service_closure" id=".service_locator.pjn1an4"/>
         <argument key="App\Controller\Back\TrainController:index" type="service_closure" id=".service_locator._cfD.eO"/>
         <argument key="App\Controller\Back\TrainController:show" type="service_closure" id=".service_locator.pjn1an4"/>
+        <argument key="App\Controller\Back\UserController:delete" type="service_closure" id=".service_locator.ch4Jgvl"/>
+        <argument key="App\Controller\Back\UserController:edit" type="service_closure" id=".service_locator.ch4Jgvl"/>
+        <argument key="App\Controller\Back\UserController:edit_train_company" type="service_closure" id=".service_locator.ch4Jgvl"/>
+        <argument key="App\Controller\Back\UserController:index" type="service_closure" id=".service_locator..Ae5NXw"/>
+        <argument key="App\Controller\Back\UserController:new_train_company" type="service_closure" id=".service_locator.OAh91Z2"/>
+        <argument key="App\Controller\Back\UserController:show" type="service_closure" id=".service_locator.ch4Jgvl"/>
         <argument key="App\Controller\Back\WagonController:delete" type="service_closure" id=".service_locator.kdcG4JN"/>
         <argument key="App\Controller\Back\WagonController:edit" type="service_closure" id=".service_locator.kdcG4JN"/>
         <argument key="App\Controller\Back\WagonController:index" type="service_closure" id=".service_locator.MfYQN.2"/>
@@ -6439,12 +6452,6 @@
         <argument key="App\Controller\Front\WagonController:index" type="service_closure" id=".service_locator.MfYQN.2"/>
         <argument key="App\Controller\Front\WagonController:show" type="service_closure" id=".service_locator.kdcG4JN"/>
         <argument key="App\Controller\SecurityController:login" type="service_closure" id=".service_locator.UDgw6Ol"/>
-        <argument key="App\Controller\UserController:delete" type="service_closure" id=".service_locator.ch4Jgvl"/>
-        <argument key="App\Controller\UserController:edit" type="service_closure" id=".service_locator.ch4Jgvl"/>
-        <argument key="App\Controller\UserController:edit_train_company" type="service_closure" id=".service_locator.ch4Jgvl"/>
-        <argument key="App\Controller\UserController:index" type="service_closure" id=".service_locator..Ae5NXw"/>
-        <argument key="App\Controller\UserController:new_train_company" type="service_closure" id=".service_locator.nWpr6Po"/>
-        <argument key="App\Controller\UserController:show" type="service_closure" id=".service_locator.ch4Jgvl"/>
         <argument key="kernel:loadRoutes" type="service_closure" id=".service_locator.KfbR3DY"/>
         <argument key="kernel:registerContainerConfiguration" type="service_closure" id=".service_locator.KfbR3DY"/>
         <argument key="kernel:terminate" type="service_closure" id=".service_locator.KfwZsne"/>
@@ -6818,6 +6825,12 @@
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.W9y3dzm" method="withContext"/>
     </service>
+    <service id=".service_locator.W9y3dzm.App\Controller\Back\UserController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\Back\UserController"/>
+      <argument>App\Controller\Back\UserController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.W9y3dzm" method="withContext"/>
+    </service>
     <service id=".service_locator.W9y3dzm.App\Controller\Back\WagonController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Controller\Back\WagonController"/>
       <argument>App\Controller\Back\WagonController</argument>
@@ -6845,12 +6858,6 @@
     <service id=".service_locator.W9y3dzm.App\Controller\SecurityController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Controller\SecurityController"/>
       <argument>App\Controller\SecurityController</argument>
-      <argument type="service" id="service_container"/>
-      <factory service=".service_locator.W9y3dzm" method="withContext"/>
-    </service>
-    <service id=".service_locator.W9y3dzm.App\Controller\UserController" class="Symfony\Component\DependencyInjection\ServiceLocator">
-      <tag name="container.service_locator_context" id="App\Controller\UserController"/>
-      <argument>App\Controller\UserController</argument>
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.W9y3dzm" method="withContext"/>
     </service>
@@ -6920,8 +6927,8 @@
     <service id=".errored..service_locator.NPMNRHf.App\Entity\LineTrain" class="App\Entity\LineTrain"/>
     <service id=".errored..service_locator.YCZg.YM.App\Entity\Option" class="App\Entity\Option"/>
     <service id=".errored..service_locator.pjn1an4.App\Entity\Train" class="App\Entity\Train"/>
-    <service id=".errored..service_locator.kdcG4JN.App\Entity\Wagon" class="App\Entity\Wagon"/>
     <service id=".errored..service_locator.ch4Jgvl.App\Entity\User" class="App\Entity\User"/>
+    <service id=".errored..service_locator.kdcG4JN.App\Entity\Wagon" class="App\Entity\Wagon"/>
     <service id=".service_locator.XXv1IfR" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -7029,12 +7036,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
-      <argument type="service" id=".service_locator.ufOoumF"/>
+      <argument type="service" id=".service_locator.ldsbEmJ"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
-      <argument type="service" id=".service_locator.ufOoumF"/>
+      <argument type="service" id=".service_locator.ldsbEmJ"/>
     </service>
     <service id=".debug.http_client.inner" class="Symfony\Contracts\HttpClient\HttpClientInterface">
       <argument type="collection"/>
@@ -7896,7 +7903,7 @@
     <service id="Symfony\Component\Security\Core\User\UserCheckerInterface" alias="security.user_checker"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.0GV1BZZ" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.ufOoumF"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.ldsbEmJ"/>
     <service id="session" alias=".session.do-not-use" public="true">
       <deprecated package="symfony/framework-bundle" version="5.3">The "%alias_id%" service and "SessionInterface" alias are deprecated, use "$requestStack-&gt;getSession()" instead.</deprecated>
     </service>
@@ -7925,12 +7932,12 @@
     <service id=".service_locator.K7Isten" alias=".service_locator.YCZg.YM"/>
     <service id=".service_locator.NgEn6Gc" alias=".service_locator._cfD.eO"/>
     <service id=".service_locator.s1nCOH_" alias=".service_locator.pjn1an4"/>
+    <service id=".service_locator.8PQa8Mp" alias=".service_locator..Ae5NXw"/>
+    <service id=".service_locator.1KkNs01" alias=".service_locator.OAh91Z2"/>
+    <service id=".service_locator.NFoOWn0" alias=".service_locator.ch4Jgvl"/>
     <service id=".service_locator.lCuo_qh" alias=".service_locator.MfYQN.2"/>
     <service id=".service_locator.xHPIC0y" alias=".service_locator.kdcG4JN"/>
     <service id=".service_locator.kXCVHeG" alias=".service_locator.UDgw6Ol"/>
-    <service id=".service_locator.8PQa8Mp" alias=".service_locator..Ae5NXw"/>
-    <service id=".service_locator.cJgwfuu" alias=".service_locator.nWpr6Po"/>
-    <service id=".service_locator.NFoOWn0" alias=".service_locator.ch4Jgvl"/>
     <service id=".service_locator.wKF4yn1" alias=".service_locator.anofQPJ"/>
     <service id=".service_locator.NK827YO" alias=".service_locator.W9y3dzm"/>
     <service id="validator" alias="debug.validator" public="true"/>

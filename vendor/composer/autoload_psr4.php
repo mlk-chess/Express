@@ -47,6 +47,7 @@ return array(
     'Symfony\\Component\\OptionsResolver\\' => array($vendorDir . '/symfony/options-resolver'),
     'Symfony\\Component\\Notifier\\' => array($vendorDir . '/symfony/notifier'),
     'Symfony\\Component\\Mime\\' => array($vendorDir . '/symfony/mime'),
+    'Symfony\\Component\\Mailer\\Bridge\\Sendinblue\\' => array($vendorDir . '/symfony/sendinblue-mailer'),
     'Symfony\\Component\\Mailer\\' => array($vendorDir . '/symfony/mailer'),
     'Symfony\\Component\\Intl\\' => array($vendorDir . '/symfony/intl'),
     'Symfony\\Component\\HttpKernel\\' => array($vendorDir . '/symfony/http-kernel'),

@@ -80,6 +80,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $options;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $status;
+
     public function __construct()
     {
         $this->trains = new ArrayCollection();
@@ -278,6 +283,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $option->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
