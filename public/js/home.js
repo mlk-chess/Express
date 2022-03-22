@@ -229,7 +229,8 @@ function dataOptions(data) {
             '<p>Nom : ' + element.name +'</p>' +
             '<p>Type : ' + element.type +'</p>' +
             '<p>Description : ' + element.description +'</p>' +
-            '<p>Prix : ' + element.price +'</p>';
+            '<p>Prix : ' + element.price +'</p>' +
+            '<button onclick="addOption('+element.id+')">Ajouter</button>';
 
         optionsContainer.appendChild(html);
     });
