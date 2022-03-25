@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\LineTrainRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=LineTrainRepository::class)
@@ -19,11 +20,13 @@ class LineTrain
 
     /**
      * @ORM\ManyToOne(targetEntity=Train::class, inversedBy="lineTrains")
+     * @Assert\NotNull
      */
     private $train;
 
     /**
      * @ORM\ManyToOne(targetEntity=Line::class, inversedBy="lineTrains")
+     * @Assert\NotNull
      */
     private $line;
 
