@@ -25,12 +25,12 @@ class LineTrainController extends AbstractController
     }
 
     #[Route('/new', name: 'line_train_new', methods: ['GET','POST'])]
-    public function new(Request $request, ): Response
+    public function new(Request $request, LineTrainRepository $lineTrainRepository ): Response
     {
 
         // Vérification :
         //     - Cohérence des horaires : voir avec l'API sinon calcul (à voir) [OK]
-        //     - Un train ne peut pas être sur 2 trajet à la fois 
+        //     - Un train ne peut pas être sur 2 trajet à la fois [OK]
         //     - Voir le dernier trajet du train X et récupérer la gare d'arrivée 
         //     - Calcul d'un certain laps de temps entre 2 trajet du même train 
         //     - Prévoir un laps de temps pour le même trajet pour 2 trains différents 
@@ -46,7 +46,7 @@ class LineTrainController extends AbstractController
             $latDeparture = $lineTrain->getLine()->getLatitudeDeparture();
             $lonArrival = $lineTrain->getLine()->getLongitudeArrival();
             $latArrival = $lineTrain->getLine()->getLatitudeArrival();
-
+        
 
             $date = new DateTime($lineTrain->getDateDeparture()->format('Y-m-d') . " " . $lineTrain->getTimeDeparture()->format('H:i:s'));
             $date = $date->format('Y-m-d H:i:s');
@@ -64,6 +64,20 @@ class LineTrainController extends AbstractController
 
             $lineTrain->setDateArrival(new DateTime($dateTimeArrival));
             $lineTrain->setTimeArrival(new DateTime($dateTimeArrival));
+
+
+            $getTrainByDate = $lineTrainRepository->findTrainByDate($lineTrain->getTrain()->getId());
+
+            $isBetween = false;
+
+            foreach( $getTrainByDate as $value){
+                if( ($date >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) || ($dateTimeArrival >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) ){
+                    $isBetween = true;
+                }
+            }
+            if ($isBetween) $errors[] = "Le train est indisponible à cette date !";
+
+
           
             //if($lineTrain->getDateDeparture() > $lineTrain->getDateArrival()){
                 //$errors[] = "La date de départ ne peut pas être supérieur à la date d'arrivée";
