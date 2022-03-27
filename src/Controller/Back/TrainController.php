@@ -28,7 +28,6 @@ class TrainController extends AbstractController
                 'trains' => $trainRepository->findAll(),
             ]);
         }
-
     }
 
     #[Route('/new', name: 'train_new', methods: ['GET','POST'])]
