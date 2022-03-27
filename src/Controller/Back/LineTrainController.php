@@ -31,9 +31,18 @@ class LineTrainController extends AbstractController
         // Vérification :
         //     - Cohérence des horaires : voir avec l'API sinon calcul (à voir) [OK]
         //     - Un train ne peut pas être sur 2 trajet à la fois [OK]
-        //     - Voir le dernier trajet du train X et récupérer la gare d'arrivée 
+        //     - Voir le dernier trajet du train X et récupérer la gare d'arrivée [KO]
         //     - Calcul d'un certain laps de temps entre 2 trajet du même train 
         //     - Prévoir un laps de temps pour le même trajet pour 2 trains différents 
+
+
+        // 4 colonnes : Place restante -> place nb classe 1 -> si option classe 1 nb place ++
+        //                                place nb classe 2 -> si option classe 2 nb place ++
+        //                                prix classe 1 
+        //                                prix classe 2
+
+        // Vérification type voyageur 
+
 
         $errors = [];
         $lineTrain = new LineTrain();
@@ -67,31 +76,42 @@ class LineTrainController extends AbstractController
 
 
             $getTrainByDate = $lineTrainRepository->findTrainByDate($lineTrain->getTrain()->getId());
-
             $isBetween = false;
 
+            $getLastTrainByTime = $getTrainByDate[0]["timestamparrival"];
+
             foreach( $getTrainByDate as $value){
+
                 if( ($date >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) || ($dateTimeArrival >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) ){
                     $isBetween = true;
                 }
+
+                if( $value["timestamparrival"] < $date && $value["timestamparrival"] > $getLastTrainByTime  ){
+                    $getLastTrainByTime = $value['timestamparrival'];
+                    $checkTime = date( "Y-m-d H:i:s", strtotime( "$getLastTrainByTime +1 hour"));
+                }
             }
+
             if ($isBetween) $errors[] = "Le train est indisponible à cette date !";
 
+           
+            if($checkTime && $checkTime > $date){
+                $errors[] = "Le train est indisponible";
+            }
 
-          
-            //if($lineTrain->getDateDeparture() > $lineTrain->getDateArrival()){
-                //$errors[] = "La date de départ ne peut pas être supérieur à la date d'arrivée";
-            //}
+            if($lineTrain->getDateDeparture() > $lineTrain->getDateArrival()){
+                $errors[] = "La date de départ ne peut pas être supérieur à la date d'arrivée";
+            }
 
-            // if($lineTrain->getDateDeparture() == $lineTrain->getDateArrival()){
+            if($lineTrain->getDateDeparture() == $lineTrain->getDateArrival()){
 
-            //     if ($lineTrain->getTimeDeparture()->format('H-i-s') < date('H-i-s')){
-            //         $errors[] = "Erreur horaire de départ !";
-            //     }
-            //     if($lineTrain->getTimeDeparture() >= $lineTrain->getTimeArrival() ){
-            //         $errors[] = "L'horaire de départ ne peut pas être supérieur à l'horaire d'arrivée";
-            //     }    
-            // }
+                if ($lineTrain->getTimeDeparture()->format('H-i-s') < date('H-i-s')){
+                    $errors[] = "Erreur horaire de départ !";
+                }
+                if($lineTrain->getTimeDeparture() >= $lineTrain->getTimeArrival() ){
+                    $errors[] = "L'horaire de départ ne peut pas être supérieur à l'horaire d'arrivée";
+                }    
+            }
 
             if(empty($errors)){
 
@@ -106,11 +126,7 @@ class LineTrainController extends AbstractController
                 return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
             }
          
-          
-
-          
         }
-
 
         return $this->renderForm('Back/line_train/new.html.twig', [
             'line_train' => $lineTrain,
