@@ -1,0 +1,25 @@
+#updateDepartureStation {
+    display: none;
+}
+
+#updateDepartureStation:hover {
+    cursor: pointer;
+}
+
+#updateArrivalStation {
+    display: none;
+}
+
+#updateArrivalStation:hover {
+    cursor: pointer;
+}
+
+#optionContainer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 30%;
+    height: 100vh;
+    background-color: #8f8989a6;
+    display: none;
+}

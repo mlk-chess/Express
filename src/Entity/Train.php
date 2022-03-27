@@ -51,32 +51,6 @@ class Train
     private $wagons;
 
     /**
-     * @return string|null
-     */
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    /**
-     * @param string|null $slug
-     */
-    public function setSlug(?string $slug): void
-    {
-        $this->slug = $slug;
-    }
-
-    /**
-     * @var string|null
-     *
-     * @Gedmo\Slug(fields={"name"})
-     * @ORM\Column(length=128, unique=true)
-     */
-    #[ORM\Column(length: 128, unique: true)]
-    #[Gedmo\Slug(fields: ['name'])]
-    private $slug;
-
-    /**
      * @ORM\OneToMany(targetEntity=LineTrain::class, mappedBy="train")
      */
     private $lineTrains;

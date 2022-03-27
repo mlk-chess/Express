@@ -1,0 +1,76 @@
+{% extends 'base_home.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}
+<style>
+    .mycluster {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        background-color: #3498db;
+        color: white;
+        text-align: center;
+        font-size: 20px;
+        line-height: 40px;
+        margin-top: -20px;
+        margin-left: -20px;
+    }
+</style>
+
+    <div class="container">
+        <div class="row">
+            <div class="col s6">
+
+                <input type="text" id="departureStationSearch" placeholder="Gare de départ">
+                <input type="text" id="arrivalStationSearch" placeholder="Gare d'arrivée">
+
+                {{ include('Front/home/_form.html.twig') }}
+
+
+                <div id="departureStation"></div>
+                <i class="fas fa-edit" id="updateDepartureStation"></i>
+
+                <div id="arrivalStation"></div>
+                <i class="fas fa-edit" id="updateArrivalStation"></i>
+
+                <div id="listStationsDeparture"></div>
+                <div id="listStationsArrival"></div>
+
+                {% if travels %}
+                    {% for travel in travels %}
+                        <li>Départ le : {{ travel.getDateDeparture()|date('d-m-Y')}} à : {{ travel.getTimeDeparture()|date('H-i')}}</li>
+                        <li>Gare de Départ : {{ travel.getLine().getNameStationDeparture() }}</li>
+                        <li>Gare d'arrivée : {{ travel.getLine().getNameStationArrival() }}</li>
+                        <button onclick="displayOptions({{ travel.id }})">Réserver</button>
+                    {% endfor %}
+                {% endif %}
+
+                {% if noTravels %}
+                    <p>Aucun voyages pour cette date à cette heure</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div id="map" style="height: 500px; width: 1000px"></div>
+
+    <div id="optionContainer">
+        <p>Options</p>
+        <div id="options"></div>
+    </div>
+
+
+    <script>
+        const linkAsset = "{{ asset('img/') }}"
+    </script>
+
+    <script src="{{ asset('js/home.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('select').formSelect();
+        });
+    </script>
+
+{% endblock %}
