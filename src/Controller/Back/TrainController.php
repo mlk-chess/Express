@@ -31,7 +31,7 @@ class TrainController extends AbstractController
     }
 
     #[Route('/new', name: 'train_new', methods: ['GET','POST'])]
-    public function new(Request $request): Response
+    public function new(Request $request, TrainRepository $trainRepository): Response
     {
         $train = new Train();
         $form = $this->createForm(TrainType::class, $train);
@@ -40,6 +40,7 @@ class TrainController extends AbstractController
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $train->setOwner($userConnected);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($train);
@@ -48,6 +49,7 @@ class TrainController extends AbstractController
             $this->addFlash('green', "Le train {$train->getName()} à bien été créer.");
 
             return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+
         }
 
         return $this->renderForm('Back/train/new.html.twig', [
@@ -65,15 +67,16 @@ class TrainController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'train_edit', methods: ['GET','POST'])]
-    public function edit(Request $request, Train $train): Response
+    public function edit(Request $request, int $id, Train $train, TrainRepository $trainRepository): Response
     {
         $form = $this->createForm(TrainType::class, $train);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
 
+            $this->getDoctrine()->getManager()->flush();
             return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+          
         }
 
         return $this->renderForm('Back/train/edit.html.twig', [
@@ -92,6 +95,7 @@ class TrainController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($train);
             $entityManager->flush();
+            $this->addFlash('green', "Le train a été supprimé !");
         }
 
         return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);

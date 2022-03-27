@@ -19,6 +19,24 @@ class LineTrainRepository extends ServiceEntityRepository
         parent::__construct($registry, LineTrain::class);
     }
 
+
+    public function findTrainByDate($trainId): array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+           "SELECT concat(lt.date_departure, ' ', lt.time_departure) AS timestampdeparture,
+           concat(lt.date_arrival, ' ', lt.time_arrival) AS timestamparrival,
+           t.name
+           FROM App\Entity\LineTrain lt , App\Entity\Train t 
+           WHERE lt.train = t.id
+           AND t.id = :id"
+        )->setParameter('id', $trainId);
+
+       
+        return $query->getResult();
+    }
+
     // /**
     //  * @return LineTrain[] Returns an array of LineTrain objects
     //  */

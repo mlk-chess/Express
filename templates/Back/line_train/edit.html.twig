@@ -1,13 +1,13 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_back.html.twig' %}
 
 {% block title %}Edit LineTrain{% endblock %}
 
 {% block body %}
-    <h1>Edit LineTrain</h1>
+    <h1>Modification voyage</h1>
 
-    {{ include('Back/line_train/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('Back/line_train/_form.html.twig', {'button_label': 'Modifier'}) }}
 
-    <a href="{{ path('admin_line_train_index') }}">back to list</a>
+    <a href="{{ path('admin_line_train_index') }}">Retour</a>
 
     {{ include('Back/line_train/_delete_form.html.twig') }}
 {% endblock %}

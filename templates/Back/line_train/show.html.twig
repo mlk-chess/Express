@@ -1,9 +1,9 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_back.html.twig' %}
 
 {% block title %}LineTrain{% endblock %}
 
 {% block body %}
-    <h1>LineTrain</h1>
+    <h1>Voyage</h1>
 
     <table class="table">
         <tbody>
@@ -12,19 +12,19 @@
                 <td>{{ line_train.id }}</td>
             </tr>
             <tr>
-                <th>Schedule_departure</th>
-                <td>{{ line_train.scheduleDeparture ? line_train.scheduleDeparture|date('Y-m-d H:i:s') : '' }}</td>
+                <th>Date départ</th>
+                <td>{{ line_train.getDateDeparture()|date('d-m-Y')}} - {{line_train.getTimeDeparture()|date('H:i:s') }} </td>
             </tr>
             <tr>
-                <th>Schedule_arrival</th>
-                <td>{{ line_train.scheduleArrival ? line_train.scheduleArrival|date('Y-m-d H:i:s') : '' }}</td>
+                <th>Date d'arrivée</th>
+                <td>{{ line_train.getDateArrival()|date('d-m-Y')}} - {{line_train.getTimeArrival()|date('H:i:s') }} </td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('admin_line_train_index') }}">back to list</a>
+    <a href="{{ path('admin_line_train_index') }}">Retour</a>
 
-    <a href="{{ path('admin_line_train_edit', {'id': line_train.id}) }}">edit</a>
+    <a href="{{ path('admin_line_train_edit', {'id': line_train.id}) }}">Modifier</a>
 
     {{ include('Back/line_train/_delete_form.html.twig') }}
 {% endblock %}
