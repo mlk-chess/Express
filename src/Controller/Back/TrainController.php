@@ -8,18 +8,26 @@ use App\Repository\TrainRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
+
 
 #[Route('/train')]
 class TrainController extends AbstractController
 {
     #[Route('/', name: 'train_index', methods: ['GET'])]
-
     public function index(TrainRepository $trainRepository): Response
     {
-        return $this->render('Back/train/index.html.twig', [
-            'trains' => $trainRepository->findAll(),
-        ]);
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+        if (in_array('COMPANY', $userConnected->getRoles())){
+            return $this->render('Back/train/index.html.twig', [
+                'trains' => $trainRepository->findBy(array('owner' => $userConnected->getId()))
+                ]);
+        }else{
+            return $this->render('Back/train/index.html.twig', [
+                'trains' => $trainRepository->findAll(),
+            ]);
+        }
     }
 
     #[Route('/new', name: 'train_new', methods: ['GET','POST'])]
@@ -29,26 +37,19 @@ class TrainController extends AbstractController
         $form = $this->createForm(TrainType::class, $train);
         $form->handleRequest($request);
 
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $getTrain = $trainRepository->findOneBy([
-                'name' => $train->getName()
-            ]);
+            $train->setOwner($userConnected);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($train);
+            $entityManager->flush();
 
-            if($getTrain == null ){
+            $this->addFlash('green', "Le train {$train->getName()} à bien été créer.");
 
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($train);
-                $entityManager->flush();
-    
-                $this->addFlash('green', "Le train a été créé !");
-                return $this->redirectToRoute('train_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
 
-            }else{
-                $this->addFlash('red', "Ce train existe déjà !");
-            }
-
-        
         }
 
         return $this->renderForm('Back/train/new.html.twig', [
@@ -73,21 +74,9 @@ class TrainController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $getTrain = $trainRepository->findOneBy([
-                'name' => $train->getName()
-            ]);
-            
-
-            if( $getTrain == null || $getTrain->getId() == $id  ){
-
-                $this->getDoctrine()->getManager()->flush();
-                $this->addFlash('green', "Le train a été modifié !");
-                return $this->redirectToRoute('train_index', [], Response::HTTP_SEE_OTHER);
-
-            }else{
-                $this->addFlash('red', "Ce train existe déjà !");
-            }
-        
+            $this->getDoctrine()->getManager()->flush();
+            return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+          
         }
 
         return $this->renderForm('Back/train/edit.html.twig', [
@@ -100,12 +89,15 @@ class TrainController extends AbstractController
     public function delete(Request $request, Train $train): Response
     {
         if ($this->isCsrfTokenValid('delete'.$train->getId(), $request->request->get('_token'))) {
+
+            //dd($train);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($train);
             $entityManager->flush();
             $this->addFlash('green', "Le train a été supprimé !");
         }
 
-        return $this->redirectToRoute('Back/train_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
     }
 }

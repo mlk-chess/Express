@@ -1,0 +1,2 @@
+error.not.blank :  Ce champs ne peut pas être vide
+error.not.phone.number : Le numéro de téléphone doit avoir exactement 10 chiffres.

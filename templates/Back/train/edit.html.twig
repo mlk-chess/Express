@@ -7,7 +7,35 @@
 
     {{ include('Back/train/_form.html.twig', {'button_label': 'Modifier'}) }}
 
-    <a href="{{ path('admin_train_index') }}">Retour</a>
+    <hr>
+    <h3>Liste des wagons </h3>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Classe</th>
+            <th>Type</th>
+            <th>Nb places</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for wagon in train.wagons %}
+            <tr>
+                <td>{{ wagon.id }}</td>
+                <td>{{ wagon.class }}</td>
+                <td>{{ wagon.type }}</td>
+                <td>{{ wagon.placeNb }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Aucun train existant</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-    {{ include('Back/train/_delete_form.html.twig') }}
+    <a href="{{ path('admin_train_index') }}">Retour à la liste</a>
+
+
 {% endblock %}

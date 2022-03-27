@@ -1,18 +1,18 @@
 {% extends 'base_back.html.twig' %}
 
-{% block title %}Wagon index{% endblock %}
+{% block title %}PA Express - Wagon{% endblock %}
 
 {% block body %}
     <h1>Wagon index</h1>
 
-    <table class="table">
+    <table id="table_wagon" class="display">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Classe</th>
                 <th>Type</th>
                 <th>PlaceNb</th>
-                <th>actions</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -23,17 +23,42 @@
                 <td>{{ wagon.type }}</td>
                 <td>{{ wagon.placeNb }}</td>
                 <td>
-                    <a href="{{ path('wagon_show', {'id': wagon.id}) }}">show</a>
-                    <a href="{{ path('wagon_edit', {'id': wagon.id}) }}">edit</a>
+                    <div class="row">
+                        <div class="valign-wrapper">
+                            <div class="col ">
+                                <a href="{{ path('admin_wagon_show', {'id': wagon.id}) }}"><button class="btn">Voir</button></a>
+                            </div>
+                            <div class="col">
+                                <form method="post" action="{{ path('admin_wagon_edit', {'id': wagon.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ wagon.id) }}">
+                                    <button class="btn">Editer</button>
+                                </form>
+                            </div>
+                            <div class="col ">
+                                {{ include('Back/wagon/_delete_form.html.twig') }}
+
+                            </div>
+                        </div>
+
+                    </div>
+
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">Pas de wagon enregistré</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('wagon_new') }}">Create new</a>
+
+    <a href="{{ path('admin_wagon_new') }}"><button class="btn">Nouveau wagon</button></a>
+
+    <script>
+
+        $(document).ready( function () {
+            $('#table_wagon').DataTable();
+        } );
+    </script>
 {% endblock %}

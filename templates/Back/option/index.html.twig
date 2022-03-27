@@ -25,8 +25,22 @@
                 <td>{{ option.description }}</td>
                 <td>{{ option.type }}</td>
                 <td>
-                    <a href="{{ path('admin_option_show', {'id': option.id}) }}">show</a>
-                    <a href="{{ path('admin_option_edit', {'id': option.id}) }}">edit</a>
+                    <div class="row">
+                        <div class="valign-wrapper">
+                            <div class="col">
+                                <a href="{{ path('admin_option_show', {'id': option.id}) }}"><button class="btn">Voir</button></a>
+                            </div>
+                            <div class="col">
+                                <a href="{{ path('admin_option_edit', {'id': option.id}) }}"><button class="btn">Modifier</button></a>
+                            </div>
+                            <div class="col">
+                                <form method="post" action="{{ path('admin_option_delete', {'id': option.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ option.id) }}">
+                                    <button class="btn">Supprimer</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
         {% else %}
@@ -38,4 +52,6 @@
     </table>
 
     <a href="{{ path('admin_option_new') }}">Create new</a>
+
+
 {% endblock %}

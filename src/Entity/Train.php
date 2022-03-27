@@ -1,18 +1,28 @@
 <?php
 
 namespace App\Entity;
+use App\Entity\Traits\TimestampableTrait;
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Repository\TrainRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
 use Symfony\Component\Validator\Constraints as Assert;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+
+
 
 /**
  * @ORM\Entity(repositoryClass=TrainRepository::class)
  */
 class Train
 {
+    use TimestampableTrait;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -22,12 +32,7 @@ class Train
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Length(
-     *      min = 2,
-     *      max = 50,
-     *      minMessage = "Le nom du train est trop court !",
-     *      maxMessage = "Le nom du train est trop long !"
-     * )
+     * @Assert\NotBlank(message="error.not.blank")
      */
     private $name;
 
@@ -41,14 +46,49 @@ class Train
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity=Wagon::class, mappedBy="train")
+     * @ORM\OneToMany(targetEntity=Wagon::class, mappedBy="train", cascade={"remove"})
      */
     private $wagons;
+
+    /**
+     * @return string|null
+     */
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param string|null $slug
+     */
+    public function setSlug(?string $slug): void
+    {
+        $this->slug = $slug;
+    }
+
+    /**
+     * @var string|null
+     *
+     * @Gedmo\Slug(fields={"name"})
+     * @ORM\Column(length=128, unique=true)
+     */
+    #[ORM\Column(length: 128, unique: true)]
+    #[Gedmo\Slug(fields: ['name'])]
+    private $slug;
 
     /**
      * @ORM\OneToMany(targetEntity=LineTrain::class, mappedBy="train")
      */
     private $lineTrains;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="trains")
+     * @ORM\JoinColumn(nullable=true)
+     * @Gedmo\Blameable(on="create")
+     */
+    private $owner;
+
+
 
     public function __construct()
     {
@@ -152,6 +192,18 @@ class Train
                 $lineTrain->setTrain(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
 
         return $this;
     }
