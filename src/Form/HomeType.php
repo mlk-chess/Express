@@ -28,7 +28,8 @@ class HomeType extends AbstractType
             ])
             ->add('time', TimeType::class, [
                 'label' => 'A partir de : ',
-                'required' => true
+                'required' => true,
+                'widget' => 'single_text'
             ])
         ;
     }

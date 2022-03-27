@@ -222,16 +222,36 @@ function displayOptions(id) {
 
 function dataOptions(data) {
     let optionsContainer = document.getElementById('options');
+    optionsContainer.innerHTML = '';
 
     data.forEach( function (element) {
         let html = document.createElement('div');
+
         html.innerHTML =
             '<p>Nom : ' + element.name +'</p>' +
             '<p>Type : ' + element.type +'</p>' +
             '<p>Description : ' + element.description +'</p>' +
             '<p>Prix : ' + element.price +'</p>' +
-            '<button onclick="addOption('+element.id+')">Ajouter</button>';
+            '<button onclick="addOption('+element.id+')">Choisir cette option</button>';
 
         optionsContainer.appendChild(html);
+    });
+}
+
+function addOption(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/home/add-option',
+        data: {
+            id: id
+        },
+        success: function(data) {
+        },
+        error: function (xhr, ajaxOptions, thrownError){
+            alert(xhr.responseText);
+            alert(ajaxOptions);
+            alert(thrownError);
+            alert(xhr.status);
+        }
     });
 }
