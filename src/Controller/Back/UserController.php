@@ -14,6 +14,7 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use App\Service\ApiMailerService;
 
 #[Route('/admin/user')]
 class UserController extends AbstractController
@@ -34,6 +35,8 @@ class UserController extends AbstractController
     {
         $user = new User();
         $user->setRoles(['COMPANY']);
+        $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
+        $user->setToken($token);
         $form = $this->createForm(TrainCompanyType::class, $user);
         $form->handleRequest($request);
 
@@ -43,24 +46,22 @@ class UserController extends AbstractController
             if (strlen($user->getPassword()) < 6 || strlen($user->getPassword()) > 50)
                 $list_err[] = 'Le mot de passe doit faire entre 6 et 50 caractères';
 
-            if(empty($list_err)) {
+            if (empty($list_err)) {
                 $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
                 $user->setPlainPassword($user->getPassword());
                 $user->setStatus(0);
 
-                $email = (new TemplatedEmail())
-                    ->from('express@express.com')
-                    ->to('m.kajeiou123@gmail.com')
-                    //->cc('cc@example.com')
-                    //->bcc('bcc@example.com')
-                    //->replyTo('fabien@example.com')
-                    //->priority(Email::PRIORITY_HIGH)
-                    ->htmlTemplate('Emails/signup.html.twig')
-                    ->context([
+                $email = ApiMailerService::send_email(
+                    $user->getEmail(),
+                    "Validation de votre compte",
+                    "signup.html.twig",
+                    [
                         'expiration_date' => new \DateTime('+7 days'),
-                        'username' => $user->getUsername(),
-                    ])
-                    ->subject('Validation de votre compte');
+                        "username" => $user->getEmail(),
+                        "userid" => $user->getId(),
+                        "token" => $token,
+                    ]
+                );
 
                 $mailer->send($email);
 
@@ -68,8 +69,7 @@ class UserController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
                 return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
-            }
-            else foreach($list_err as $err) $this->addFlash('red', $err);
+            } else foreach ($list_err as $err) $this->addFlash('red', $err);
         }
 
         return $this->renderForm('Back/user/new.html.twig', [
@@ -79,17 +79,42 @@ class UserController extends AbstractController
     }
 
     #[Route('/new-user', name: 'admin_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request): Response
+    public function new(Request $request, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
     {
         $user = new User();
+        $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
+        $user->setToken($token);
         $user->setRoles(['USER']);
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
+            if (strlen($user->getPassword()) < 6 || strlen($user->getPassword()) > 50)
+                $list_err[] = 'Le mot de passe doit faire entre 6 et 50 caractères';
+
+            if (empty($list_err)) {
+                $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
+                $user->setPlainPassword($user->getPassword());
+                $user->setStatus(0);
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                $email = ApiMailerService::send_email(
+                    $user->getEmail(),
+                    "Validation de votre compte",
+                    "signup.html.twig",
+                    [
+                        'expiration_date' => new \DateTime('+7 days'),
+                        "username" => $user->getEmail(),
+                        "userid" => $user->getId(),
+                        "token" => $token,
+                    ]
+                );
+
+                $mailer->send($email);
+            }
 
             return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
         }
