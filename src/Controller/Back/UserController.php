@@ -1,25 +1,36 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Back;
 
 use App\Entity\User;
 use App\Form\TrainCompanyType;
 use App\Form\UserType;
-use App\Service\ApiMailerService;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use App\Service\ApiMailerService;
 
-class SecurityController extends AbstractController
+#[Route('/admin/user')]
+class UserController extends AbstractController
 {
 
+    /* Client */
+    #[Route('/', name: 'admin_user_index', methods: ['GET'])]
+    public function index(UserRepository $userRepository): Response
+    {
+        return $this->render('Back/user/index.html.twig', [
+            'users' => $userRepository->findAll(),
+        ]);
+    }
+
     /* Create company */
-    #[Route('/register-company', name: 'app_register_company', methods: ['GET', 'POST'])]
+    #[Route('/new-company', name: 'admin_user_company_new', methods: ['GET', 'POST'])]
     public function new_train_company(Request $request, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
     {
         $user = new User();
@@ -40,10 +51,6 @@ class SecurityController extends AbstractController
                 $user->setPlainPassword($user->getPassword());
                 $user->setStatus(0);
 
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($user);
-                $entityManager->flush();
-
                 $email = ApiMailerService::send_email(
                     $user->getEmail(),
                     "Validation de votre compte",
@@ -61,17 +68,17 @@ class SecurityController extends AbstractController
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);
                 $entityManager->flush();
-                return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
             } else foreach ($list_err as $err) $this->addFlash('red', $err);
         }
 
-        return $this->renderForm('security/register.html.twig', [
-        'train' => $user,
-        'form' => $form,
+        return $this->renderForm('Back/user/new.html.twig', [
+            'user' => $user,
+            'form' => $form,
         ]);
     }
 
-    #[Route('/register', name: 'app_register', methods: ['GET', 'POST'])]
+    #[Route('/new-user', name: 'admin_user_new', methods: ['GET', 'POST'])]
     public function new(Request $request, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
     {
         $user = new User();
@@ -94,11 +101,6 @@ class SecurityController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                $user->setRoles(["ROLE_USER"]);
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($user);
-                $entityManager->flush();
-
                 $email = ApiMailerService::send_email(
                     $user->getEmail(),
                     "Validation de votre compte",
@@ -114,43 +116,69 @@ class SecurityController extends AbstractController
                 $mailer->send($email);
             }
 
-            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('security/register.html.twig', [
-            'train' => $user,
+        return $this->renderForm('Back/user/new.html.twig', [
+            'user' => $user,
             'form' => $form,
         ]);
     }
 
-
-    /**
-     * @Route("/login", name="app_login")
-     */
-    public function login(AuthenticationUtils $authenticationUtils, ManagerRegistry $doctrine): Response
+    #[Route('/{id}', name: 'admin_user_show', methods: ['GET'])]
+    public function show(User $user): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
-
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
-
-        return $this->render('security/login.html.twig',
-            [
-                'last_username' => $lastUsername,
-                'error' => $error,
-            ]
-        );
+        return $this->render('Back/user/show.html.twig', [
+            'user' => $user,
+        ]);
     }
 
-    /**
-     * @Route("/logout", name="app_logout")
-     */
-    public function logout(): void
+    #[Route('/{id}/edit-train-company', name: 'admin_user_edit_company', methods: ['GET', 'POST'])]
+    public function edit_train_company(Request $request, User $user): Response
     {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        $form = $this->createForm(TrainCompanyType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('Back/user/edit.html.twig', [
+            'user' => $user,
+            'form' => $form,
+        ]);
     }
+
+    #[Route('/{id}/edit', name: 'admin_user_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, User $user): Response
+    {
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('Back/user/edit.html.twig', [
+            'user' => $user,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'admin_user_delete', methods: ['POST'])]
+    public function delete(Request $request, User $user): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($user);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
+    }
+
 }

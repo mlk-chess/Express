@@ -40,6 +40,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+        private $company_name;
+    /*
+     *
      * @var string The cleared password
      */
     private $plainPassword;
@@ -163,6 +168,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $options;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $status;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $token;
+
     public function __construct()
     {
         $this->trains = new ArrayCollection();
@@ -259,6 +274,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
+    public function __toString(){
+        return $this->company_name;
+    }
+
+    public function getCompanyName(): ?string
+    {
+        return $this->company_name;
+    }
+
+    public function setCompanyName(?string $company_name): string
+    {
+        $this->company_name = $company_name;
+
+        return trim($this);
+    }
+
     /**
      * @return Collection|Train[]
      */
@@ -345,6 +376,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $option->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): self
+    {
+        $this->token = $token;
 
         return $this;
     }
