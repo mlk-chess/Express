@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\LineTrainRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=LineTrainRepository::class)
@@ -18,52 +19,40 @@ class LineTrain
     private $id;
 
     /**
-     * @ORM\Column(type="datetime")
-     */
-    private $schedule_departure;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $schedule_arrival;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Train::class, inversedBy="lineTrains")
+     * @Assert\NotNull
      */
     private $train;
 
     /**
      * @ORM\ManyToOne(targetEntity=Line::class, inversedBy="lineTrains")
+     * @Assert\NotNull
      */
     private $line;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $date_departure;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $date_arrival;
+
+    /**
+     * @ORM\Column(type="time")
+     */
+    private $time_departure;
+
+    /**
+     * @ORM\Column(type="time")
+     */
+    private $time_arrival;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getScheduleDeparture(): ?\DateTimeInterface
-    {
-        return $this->schedule_departure;
-    }
-
-    public function setScheduleDeparture(\DateTimeInterface $schedule_departure): self
-    {
-        $this->schedule_departure = $schedule_departure;
-
-        return $this;
-    }
-
-    public function getScheduleArrival(): ?\DateTimeInterface
-    {
-        return $this->schedule_arrival;
-    }
-
-    public function setScheduleArrival(\DateTimeInterface $schedule_arrival): self
-    {
-        $this->schedule_arrival = $schedule_arrival;
-
-        return $this;
     }
 
     public function getTrain(): ?Train
@@ -86,6 +75,54 @@ class LineTrain
     public function setLine(?Line $line): self
     {
         $this->line = $line;
+
+        return $this;
+    }
+
+    public function getDateDeparture(): ?\DateTimeInterface
+    {
+        return $this->date_departure;
+    }
+
+    public function setDateDeparture(\DateTimeInterface $date_departure): self
+    {
+        $this->date_departure = $date_departure;
+
+        return $this;
+    }
+
+    public function getDateArrival(): ?\DateTimeInterface
+    {
+        return $this->date_arrival;
+    }
+
+    public function setDateArrival(\DateTimeInterface $date_arrival): self
+    {
+        $this->date_arrival = $date_arrival;
+
+        return $this;
+    }
+
+    public function getTimeDeparture(): ?\DateTimeInterface
+    {
+        return $this->time_departure;
+    }
+
+    public function setTimeDeparture(\DateTimeInterface $time_departure): self
+    {
+        $this->time_departure = $time_departure;
+
+        return $this;
+    }
+
+    public function getTimeArrival(): ?\DateTimeInterface
+    {
+        return $this->time_arrival;
+    }
+
+    public function setTimeArrival(\DateTimeInterface $time_arrival): self
+    {
+        $this->time_arrival = $time_arrival;
 
         return $this;
     }

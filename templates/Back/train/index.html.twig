@@ -21,6 +21,7 @@
                 <td>{{ train.name }}</td>
                 <td>{{ train.description }}</td>
                 <td>
+
                     <div class="row">
                         <div class="valign-wrapper">
                                 <div class="col">
@@ -45,11 +46,14 @@
             </tr>
         {% else %}
             <tr>
+
                 <td colspan="4">Aucun train existant</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
+
     <a class="row" href="{{ path('admin_train_new') }}"><button class="btn">Nouveau train</button></a>
+
 {% endblock %}

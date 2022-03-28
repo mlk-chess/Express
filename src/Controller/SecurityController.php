@@ -94,6 +94,11 @@ class SecurityController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
 
+                $user->setRoles(["ROLE_USER"]);
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($user);
+                $entityManager->flush();
+
                 $email = ApiMailerService::send_email(
                     $user->getEmail(),
                     "Validation de votre compte",

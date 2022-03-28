@@ -6,9 +6,9 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -48,6 +48,94 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The cleared password
      */
     private $plainPassword;
+
+    /**
+     * @ORM\Column(type="string", length=180, nullable=true)
+     */
+    private $address;
+
+    /**
+     * @ORM\Column(type="string", length=180, nullable=true)
+     */
+    private $city;
+
+    /**
+     * @ORM\Column(type="string", length=180, nullable=true)
+     */
+    private $zipCode;
+
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     * @Assert\Regex(pattern="/^[0-9]*$/", message="error.not.phone.number")
+     * @Assert\Length(
+     *      min = 10,
+     *      max = 10, maxMessage="error.not.phone.number", minMessage="error.not.phone.number")
+     */
+    private $phoneNumber;
+
+    /**
+     * @return mixed
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param mixed $address
+     */
+    public function setAddress($address): void
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param mixed $city
+     */
+    public function setCity($city): void
+    {
+        $this->city = $city;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getZipCode()
+    {
+        return $this->zipCode;
+    }
+
+    /**
+     * @param mixed $zipCode
+     */
+    public function setZipCode($zipCode): void
+    {
+        $this->zipCode = $zipCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPhoneNumber()
+    {
+        return $this->phoneNumber;
+    }
+
+    /**
+     * @param mixed $phoneNumber
+     */
+    public function setPhoneNumber($phoneNumber): void
+    {
+        $this->phoneNumber = $phoneNumber;
+    }
 
     /**
      * @return string

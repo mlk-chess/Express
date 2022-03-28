@@ -6,16 +6,35 @@ use App\Entity\LineTrain;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Line;
+use Symfony\Component\Form\ChoiceList\ChoiceList;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 
 class LineTrainType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
+
         $builder
-            ->add('schedule_departure')
-            ->add('schedule_arrival')
             ->add('train')
-            ->add('line')
+            ->add('line', EntityType::class, [
+                'class' => Line::class,
+                'choice_label' => function ($line) {
+                    return $line->getNameStationDeparture() . " - " .  $line->getNameStationArrival();
+                },
+                'label' => 'Ligne',
+            ])
+            ->add('date_departure',DateType::class,[
+                'label' => 'Date de départ',
+                'widget' => 'single_text'
+            ])
+            ->add('time_departure',TimeType::class,[
+                'label' => 'Horaire de départ',
+                'widget' => 'single_text'
+            ])
         ;
     }
 
