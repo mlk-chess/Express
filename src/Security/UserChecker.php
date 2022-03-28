@@ -15,10 +15,6 @@ class UserChecker implements UserCheckerInterface
             return;
         }
 
-        if ($user->getStatus() === 0) {
-            // the message passed to this exception is meant to be displayed to the user
-            throw new CustomUserMessageAccountStatusException('Vous devez confirmer votre compte');
-        }
     }
 
     public function checkPostAuth(UserInterface $user): void
@@ -27,9 +23,15 @@ class UserChecker implements UserCheckerInterface
             return;
         }
 
-// user account is expired, the user may be notified
-        if ($user->getStatus() === 1 && in_array("COMPANY",$user->getRoles())) {
+        if ($user->getStatus() === 0) {
+            // the message passed to this exception is meant to be displayed to the user
+            throw new CustomUserMessageAccountStatusException('Vous devez confirmer votre compte');
+        }
+
+        // user account is expired, the user may be notified
+        if ($user->getStatus() === 1 && in_array("COMPANY", $user->getRoles())) {
             throw new CustomUserMessageAccountStatusException('Vous avez bien confirmé votre adresse e-mail mais vous devez attendre que l\'administrateur confirme votre compte');
         }
+
     }
 }
