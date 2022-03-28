@@ -32,7 +32,7 @@ class LineTrainController extends AbstractController
         //     - Cohérence des horaires : voir avec l'API sinon calcul (à voir) [OK]
         //     - Un train ne peut pas être sur 2 trajet à la fois [OK]
         //     - Voir le dernier trajet du train X et récupérer la gare d'arrivée [KO]
-        //     - Calcul d'un certain laps de temps entre 2 trajet du même train [OK]
+        //     - Calcul d'un certain laps de temps entre 2 trajet du même train [KO]
         //     - Prévoir un laps de temps pour le même trajet pour 2 trains différents 
 
 
@@ -55,6 +55,11 @@ class LineTrainController extends AbstractController
             $latDeparture = $lineTrain->getLine()->getLatitudeDeparture();
             $lonArrival = $lineTrain->getLine()->getLongitudeArrival();
             $latArrival = $lineTrain->getLine()->getLatitudeArrival();
+
+            // A modifier 
+
+            $lineTrain->setPlaceNbClass1(10);
+            $lineTrain->setPlaceNbClass2(20);
         
 
             $date = new DateTime($lineTrain->getDateDeparture()->format('Y-m-d') . " " . $lineTrain->getTimeDeparture()->format('H:i:s'));
@@ -80,7 +85,12 @@ class LineTrainController extends AbstractController
 
 
             if($getTrainByDate){
+                
                 $getLastTrainByTime = $getTrainByDate[0]["timestamparrival"];
+                
+                foreach( $getTrainByDate as $value){
+                    if($value["timestamparrival"] < $date) $getLastTrainByTime = $value["timestamparrival"];
+                }
 
                 foreach( $getTrainByDate as $value){
 
@@ -88,16 +98,17 @@ class LineTrainController extends AbstractController
                         $isBetween = true;
                     }
                 
-                    if( $value["timestamparrival"] < $date && $value["timestamparrival"] > $getLastTrainByTime  ){
+                    if($value["timestamparrival"] < $date && $value["timestamparrival"] > $getLastTrainByTime  ){
                         $getLastTrainByTime = $value['timestamparrival'];
-                    }
+                     }
                 }
-                $checkTime = date( "Y-m-d H:i:s", strtotime( "$getLastTrainByTime +1 hour"));
-                
-                if($checkTime > $date){
-                    $errors[] = "Le train est indisponible !";
-                }
+                 $checkTime = date( "Y-m-d H:i:s", strtotime( "$getLastTrainByTime +1 hour"));
+               
+                 if($checkTime >= $date && $checkTime <= $dateTimeArrival){
+                     $errors[] = "Le train est indisponible !";
+                 }
             }
+
            
             if ($isBetween) $errors[] = "Le train est indisponible à cette date !";
 
@@ -153,6 +164,9 @@ class LineTrainController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+
+            
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);

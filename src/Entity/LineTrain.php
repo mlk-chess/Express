@@ -50,6 +50,26 @@ class LineTrain
      */
     private $time_arrival;
 
+     /**
+      * @ORM\Column(type="integer")
+      */
+    private $place_nb_class_1;
+
+      /**
+       * @ORM\Column(type="integer")
+       */
+    private $place_nb_class_2;
+
+      /**
+      * @ORM\Column(type="float")
+      */
+    private $price_class_1;
+
+      /**
+       * @ORM\Column(type="float")
+       */
+    private $price_class_2;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -123,6 +143,55 @@ class LineTrain
     public function setTimeArrival(\DateTimeInterface $time_arrival): self
     {
         $this->time_arrival = $time_arrival;
+
+        return $this;
+    }
+
+
+    public function getPlaceNbClass1(): ?int
+    {
+        return $this->place_nb_class_1;
+    }
+
+    public function setPlaceNbClass1(int $placeNbClass1): self
+    {
+        $this->place_nb_class_1 = $placeNbClass1;
+
+        return $this;
+    }
+
+    public function getPlaceNbClass2(): ?int
+    {
+        return $this->place_nb_class_2;
+    }
+
+    public function setPlaceNbClass2(int $placeNbClass2): self
+    {
+        $this->place_nb_class_2 = $placeNbClass2;
+
+        return $this;
+    }
+
+    public function getPriceClass1(): ?float
+    {
+        return $this->price_class_1;
+    }
+
+    public function setPriceClass1(float $priceClass1): self
+    {
+        $this->price_class_1 = $priceClass1;
+
+        return $this;
+    }
+
+    public function getPriceClass2(): ?float
+    {
+        return $this->price_class_2;
+    }
+
+    public function setPriceClass2(int $priceClass2): self
+    {
+        $this->price_class_2 = $priceClass2;
 
         return $this;
     }
