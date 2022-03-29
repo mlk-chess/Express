@@ -47,9 +47,13 @@ class UserController extends AbstractController
                 $list_err[] = 'Le mot de passe doit faire entre 6 et 50 caractères';
 
             if (empty($list_err)) {
-                $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
                 $user->setPlainPassword($user->getPassword());
                 $user->setStatus(0);
+
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($user);
+                $entityManager->flush();
 
                 $email = ApiMailerService::send_email(
                     $user->getEmail(),
@@ -57,7 +61,7 @@ class UserController extends AbstractController
                     "signup.html.twig",
                     [
                         'expiration_date' => new \DateTime('+7 days'),
-                        "username" => $user->getEmail(),
+                        "username" => $user->getCompanyName() ?? $user->getEmail(),
                         "userid" => $user->getId(),
                         "token" => $token,
                     ]
@@ -65,9 +69,6 @@ class UserController extends AbstractController
 
                 $mailer->send($email);
 
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($user);
-                $entityManager->flush();
                 return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
             } else foreach ($list_err as $err) $this->addFlash('red', $err);
         }
@@ -93,7 +94,6 @@ class UserController extends AbstractController
                 $list_err[] = 'Le mot de passe doit faire entre 6 et 50 caractères';
 
             if (empty($list_err)) {
-                $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
                 $user->setPlainPassword($user->getPassword());
                 $user->setStatus(0);
 
@@ -107,7 +107,7 @@ class UserController extends AbstractController
                     "signup.html.twig",
                     [
                         'expiration_date' => new \DateTime('+7 days'),
-                        "username" => $user->getEmail(),
+                        "username" => $user->getCompanyName() ?? $user->getEmail(),
                         "userid" => $user->getId(),
                         "token" => $token,
                     ]

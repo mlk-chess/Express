@@ -36,7 +36,6 @@ class SecurityController extends AbstractController
                 $list_err[] = 'Le mot de passe doit faire entre 6 et 50 caractères';
 
             if (empty($list_err)) {
-                $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
                 $user->setPlainPassword($user->getPassword());
                 $user->setStatus(0);
 
@@ -50,7 +49,7 @@ class SecurityController extends AbstractController
                     "signup.html.twig",
                     [
                         'expiration_date' => new \DateTime('+7 days'),
-                        "username" => $user->getEmail(),
+                        "username" => $user->getCompanyName() ?? $user->getEmail(),
                         "userid" => $user->getId(),
                         "token" => $token,
                     ]
@@ -86,13 +85,8 @@ class SecurityController extends AbstractController
                 $list_err[] = 'Le mot de passe doit faire entre 6 et 50 caractères';
 
             if (empty($list_err)) {
-                $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
                 $user->setPlainPassword($user->getPassword());
                 $user->setStatus(0);
-
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($user);
-                $entityManager->flush();
 
                 $user->setRoles(["ROLE_USER"]);
                 $entityManager = $this->getDoctrine()->getManager();
@@ -105,7 +99,7 @@ class SecurityController extends AbstractController
                     "signup.html.twig",
                     [
                         'expiration_date' => new \DateTime('+7 days'),
-                        "username" => $user->getEmail(),
+                        "username" => $user->getCompanyName() ?? $user->getEmail(),
                         "userid" => $user->getId(),
                         "token" => $token,
                     ]
