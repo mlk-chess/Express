@@ -5,6 +5,7 @@ namespace App\Controller\Back;
 use App\Entity\User;
 use App\Form\TrainCompanyType;
 use App\Form\UserType;
+use App\Form\UserStatusType;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -179,6 +180,24 @@ class UserController extends AbstractController
         }
 
         return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/edit-status', name: 'admin_user_edit_status', methods: ['GET', 'POST'])]
+    public function editStatus(Request $request, User $user): Response
+    {
+        $form = $this->createForm(UserStatusType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('Back/user/edit.html.twig', [
+            'user' => $user,
+            'form' => $form,
+        ]);
     }
 
 }

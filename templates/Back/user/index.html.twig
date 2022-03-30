@@ -12,6 +12,7 @@
                 <th>Email</th>
                 <th>Roles</th>
                 <th>Company Name</th>
+                <th>Status</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -22,9 +23,12 @@
                 <td>{{ user.email }}</td>
                 <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
                 <td>{{ user.companyName ?? "Standard User" }}</td>
+                <td>{{ user.status }}</td>
                 <td>
                     <a href="{{ path('admin_user_show', {'id': user.id}) }}">show</a>
                     <a href="{{ user.companyName is empty ? path('admin_user_edit', {'id': user.id}) : path('admin_user_edit_company', {'id': user.id}) }}">edit</a>
+                    <a href="{{ path('admin_user_edit_status', {'id': user.id}) }}">Change Status</a>
+
                 </td>
             </tr>
         {% else %}
