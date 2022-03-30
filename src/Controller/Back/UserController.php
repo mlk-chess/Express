@@ -177,13 +177,28 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/edit-status', name: 'admin_user_edit_status', methods: ['GET', 'POST'])]
-    public function editStatus(Request $request, User $user): Response
+    public function editStatus(Request $request, User $user, MailerInterface $mailer): Response
     {
         $form = $this->createForm(UserStatusType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user->getStatus() !== 0 ? $object = "Express - Validation de votre compte" : $object = "Express - Désactivation de votre compte";
             $this->getDoctrine()->getManager()->flush();
+
+            $email = ApiMailerService::send_email(
+                $user->getEmail(),
+                $object,
+                "admin-change-status.html.twig",
+                [
+                    'expiration_date' => new \DateTime('+7 days'),
+                    "username" => $user->getCompanyName() ?? $user->getEmail(),
+                    'status' => $user->getStatus()
+                ]
+            );
+
+            $mailer->send($email);
+
             return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
