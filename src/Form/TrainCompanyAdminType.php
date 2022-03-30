@@ -13,8 +13,10 @@ class TrainCompanyAdminType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('company_name')
-            ->add('email');
+        ->add('email')
+        ->add('company_name')
+        ->add('siret')
+        ->add('siren');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

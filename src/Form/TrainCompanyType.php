@@ -16,6 +16,8 @@ class TrainCompanyType extends AbstractType
     {
         $builder
             ->add('company_name')
+            ->add('siret')
+            ->add('siren')
             ->add('email')
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
