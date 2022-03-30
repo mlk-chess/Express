@@ -44,12 +44,8 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ((strlen($user->getCompanyName()) < 2 || strlen($user->getCompanyName()) > 50))
-                $list_err[] = 'Le nom de la société doit être une chaine comprise entre 2 et 50 caractères';
-
-            if (empty($list_err)) {
                 $password = rtrim(strtr(base64_encode(random_bytes(16)), '+/', '-_'), '=');
-                $user->setPlainPassword($user->getPassword());
+                $user->setPlainPassword($password);
                 $user->setStatus(0);
 
 
@@ -73,7 +69,6 @@ class UserController extends AbstractController
                 $mailer->send($email);
 
                 return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
-            } else foreach ($list_err as $err) $this->addFlash('red', $err);
         }
 
         return $this->renderForm('Back/user/new.html.twig', [
@@ -93,7 +88,6 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (empty($list_err)) {
                 $password = rtrim(strtr(base64_encode(random_bytes(16)), '+/', '-_'), '=');
                 $user->setPlainPassword($password);
                 $user->setStatus(0);
@@ -116,7 +110,6 @@ class UserController extends AbstractController
                 );
 
                 $mailer->send($email);
-            }
 
             return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -138,7 +131,7 @@ class UserController extends AbstractController
     #[Route('/{id}/edit-train-company', name: 'admin_user_edit_company', methods: ['GET', 'POST'])]
     public function edit_train_company(Request $request, User $user): Response
     {
-        $form = $this->createForm(TrainCompanyType::class, $user);
+        $form = $this->createForm(TrainCompanyAdminType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -156,7 +149,7 @@ class UserController extends AbstractController
     #[Route('/{id}/edit', name: 'admin_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user): Response
     {
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserAdminType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -191,7 +184,6 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
-
             return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
         }
 

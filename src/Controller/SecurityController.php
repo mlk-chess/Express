@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\TrainCompanyType;
 use App\Form\UserType;
+use App\Service\Helper;
 use App\Service\ApiMailerService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,19 +24,13 @@ class SecurityController extends AbstractController
     public function new_train_company(Request $request, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
     {
         $user = new User();
-        $user->setRoles(['COMPANY']);
         $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
+        $user->setRoles(['COMPANY']);
         $user->setToken($token);
         $form = $this->createForm(TrainCompanyType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ((strlen($user->getCompanyName()) < 2 || strlen($user->getCompanyName()) > 50))
-                $list_err[] = 'Le nom de la société doit être une chaine de caractère compris entre 2 et 50 caractères';
-            if (strlen($user->getPassword()) < 6 || strlen($user->getPassword()) > 50)
-                $list_err[] = 'Le mot de passe doit faire entre 6 et 50 caractères';
-
-            if (empty($list_err)) {
                 $user->setPlainPassword($user->getPassword());
                 $user->setStatus(0);
 
@@ -52,6 +47,7 @@ class SecurityController extends AbstractController
                         "username" => $user->getCompanyName() ?? $user->getEmail(),
                         "userid" => $user->getId(),
                         "token" => $token,
+                        "password" => null
                     ]
                 );
 
@@ -61,7 +57,6 @@ class SecurityController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
                 return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
-            } else foreach ($list_err as $err) $this->addFlash('red', $err);
         }
 
         return $this->renderForm('security/register.html.twig', [
@@ -81,10 +76,6 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (strlen($user->getPassword()) < 6 || strlen($user->getPassword()) > 50)
-                $list_err[] = 'Le mot de passe doit faire entre 6 et 50 caractères';
-
-            if (empty($list_err)) {
                 $user->setPlainPassword($user->getPassword());
                 $user->setStatus(0);
 
@@ -102,11 +93,12 @@ class SecurityController extends AbstractController
                         "username" => $user->getCompanyName() ?? $user->getEmail(),
                         "userid" => $user->getId(),
                         "token" => $token,
+                        "password" => null
                     ]
                 );
 
                 $mailer->send($email);
-            }
+            
 
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
