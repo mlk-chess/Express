@@ -4,7 +4,9 @@ namespace App\Controller\Back;
 
 use App\Entity\User;
 use App\Form\TrainCompanyType;
+use App\Form\TrainCompanyAdminType;
 use App\Form\UserType;
+use App\Form\UserAdminType;
 use App\Form\UserStatusType;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,7 +40,7 @@ class UserController extends AbstractController
         $user->setRoles(['COMPANY']);
         $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
         $user->setToken($token);
-        $form = $this->createForm(TrainCompanyType::class, $user);
+        $form = $this->createForm(TrainCompanyAdminType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -48,6 +50,7 @@ class UserController extends AbstractController
                 $list_err[] = 'Le mot de passe doit faire entre 6 et 50 caractères';
 
             if (empty($list_err)) {
+                $password = rtrim(strtr(base64_encode(random_bytes(16)), '+/', '-_'), '=');
                 $user->setPlainPassword($user->getPassword());
                 $user->setStatus(0);
 
@@ -63,6 +66,7 @@ class UserController extends AbstractController
                     [
                         'expiration_date' => new \DateTime('+7 days'),
                         "username" => $user->getCompanyName() ?? $user->getEmail(),
+                        "password" => $password,
                         "userid" => $user->getId(),
                         "token" => $token,
                     ]
@@ -87,7 +91,7 @@ class UserController extends AbstractController
         $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
         $user->setToken($token);
         $user->setRoles(['USER']);
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserAdminType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -95,7 +99,8 @@ class UserController extends AbstractController
                 $list_err[] = 'Le mot de passe doit faire entre 6 et 50 caractères';
 
             if (empty($list_err)) {
-                $user->setPlainPassword($user->getPassword());
+                $password = rtrim(strtr(base64_encode(random_bytes(16)), '+/', '-_'), '=');
+                $user->setPlainPassword($password);
                 $user->setStatus(0);
 
                 $entityManager = $this->getDoctrine()->getManager();
@@ -110,6 +115,7 @@ class UserController extends AbstractController
                         'expiration_date' => new \DateTime('+7 days'),
                         "username" => $user->getCompanyName() ?? $user->getEmail(),
                         "userid" => $user->getId(),
+                        "password" => $password,
                         "token" => $token,
                     ]
                 );

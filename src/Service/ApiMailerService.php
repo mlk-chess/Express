@@ -9,7 +9,7 @@ class ApiMailerService
     static function send_email($to, $subject, $template, $context)
     {
         $email = (new TemplatedEmail())
-            ->from('express@express.com')
+            ->from('no-reply@express.com')
             ->to($to)
             ->htmlTemplate('Emails/'.$template)
             ->context($context)

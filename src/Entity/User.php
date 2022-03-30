@@ -178,6 +178,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $token;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $siret;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $siren;
+
     public function __construct()
     {
         $this->trains = new ArrayCollection();
@@ -400,6 +410,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setToken(?string $token): self
     {
         $this->token = $token;
+
+        return $this;
+    }
+
+    public function getSiret(): ?int
+    {
+        return $this->siret;
+    }
+
+    public function setSiret(?int $siret): self
+    {
+        $this->siret = $siret;
+
+        return $this;
+    }
+
+    public function getSiren(): ?int
+    {
+        return $this->siren;
+    }
+
+    public function setSiren(?int $siren): self
+    {
+        $this->siren = $siren;
 
         return $this;
     }
