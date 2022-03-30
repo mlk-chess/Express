@@ -45,9 +45,7 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ((strlen($user->getCompanyName()) < 2 || strlen($user->getCompanyName()) > 50))
-                $list_err[] = 'Le nom de la société doit être une chaine de caractère compris entre 2 et 50 caractères';
-            if (strlen($user->getPassword()) < 6 || strlen($user->getPassword()) > 50)
-                $list_err[] = 'Le mot de passe doit faire entre 6 et 50 caractères';
+                $list_err[] = 'Le nom de la société doit être une chaine comprise entre 2 et 50 caractères';
 
             if (empty($list_err)) {
                 $password = rtrim(strtr(base64_encode(random_bytes(16)), '+/', '-_'), '=');
@@ -95,9 +93,6 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (strlen($user->getPassword()) < 6 || strlen($user->getPassword()) > 50)
-                $list_err[] = 'Le mot de passe doit faire entre 6 et 50 caractères';
-
             if (empty($list_err)) {
                 $password = rtrim(strtr(base64_encode(random_bytes(16)), '+/', '-_'), '=');
                 $user->setPlainPassword($password);
