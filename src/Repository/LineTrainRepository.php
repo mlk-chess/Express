@@ -20,22 +20,68 @@ class LineTrainRepository extends ServiceEntityRepository
     }
 
 
-    public function findTrainByDate($trainId): array
+    public function findTrainByDate($trainId,$id = null): array
+    {
+        $entityManager = $this->getEntityManager();
+
+
+        if ($id){
+            $query = $entityManager->createQuery(
+                "SELECT concat(lt.date_departure, ' ', lt.time_departure) AS timestampdeparture,
+                concat(lt.date_arrival, ' ', lt.time_arrival) AS timestamparrival,
+                t.name
+                FROM App\Entity\LineTrain lt , App\Entity\Train t 
+                WHERE lt.train = t.id
+                AND t.id = :id
+                AND lt.id != :idLineTrain"
+             )->setParameters(['id' => $trainId, 'idLineTrain' => $id]);
+        }else{
+            $query = $entityManager->createQuery(
+                "SELECT concat(lt.date_departure, ' ', lt.time_departure) AS timestampdeparture,
+                concat(lt.date_arrival, ' ', lt.time_arrival) AS timestamparrival,
+                t.name
+                FROM App\Entity\LineTrain lt , App\Entity\Train t 
+                WHERE lt.train = t.id
+                AND t.id = :id"
+             )->setParameter('id', $trainId);
+        }
+
+
+       
+        return $query->getResult();
+    }
+
+    public function findWagonByTrain($trainId): array
     {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
-           "SELECT concat(lt.date_departure, ' ', lt.time_departure) AS timestampdeparture,
-           concat(lt.date_arrival, ' ', lt.time_arrival) AS timestamparrival,
-           t.name
-           FROM App\Entity\LineTrain lt , App\Entity\Train t 
-           WHERE lt.train = t.id
-           AND t.id = :id"
+           "SELECT w.class, w.type, w.placeNb
+            FROM App\Entity\Wagon w
+            WHERE w.train = :id"
         )->setParameter('id', $trainId);
 
        
         return $query->getResult();
     }
+
+
+    // public function findLineByDate(): array
+    // {
+    //     $entityManager = $this->getEntityManager();
+
+    //     $query = $entityManager->createQuery(
+    //        "SELECT concat(lt.date_departure, ' ', lt.time_departure) AS timestampdeparture,
+    //        concat(lt.date_arrival, ' ', lt.time_arrival) AS timestamparrival,
+    //        t.name
+    //        FROM App\Entity\LineTrain lt , App\Entity\Train t 
+    //        WHERE lt.train = t.id
+    //        AND t.id = :id"
+    //     )->setParameter('id', $trainId);
+
+       
+    //     return $query->getResult();
+    // }
 
     // /**
     //  * @return LineTrain[] Returns an array of LineTrain objects

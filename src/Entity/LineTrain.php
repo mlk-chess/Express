@@ -189,7 +189,7 @@ class LineTrain
         return $this->price_class_2;
     }
 
-    public function setPriceClass2(int $priceClass2): self
+    public function setPriceClass2(float $priceClass2): self
     {
         $this->price_class_2 = $priceClass2;
 
