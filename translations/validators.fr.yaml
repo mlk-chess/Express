@@ -1,2 +1,9 @@
 error.not.blank :  Ce champs ne peut pas être vide
 error.not.phone.number : Le numéro de téléphone doit avoir exactement 10 chiffres.
+error.not.pwd.max : La longueur du mot de passe doit être inférieur à 50 caractères.
+error.not.pwd.min : La longueur du mot de passe doit être supérieur à 5 caractères.
+error.not.zipcode : Le code postal doit avoir exactement 5 chiffres.
+error.not.company.max : Le nom de la société doit être inférieur à 50 caractères
+error.not.company.min : Le nom de la société doit être supérieur à 2 caractères
+error.not.siret.number : Le numéro SIRET doit avoir exactement 14 chiffres.
+error.not.siren.number : Le numéro SIREN doit avoir exactement 5 chiffres.

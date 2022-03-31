@@ -36,10 +36,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\Length(
+     *      min = 6,
+     *      max = 72, maxMessage="error.not.pwd.max", minMessage="error.not.pwd.min")
      */
     private $password;
 
     /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 50, maxMessage="error.not.company.max", minMessage="error.not.company.min")
+     */
+        private $company_name;
+    /*
+     *
      * @var string The cleared password
      */
     private $plainPassword;
@@ -55,12 +66,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $city;
 
     /**
-     * @ORM\Column(type="string", length=180, nullable=true)
+     * @ORM\Column(type="string", length=5, nullable=true, options={"fixed" = true})
+     * @Assert\Length(
+     *      min = 5,
+     *      max = 5, maxMessage="error.not.zipcode", minMessage="error.not.zipcode")
      */
     private $zipCode;
 
     /**
-     * @ORM\Column(type="string", length=10, nullable=true)
+     * @ORM\Column(type="string", length=10, nullable=true, options={"fixed" = true})
      * @Assert\Regex(pattern="/^[0-9]*$/", message="error.not.phone.number")
      * @Assert\Length(
      *      min = 10,
@@ -163,6 +177,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $options;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $status;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @ORM\Column(type="bigint", nullable=true)
+     * @Assert\Length(
+     *      min = 14,
+     *      max = 14, maxMessage="error.not.siret.number", minMessage="error.not.siret.number")
+     */     
+    private $siret;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Assert\Length(
+     *      min = 5,
+     *      max = 5, maxMessage="error.not.siren.number", minMessage="error.not.siren.number")
+     */     
+    private $siren;
+
     public function __construct()
     {
         $this->trains = new ArrayCollection();
@@ -259,6 +299,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
+    public function __toString(){
+        return $this->company_name;
+    }
+
+    public function getCompanyName(): ?string
+    {
+        return $this->company_name;
+    }
+
+    public function setCompanyName(?string $company_name): string
+    {
+        $this->company_name = $company_name;
+
+        return trim($this);
+    }
+
     /**
      * @return Collection|Train[]
      */
@@ -345,6 +401,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $option->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    public function getSiret(): ?int
+    {
+        return $this->siret;
+    }
+
+    public function setSiret(?int $siret): self
+    {
+        $this->siret = $siret;
+
+        return $this;
+    }
+
+    public function getSiren(): ?int
+    {
+        return $this->siren;
+    }
+
+    public function setSiren(?int $siren): self
+    {
+        $this->siren = $siren;
 
         return $this;
     }
