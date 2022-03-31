@@ -1,7 +1,15 @@
 {%  extends 'base.html.twig' %}
 
-{% block title %}Opps error{% endblock %}
+{% block title %}Oops error{% endblock %}
 
 {% block body %}
-    Erreur BUG
+    <h1> Error : {{ status_exception }} {{ statusText_exception }}</h1>
+
+    {% if app.environment != "prod" %}
+    <p>{{ message_exception }}</p>
+    {% endif %}
+
+    <p>
+        <a href="/">return to the homepage</a>
+    </p>
 {% endblock %}
