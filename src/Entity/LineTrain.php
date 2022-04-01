@@ -26,7 +26,7 @@ class LineTrain
 
     /**
      * @ORM\ManyToOne(targetEntity=Line::class, inversedBy="lineTrains")
-     * @Assert\NotNull
+     * @Assert\NotBlank
      */
     private $line;
 
@@ -42,6 +42,7 @@ class LineTrain
 
     /**
      * @ORM\Column(type="time")
+     * 
      */
     private $time_departure;
 
@@ -62,11 +63,13 @@ class LineTrain
 
       /**
       * @ORM\Column(type="float")
+      * @Assert\NotNull
       */
     private $price_class_1;
 
       /**
        * @ORM\Column(type="float")
+       * @Assert\NotNull
        */
     private $price_class_2;
 
