@@ -3,6 +3,7 @@
 namespace App\Controller\Front;
 
 use App\Entity\User;
+use App\Entity\User as AppUser;
 use App\Service\ApiMailerService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,11 +12,8 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\UserPwdType;
 use App\Form\UserType;
-use App\Form\WagonType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 
 class UserController extends AbstractController
@@ -26,9 +24,11 @@ class UserController extends AbstractController
         $entityManager = $doctrine->getManager();
         $user = $entityManager->getRepository(User::class)->find($id);
 
-        if (empty($user->getToken())) {
-            return new Response("Erreur lors de la validation de l'e-mail, il est possible que vous ayez déjà validé votre compte...");
-        }
+        if(empty($user)) throw new \Exception("Erreur...");
+
+        if (empty($user->getToken()))
+            throw new \Exception("Erreur...");
+
 
         if ($user->getToken() === $token) {
             $user->setStatus(1);
@@ -43,7 +43,8 @@ class UserController extends AbstractController
                 ]
             );
             $mailer->send($email);
-        }else return new Response("Erreur lors de la validation de l'e-mail");
+        } else throw new \Exception("Erreur...");
+
 
         if (in_array("COMPANY", $user->getRoles()))
             return new Response("Votre e-mail a été validé, vous devez attendre que l'administrateur du site confirme votre inscription, vous recevrez un mail. (Cela peut prendre de 24h à 48h)");
@@ -52,7 +53,7 @@ class UserController extends AbstractController
 
     }
 
-    #[Route('/profile', name: 'user_index', methods: ['GET','POST'])]
+    #[Route('/profile', name: 'user_index', methods: ['GET', 'POST'])]
     public function index(Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
@@ -71,8 +72,8 @@ class UserController extends AbstractController
             $this->addFlash('green', "Les information du profile ont bien été modifié");
             return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
 
-        }else if($formPwd->isSubmitted() && $formPwd->isValid()){
-            $data->setPassword($passwordHasher->hashPassword($data,$data->getPlainPassword()));
+        } else if ($formPwd->isSubmitted() && $formPwd->isValid()) {
+            $data->setPassword($passwordHasher->hashPassword($data, $data->getPlainPassword()));
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('green', "Le mot de passe a bien été modifié");
             return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
