@@ -64,8 +64,10 @@ class CreateUserCommand extends Command
         $question = new Question('Please enter the password : ', 'pwd');
         $question->setHidden(true);
         if ($pwd = $helper->ask($input, $output, $question)) {
-            $user->setPassword($this->userPasswordHasher->hashPassword($user, $pwd));
+            $user->setPlainPassword($pwd);
         }
+
+        $user->setStatus(2);
 
         if ($input->getOption('admin-user')) {
             $user->setRoles(['ROLE_ADMIN']);
@@ -73,9 +75,12 @@ class CreateUserCommand extends Command
             $user->setRoles([""]);
         }
 
+        
+
+      
+
         $this->manager->persist($user);
         $this->manager->flush();
-        dump($pwd);
 
         $io->success('You have created your new User');
 
