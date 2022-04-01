@@ -8,15 +8,27 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Nom</th>
+                    <th>Gare de départ</th>
+                    <th>Gare d'arrivée</th>
+                    <th>Jour de départ</th>
+                    <th>Heure de départ</th>
+                    <th>Classe</th>
+                    <th>Prix</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for data in session %}
+                {% for travel in travels %}
                     <tr>
-                        <td>{{ data.id }}</td>
-                        <td>{{ data.name }}</td>
+                        <td>{{ travel[0].getLine().getNameStationDeparture() }}</td>
+                        <td>{{ travel[0].getLine().getNameStationArrival() }}</td>
+                        <td>{{ travel[0].getDateDeparture()|date('d-m-Y') }}</td>
+                        <td>{{ travel[0].getTimeDeparture()|date('H-i') }}</td>
+                        <td>{{ travel[1] }}</td>
+                        {% if travel[1] == 1 %}
+                            <td>{{ travel[0].getPriceClass1() }}</td>
+                        {% else %}
+                            <td>{{ travel[0].getPriceClass2() }}</td>
+                        {% endif %}
                     </tr>
                 {% else %}
                     <tr>

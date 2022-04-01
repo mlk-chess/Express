@@ -199,53 +199,16 @@ function clickUpdate(update, station, search, input) {
 //      OPTIONS     //
 ////////////////////////////
 
-function displayOptions(id) {
-    $.ajax({
-        type: 'POST',
-        url: '/home/options',
-        data: {
-            id: id
-        },
-        success: function(data) {
-            dataOptions(JSON.parse(data));
-        },
-        error: function (xhr, ajaxOptions, thrownError){
-            alert(xhr.responseText);
-            alert(ajaxOptions);
-            alert(thrownError);
-            alert(xhr.status);
-        }
-    });
-
-    document.getElementById('optionContainer').style.display = "block";
-}
-
-function dataOptions(data) {
-    let optionsContainer = document.getElementById('options');
-    optionsContainer.innerHTML = '';
-
-    data.forEach( function (element) {
-        let html = document.createElement('div');
-
-        html.innerHTML =
-            '<p>Nom : ' + element.name +'</p>' +
-            '<p>Type : ' + element.type +'</p>' +
-            '<p>Description : ' + element.description +'</p>' +
-            '<p>Prix : ' + element.price +'</p>' +
-            '<button onclick="addOption('+element.id+')">Choisir cette option</button>';
-
-        optionsContainer.appendChild(html);
-    });
-}
-
-function addOption(id) {
+function addOption(id, classWagon) {
     $.ajax({
         type: 'POST',
         url: '/home/add-option',
         data: {
-            id: id
+            id: id,
+            classWagon: classWagon
         },
         success: function(data) {
+
         },
         error: function (xhr, ajaxOptions, thrownError){
             alert(xhr.responseText);

@@ -100,32 +100,29 @@ class HomeController extends AbstractController
         $session = $this->requestStack->getSession();
         $dataSession = $session->get('shopping');
 
-//        $entityManager = $this->getDoctrine()->getManager();
-//        $repository = $entityManager->getRepository(LineTrain::class);
-//
-//
-//        $query = $repository->createQueryBuilder('lt')
-//            ->select('lt, line')
-//            ->leftJoin('lt.line', 'line')
-//            ->where('line.name_station_departure = :station_departure')
-//            ->andWhere('line.name_station_arrival = :station_arrival')
-//            ->andWhere('lt.date_departure = :date_departure')
-//            ->andWhere('lt.time_departure >= :time_departure')
-//            ->setParameters([
-//                'station_departure' => $form->get('departureStationInput')->getData(),
-//                'station_arrival' => $form->get('arrivalStationInput')->getData(),
-//                'date_departure' => $form->get('date')->getData()->format('Y-m-d'),
-//                'time_departure' => $form->get('time')->getData()->format('H:i:s')
-//            ]);
-//
-//
-//        $q = $query->getQuery();
-//
-//        $travels = $q->execute();
+        $entityManager = $this->getDoctrine()->getManager();
+        $repository = $entityManager->getRepository(LineTrain::class);
 
+        $travels = [];
+
+        foreach ($dataSession as $key => $value) {
+            $query = $repository->createQueryBuilder('lt')
+                ->select('lt, line')
+                ->leftJoin('lt.line', 'line')
+                ->where('lt.id = :id')
+                ->setParameters([
+                    'id' => $value[0]
+                ]);
+
+            $q = $query->getQuery();
+
+            $travel = $q->execute();
+            array_push($travels, [$travel[0], $value[1]]);
+        }
+        
         return $this->renderForm('Front/home/shopping.html.twig', [
             'controller_name' => 'HomeController',
-            'session' => $dataSession
+            'travels' => $travels
         ]);
     }
 
@@ -139,65 +136,20 @@ class HomeController extends AbstractController
         return new JsonResponse(false);
     }
 
-    #[Route('/options', name: 'options')]
-    public function getOptions(Request $request): JsonResponse
-    {
-        if ($request->isXmlHttpRequest()) {
-            $data = $request->request->get('id');
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $repository = $entityManager->getRepository(Option::class);
-
-
-            $query = $repository->createQueryBuilder('option')
-                ->select('option, wagon, train')
-                ->leftjoin('option.wagon', 'wagon')
-                ->leftjoin('wagon.train', 'train')
-                ->where('train.id = :id_train')
-                ->setParameters([
-                    'id_train' => $data,
-                ]);
-
-
-            $q = $query->getQuery();
-
-            $options = $q->execute();
-
-            $output = [];
-
-            if (count($options) !== 0) {
-                foreach ($options as $option) {
-
-                    $output[] = array(
-                        "id" => $option->getId(),
-                        "name" => $option->getName(),
-                        "type" => $option->getType(),
-                        "description" => $option->getDescription(),
-                        "price" => $option->getPrice()
-                    );
-                }
-            }
-
-            $options = json_encode($output);
-
-            return new JsonResponse($options);
-        }
-        return new JsonResponse(false);
-    }
-
     #[Route('/add-option', name: 'addOption')]
     public function addOption(Request $request): JsonResponse
     {
         if ($request->isXmlHttpRequest()) {
-            $data = intval($request->request->get('id'));
+            $id = intval($request->request->get('id'));
+            $classWagon = intval($request->request->get('classWagon'));
 
             $session = $this->requestStack->getSession();
             $dataSession = $session->get('shopping');
 
             if ($dataSession === null){
-                $session->set('shopping', [$data]);
+                $session->set('shopping', [[$id, $classWagon]]);
             } else {
-                array_push($dataSession, $data);
+                array_push($dataSession, [$id, $classWagon]);
                 $session->set('shopping', $dataSession);
             }
 

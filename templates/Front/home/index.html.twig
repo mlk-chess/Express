@@ -42,7 +42,10 @@
                         <li>Départ le : {{ travel.getDateDeparture()|date('d-m-Y')}} à : {{ travel.getTimeDeparture()|date('H-i')}}</li>
                         <li>Gare de Départ : {{ travel.getLine().getNameStationDeparture() }}</li>
                         <li>Gare d'arrivée : {{ travel.getLine().getNameStationArrival() }}</li>
-                        <button onclick="displayOptions({{ travel.id }})">Réserver</button>
+                        <li>Classe 1 : {{ travel.getPriceClass1  }} €</li>
+                        <li>Classe 2 : {{ travel.getPriceClass2  }} €</li>
+                        <button onclick="addOption({{ travel.id }}, 1)">Réserver en classe 1</button>
+                        <button onclick="addOption({{ travel.id }}, 2)">Réserver en classe 2</button>
                     {% endfor %}
                 {% endif %}
 
@@ -54,12 +57,6 @@
     </div>
 
     <div id="map" style="height: 500px; width: 1000px"></div>
-
-    <div id="optionContainer">
-        <p>Options</p>
-        <div id="options"></div>
-    </div>
-
 
     <script>
         const linkAsset = "{{ asset('img/') }}"
