@@ -48,3 +48,7 @@ security:
     access_control:
          - { path: ^/admin, roles: [ROLE_ADMIN] }
          - { path: ^/profile, roles: [ROLE_USER] }
+         - { path: ^/train, roles: [ROLE_USER] }
+         - { path: ^/wagon, roles: [ROLE_USER] }
+         - { path: ^/line, roles: [ROLE_USER] }
+         - { path: ^/option, roles: [ROLE_USER] }
