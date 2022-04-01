@@ -66,6 +66,26 @@ class LineTrainRepository extends ServiceEntityRepository
     }
 
 
+    public function findLineByLineTrain($departure,$arrival): array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+           "SELECT lt.id
+           FROM App\Entity\LineTrain lt , App\Entity\Line l
+           WHERE lt.line = l.id
+           AND l.name_station_departure = :departure
+           AND l.name_station_arrival = :arrival"
+        )->setParameters([
+            'departure' => $departure,
+            'arrival' => $arrival
+        ]);
+
+       
+        return $query->getResult();
+    }
+
+
     // public function findLineByDate(): array
     // {
     //     $entityManager = $this->getEntityManager();
