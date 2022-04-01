@@ -11,6 +11,16 @@
                 <th>Id</th>
                 <td>{{ line_train.id }}</td>
             </tr>
+
+            <tr>
+                <th>Départ</th>
+                <td>{{ line_train.line.nameStationDeparture }}</td>
+            </tr>
+
+            <tr>
+                <th>Arrivée</th>
+                <td>{{ line_train.line.nameStationArrival }}</td>
+            </tr>
             <tr>
                 <th>Date départ</th>
                 <td>{{ line_train.getDateDeparture()|date('d-m-Y')}} - {{line_train.getTimeDeparture()|date('H:i:s') }} </td>
@@ -18,6 +28,26 @@
             <tr>
                 <th>Date d'arrivée</th>
                 <td>{{ line_train.getDateArrival()|date('d-m-Y')}} - {{line_train.getTimeArrival()|date('H:i:s') }} </td>
+            </tr>
+
+            <tr>
+                <th>Nombre de place classe 1</th>
+                <td>{{ line_train.placeNbClass1 }}</td>
+            </tr>
+
+            <tr>
+                <th>Nombre de place classe 2</th>
+                <td>{{ line_train.placeNbClass2 }}</td>
+            </tr>
+
+            <tr>
+                <th>Prix classe 1</th>
+                <td>{{ line_train.priceClass1 }} €</td>
+            </tr>
+
+              <tr>
+                <th>Prix classe 2</th>
+                <td>{{ line_train.priceClass2 }} €</td>
             </tr>
         </tbody>
     </table>
