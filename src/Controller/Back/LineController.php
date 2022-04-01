@@ -144,12 +144,16 @@ class LineController extends AbstractController
     public function delete(Request $request, Line $line, LineTrainRepository $lineTrainRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$line->getId(), $request->request->get('_token'))) {
-
-            dd($lineTrainRepository->findLineByLineTrain($line->getNameStationDeparture(), $line->getNameStationArrival()));
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($line);
-            $entityManager->flush();
-            $this->addFlash('green', "La ligne a été supprimée");
+            
+            if(empty($lineTrainRepository->findLineByLineTrain($line->getNameStationDeparture(), $line->getNameStationArrival()))){
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->remove($line);
+                $entityManager->flush();
+                $this->addFlash('green', "La ligne a été supprimée");
+            }else{
+                $this->addFlash('red', "La ligne ne peut pas être supprimée");
+            }
+           
         }
 
         return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
