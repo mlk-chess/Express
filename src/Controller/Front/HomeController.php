@@ -104,6 +104,7 @@ class HomeController extends AbstractController
         $repository = $entityManager->getRepository(LineTrain::class);
 
         $travels = [];
+        $total = 0;
 
         foreach ($dataSession as $key => $value) {
             $query = $repository->createQueryBuilder('lt')
@@ -117,12 +118,18 @@ class HomeController extends AbstractController
             $q = $query->getQuery();
 
             $travel = $q->execute();
-            array_push($travels, [$travel[0], $value[1]]);
+            array_push($travels, [$travel[0], $value[1], $key]);
+            if ($value[1] === 1){
+                $total += $travel[0]->getPriceClass1();
+            }else{
+                $total += $travel[0]->getPriceClass2();
+            }
         }
-        
+
         return $this->renderForm('Front/home/shopping.html.twig', [
             'controller_name' => 'HomeController',
-            'travels' => $travels
+            'travels' => $travels,
+            'total' => $total
         ]);
     }
 
@@ -153,8 +160,27 @@ class HomeController extends AbstractController
                 $session->set('shopping', $dataSession);
             }
 
-            return new JsonResponse($session->get('shopping'));
+            $session->get('shopping');
+
+            return new JsonResponse(true);
         }
         return new JsonResponse(false);
+    }
+
+    #[Route('/{id}', name: 'shopping_delete', methods: ['POST'])]
+    public function delete(Request $request): Response
+    {
+        $id = $request->request->get('id');
+
+        $session = $this->requestStack->getSession();
+        $dataSession = $session->get('shopping');
+
+        unset($dataSession[$id]);
+
+        $session->set('shopping', $dataSession);
+
+        $this->addFlash('green', "L'élément a été supprimé de votre panier");
+
+        return $this->redirectToRoute('shopping', [], Response::HTTP_SEE_OTHER);
     }
 }

@@ -208,7 +208,6 @@ function addOption(id, classWagon) {
             classWagon: classWagon
         },
         success: function(data) {
-
         },
         error: function (xhr, ajaxOptions, thrownError){
             alert(xhr.responseText);

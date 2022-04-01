@@ -17,18 +17,21 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for travel in travels %}
+                {% for key, travel in travels %}
                     <tr>
                         <td>{{ travel[0].getLine().getNameStationDeparture() }}</td>
                         <td>{{ travel[0].getLine().getNameStationArrival() }}</td>
                         <td>{{ travel[0].getDateDeparture()|date('d-m-Y') }}</td>
-                        <td>{{ travel[0].getTimeDeparture()|date('H-i') }}</td>
+                        <td>{{ travel[0].getTimeDeparture()|date('H:i') }}</td>
                         <td>{{ travel[1] }}</td>
                         {% if travel[1] == 1 %}
-                            <td>{{ travel[0].getPriceClass1() }}</td>
+                            <td>{{ travel[0].getPriceClass1() }} €</td>
                         {% else %}
-                            <td>{{ travel[0].getPriceClass2() }}</td>
+                            <td>{{ travel[0].getPriceClass2() }} €</td>
                         {% endif %}
+                        <td>
+                            {{ include('Front/home/_delete_form.html.twig') }}
+                        </td>
                     </tr>
                 {% else %}
                     <tr>
@@ -37,6 +40,8 @@
                 {% endfor %}
                 </tbody>
             </table>
+
+            <p>Total: {{ total }} €</p>
         </div>
     </div>
 
