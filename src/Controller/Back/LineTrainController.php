@@ -4,6 +4,7 @@ namespace App\Controller\Back;
 
 use App\Entity\LineTrain;
 use App\Form\LineTrainType;
+use App\Repository\LineRepository;
 use App\Repository\LineTrainRepository;
 use App\Service\Helper;
 use DateTime;
@@ -28,22 +29,6 @@ class LineTrainController extends AbstractController
     public function new(Request $request, LineTrainRepository $lineTrainRepository ): Response
     {
 
-        // Vérification :
-        //     - Cohérence des horaires : voir avec l'API sinon calcul (à voir) [OK]
-        //     - Un train ne peut pas être sur 2 trajet à la fois [OK]
-        //     - Voir le dernier trajet du train X et récupérer la gare d'arrivée [KO]
-        //     - Calcul d'un certain laps de temps entre 2 trajet du même train 
-        //     - Prévoir un laps de temps pour le même trajet pour 2 trains différents 
-
-
-        // 4 colonnes : Place restante -> place nb classe 1 -> si option classe 1 nb place ++
-        //                                place nb classe 2 -> si option classe 2 nb place ++
-        //                                prix classe 1 
-        //                                prix classe 2
-
-        // Vérification type voyageur 
-
-
         $errors = [];
         $lineTrain = new LineTrain();
         $form = $this->createForm(LineTrainType::class, $lineTrain);
@@ -55,6 +40,26 @@ class LineTrainController extends AbstractController
             $latDeparture = $lineTrain->getLine()->getLatitudeDeparture();
             $lonArrival = $lineTrain->getLine()->getLongitudeArrival();
             $latArrival = $lineTrain->getLine()->getLatitudeArrival();
+            $placeNbclass1 = 0;
+            $placeNbclass2 = 0;
+            $isBetween = false;
+
+
+            $getWagonByTrain = $lineTrainRepository->findWagonByTrain($lineTrain->getTrain()->getId());
+          
+            foreach ($getWagonByTrain as $wagon){
+
+                if($wagon['type'] == "Voyageur"){
+                    if($wagon['class'] == 1){
+                        $placeNbclass1 += $wagon['placeNb'];
+                    }else{
+                        $placeNbclass2 += $wagon['placeNb'];
+                    }
+                }
+            }
+
+            $lineTrain->setPlaceNbClass1($placeNbclass1);
+            $lineTrain->setPlaceNbClass2($placeNbclass2);
         
 
             $date = new DateTime($lineTrain->getDateDeparture()->format('Y-m-d') . " " . $lineTrain->getTimeDeparture()->format('H:i:s'));
@@ -76,28 +81,18 @@ class LineTrainController extends AbstractController
 
 
             $getTrainByDate = $lineTrainRepository->findTrainByDate($lineTrain->getTrain()->getId());
-            $isBetween = false;
 
-            $getLastTrainByTime = $getTrainByDate[0]["timestamparrival"];
+            if($getTrainByDate){
 
-            foreach( $getTrainByDate as $value){
+                foreach( $getTrainByDate as $value){
 
-                if( ($date >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) || ($dateTimeArrival >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) ){
-                    $isBetween = true;
-                }
-
-                if( $value["timestamparrival"] < $date && $value["timestamparrival"] > $getLastTrainByTime  ){
-                    $getLastTrainByTime = $value['timestamparrival'];
-                    $checkTime = date( "Y-m-d H:i:s", strtotime( "$getLastTrainByTime +1 hour"));
+                    if( ($date >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) || ($dateTimeArrival >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) ){
+                        $isBetween = true;
+                    }
                 }
             }
-
-            if ($isBetween) $errors[] = "Le train est indisponible à cette date !";
-
            
-            if($checkTime && $checkTime > $date){
-                $errors[] = "Le train est indisponible";
-            }
+            if ($isBetween) $errors[] = "Le train est indisponible à cette date !";
 
             if($lineTrain->getDateDeparture() > $lineTrain->getDateArrival()){
                 $errors[] = "La date de départ ne peut pas être supérieur à la date d'arrivée";
@@ -112,7 +107,7 @@ class LineTrainController extends AbstractController
                     $errors[] = "L'horaire de départ ne peut pas être supérieur à l'horaire d'arrivée";
                 }    
             }
-
+            
             if(empty($errors)){
 
                 $entityManager = $this->getDoctrine()->getManager();
@@ -125,7 +120,6 @@ class LineTrainController extends AbstractController
                 $this->addFlash('red', $errors[0]);
                 return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
             }
-         
         }
 
         return $this->renderForm('Back/line_train/new.html.twig', [
@@ -143,15 +137,75 @@ class LineTrainController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'line_train_edit', methods: ['GET','POST'])]
-    public function edit(Request $request, LineTrain $lineTrain): Response
+    public function edit(Request $request, LineTrain $lineTrain, LineTrainRepository $lineTrainRepository): Response
     {
         $form = $this->createForm(LineTrainType::class, $lineTrain);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
+
+            $lonDeparture = $lineTrain->getLine()->getLongitudeDeparture();
+            $latDeparture = $lineTrain->getLine()->getLatitudeDeparture();
+            $lonArrival = $lineTrain->getLine()->getLongitudeArrival();
+            $latArrival = $lineTrain->getLine()->getLatitudeArrival();
+
+            $date = new DateTime($lineTrain->getDateDeparture()->format('Y-m-d') . " " . $lineTrain->getTimeDeparture()->format('H:i:s'));
+            $date = $date->format('Y-m-d H:i:s');
+
+            if($date < date('Y-m-d H:i:s')){
+                $errors[] = "La date de départ ne peut pas être inférieur à celle d'aujourd'hui !";
+            }
+
+            $distance = Helper::distance($latDeparture,$lonDeparture,$latArrival,$lonArrival,"K");
+           
+            $getTime = ($distance * 60 ) / 300;
+            $getTime = round($getTime * 3600 / 60);
+        
+            $dateTimeArrival = date( "Y-m-d H:i:s", strtotime( "$date +$getTime seconds"));
+
+            $lineTrain->setDateArrival(new DateTime($dateTimeArrival));
+            $lineTrain->setTimeArrival(new DateTime($dateTimeArrival));
+
+            $getTrainByDate = $lineTrainRepository->findTrainByDate($lineTrain->getTrain()->getId(),$lineTrain->getId());
+            $isBetween = false;
+
+            if($getTrainByDate){
+
+                foreach( $getTrainByDate as $value){
+
+                    if( ($date >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) || ($dateTimeArrival >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) ){
+                        $isBetween = true;
+                    }
+                }
+            }
+
+            if ($isBetween) $errors[] = "Le train est indisponible à cette date !";
+
+            if($lineTrain->getDateDeparture() > $lineTrain->getDateArrival()){
+                $errors[] = "La date de départ ne peut pas être supérieur à la date d'arrivée";
+            }
+
+            if($lineTrain->getDateDeparture() == $lineTrain->getDateArrival()){
+
+                if ($lineTrain->getTimeDeparture()->format('H-i-s') < date('H-i-s')){
+                    $errors[] = "Erreur horaire de départ !";
+                }
+                if($lineTrain->getTimeDeparture() >= $lineTrain->getTimeArrival() ){
+                    $errors[] = "L'horaire de départ ne peut pas être supérieur à l'horaire d'arrivée";
+                }    
+            }
+
+            if(empty($errors)){
+
+                $this->getDoctrine()->getManager()->flush();
+                $this->addFlash('green', "Voyage modifié !");
+                return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
+              
+            }else{
+                $this->addFlash('red', $errors[0]);
+                return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
+            }
         }
 
         return $this->renderForm('Back/line_train/edit.html.twig', [

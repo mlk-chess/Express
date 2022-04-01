@@ -3,9 +3,7 @@
 namespace App\Controller\Back;
 
 use App\Entity\User;
-use App\Form\TrainCompanyType;
 use App\Form\TrainCompanyAdminType;
-use App\Form\UserType;
 use App\Form\UserAdminType;
 use App\Form\UserStatusType;
 use App\Repository\UserRepository;
