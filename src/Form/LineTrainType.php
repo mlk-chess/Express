@@ -10,6 +10,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\Line;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 
 class LineTrainType extends AbstractType
@@ -34,6 +35,14 @@ class LineTrainType extends AbstractType
             ->add('time_departure',TimeType::class,[
                 'label' => 'Horaire de départ',
                 'widget' => 'single_text'
+            ])
+
+            ->add('price_class_1',MoneyType::class,[
+                'label' => 'Prix classe 1',
+            ])
+
+            ->add('price_class_2',MoneyType::class,[
+                'label' => 'Prix classe 2',
             ])
         ;
     }
