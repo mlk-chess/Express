@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\LineTrainRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -26,7 +28,7 @@ class LineTrain
 
     /**
      * @ORM\ManyToOne(targetEntity=Line::class, inversedBy="lineTrains")
-     * @Assert\NotNull
+     * @Assert\NotBlank
      */
     private $line;
 
@@ -42,6 +44,7 @@ class LineTrain
 
     /**
      * @ORM\Column(type="time")
+     * 
      */
     private $time_departure;
 
@@ -62,13 +65,25 @@ class LineTrain
 
       /**
       * @ORM\Column(type="float")
+      * @Assert\NotNull
       */
     private $price_class_1;
 
       /**
        * @ORM\Column(type="float")
+       * @Assert\NotNull
        */
     private $price_class_2;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="lineTrain")
+     */
+    private $bookings;
+
+    public function __construct()
+    {
+        $this->bookings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -192,6 +207,36 @@ class LineTrain
     public function setPriceClass2(float $priceClass2): self
     {
         $this->price_class_2 = $priceClass2;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): self
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings[] = $booking;
+            $booking->setLineTrain($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): self
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getLineTrain() === $this) {
+                $booking->setLineTrain(null);
+            }
+        }
 
         return $this;
     }

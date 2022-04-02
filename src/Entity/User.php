@@ -203,11 +203,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */     
     private $siren;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="idUser")
+     */
+    private $bookings;
+
     public function __construct()
     {
         $this->trains = new ArrayCollection();
         $this->wagons = new ArrayCollection();
         $this->options = new ArrayCollection();
+        $this->bookings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -449,6 +455,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSiren(?int $siren): self
     {
         $this->siren = $siren;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): self
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings[] = $booking;
+            $booking->setIdUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): self
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getIdUser() === $this) {
+                $booking->setIdUser(null);
+            }
+        }
 
         return $this;
     }

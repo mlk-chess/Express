@@ -5,6 +5,7 @@ namespace App\Controller\Back;
 use App\Entity\Line;
 use App\Form\LineType;
 use App\Repository\LineRepository;
+use App\Repository\LineTrainRepository;
 use App\Service\Helper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -140,13 +141,19 @@ class LineController extends AbstractController
     }
 
     #[Route('/{id}', name: 'line_delete', methods: ['POST'])]
-    public function delete(Request $request, Line $line): Response
+    public function delete(Request $request, Line $line, LineTrainRepository $lineTrainRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$line->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($line);
-            $entityManager->flush();
-            $this->addFlash('red', "La ligne a été supprimée");
+            
+            if(empty($lineTrainRepository->findLineByLineTrain($line->getNameStationDeparture(), $line->getNameStationArrival()))){
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->remove($line);
+                $entityManager->flush();
+                $this->addFlash('green', "La ligne a été supprimée");
+            }else{
+                $this->addFlash('red', "La ligne ne peut pas être supprimée");
+            }
+           
         }
 
         return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
