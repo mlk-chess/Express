@@ -4,6 +4,7 @@ namespace App\Controller\Front;
 
 use App\Entity\User;
 use App\Entity\User as AppUser;
+use App\Form\ProfileType;
 use App\Service\ApiMailerService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -54,11 +55,11 @@ class UserController extends AbstractController
     }
 
     #[Route('/profile', name: 'user_index', methods: ['GET', 'POST'])]
-    public function index(Request $request, UserPasswordHasherInterface $passwordHasher): Response
+    public function index(Request $request, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
     {
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
 
-        $form = $this->createForm(UserType::class, $userConnected);
+        $form = $this->createForm(ProfileType::class, $userConnected);
         $form->handleRequest($request);
 
         $formPwd = $this->createForm(UserPwdType::class, $userConnected);
@@ -70,12 +71,34 @@ class UserController extends AbstractController
 
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('green', "Les information du profile ont bien été modifié");
+
+            $email = ApiMailerService::send_email(
+                $userConnected->getEmail(),
+                "[PA Express] Vos informations ont été modifiée",
+                "change-information-profile.html.twig",
+                [
+                    "username" => $userConnected->getEmail(),
+                ]
+            );
+            $mailer->send($email);
+
             return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
 
         } else if ($formPwd->isSubmitted() && $formPwd->isValid()) {
             $data->setPassword($passwordHasher->hashPassword($data, $data->getPlainPassword()));
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('green', "Le mot de passe a bien été modifié");
+            $email = ApiMailerService::send_email(
+                $userConnected->getEmail(),
+                "[PA Express] Votre mot de passe a été modifié !",
+                "change-pwd-profile.html.twig",
+                [
+                    "username" => $userConnected->getEmail(),
+                ]
+            );
+            $mailer->send($email);
+
+
             return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
         }
 
