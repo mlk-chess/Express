@@ -5,7 +5,9 @@
 
 {% block body %}
     <h1>Nouveau Wagon</h1>
-
+    {% for error in errors %}
+        {{ error }}
+    {%  endfor %}
     {{ include('Back/wagon/_form.html.twig') }}
 
     <a href="{{ path('admin_wagon_index') }}">back to list</a>

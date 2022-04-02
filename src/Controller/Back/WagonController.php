@@ -36,8 +36,22 @@ class WagonController extends AbstractController
         $form = $this->createForm(WagonType::class, $wagon);
         $form->handleRequest($request);
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
-
+        $error = null;
         if ($form->isSubmitted() && $form->isValid()) {
+            for ($i = 0; $i < sizeof($wagon->getTrain()->getLineTrains()); $i++){
+                if ($wagon->getTrain()->getLineTrains()->get($i)->getId() == $wagon->getTrain()->getId()){
+
+                    $this->addFlash('red', "Le train associé a un voyage de prévu, vous ne pouvez pas ajouter de wagon.");
+                    $error = "Le train associé a un voyage de prévu, vous ne pouvez pas ajouter de wagon.";
+
+                    return $this->renderForm('Back/wagon/new.html.twig', [
+                        'wagon' => $wagon,
+                        'form' => $form,
+                        'errors' => $error
+                    ]);
+                }
+            }
+
             $wagon->setOwner($userConnected);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($wagon);
@@ -51,6 +65,7 @@ class WagonController extends AbstractController
         return $this->renderForm('Back/wagon/new.html.twig', [
             'wagon' => $wagon,
             'form' => $form,
+            'errors' => $error
         ]);
     }
 
