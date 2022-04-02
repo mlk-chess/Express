@@ -182,10 +182,16 @@ class HomeController extends AbstractController
             $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
             $price = null;
             if ($class == '1') {
+                $voyage[0]->setPlaceNbClass1($voyage[0]->getPlaceNbClass1()-1);
                 $price = $voyage[0]->getPriceClass1();
             } else if ($class == '2') {
+                $voyage[0]->setPlaceNbClass2($voyage[0]->getPlaceNbClass2()-1);
                 $price = $voyage[0]->getPriceClass2();
             }
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($voyage[0]);
+            $entityManager->flush();
+
             $booking = new Booking();
             $booking->setLineTrain($voyage[0]);
             $booking->setPrice($price);
@@ -215,6 +221,9 @@ class HomeController extends AbstractController
         $session = $this->requestStack->getSession();
         $dataSession = $session->get('shopping');
         $price = 0;
+        $placeClass1 = 0;
+        $placeClass2 = 0;
+
         for ($i = 0; $i < sizeof($dataSession); $i++){
             $idVoyage = $dataSession[$i][0];
             $class = $dataSession[$i][1];
@@ -222,8 +231,20 @@ class HomeController extends AbstractController
             $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
 
             if ($class == '1'){
+                if ($voyage[0]->getPlaceNbClass1()-1 < 0){
+                    return $this->render('Front/home/error.html.twig');
+                }else{
+                    $voyage[0]->setPlaceNbClass1($voyage[0]->getPlaceNbClass1()-1);
+                }
+                $placeClass1 += 1;
                 $price += $voyage[0]->getPriceClass1();
             }else if($class == '2'){
+                if ($voyage[0]->getPlaceNbClass2()-1 < 0){
+                    return $this->render('Front/home/error.html.twig');
+                }else{
+                    $voyage[0]->setPlaceNbClass2($voyage[0]->getPlaceNbClass2()-1);
+                }
+                $placeClass2 += 1;
                 $price += $voyage[0]->getPriceClass2();
             }
         }
