@@ -176,26 +176,28 @@ class HomeController extends AbstractController
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
         $session = $this->requestStack->getSession();
         $dataSession = $session->get('shopping');
-        $idVoyage = $dataSession[0][0];
-        $class = $dataSession[0][1];
-        $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
-        $price = null;
-        if ($class == '1'){
-            $price = $voyage[0]->getPriceClass1();
-        }else if($class == '2'){
-            $price = $voyage[0]->getPriceClass2();
+        for ($i = 0; $i < sizeof($dataSession)-1; $i++) {
+            $idVoyage = $dataSession[$i][0];
+            $class = $dataSession[$i][1];
+            $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
+            $price = null;
+            if ($class == '1') {
+                $price = $voyage[0]->getPriceClass1();
+            } else if ($class == '2') {
+                $price = $voyage[0]->getPriceClass2();
+            }
+            $booking = new Booking();
+            $booking->setLineTrain($voyage[0]);
+            $booking->setPrice($price);
+            $booking->setStatus(1);
+
+            $booking->setIdUser($userConnected);
+            $booking->setPaymentIntent($dataSession["payment_intent"]);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($booking);
+            $entityManager->flush();
         }
-        $booking = new Booking();
-        $booking->setLineTrain($voyage[0]);
-        $booking->setPrice($price);
-        $booking->setStatus(1);
-
-        $booking->setIdUser($userConnected);
-        $booking->setPaymentIntent($dataSession[1]);
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($booking);
-        $entityManager->flush();
 
         $session->remove('shopping');
         return $this->render('Front/home/success.html.twig');
@@ -212,16 +214,20 @@ class HomeController extends AbstractController
         $YOUR_DOMAIN = 'http://localhost:8090/';
         $session = $this->requestStack->getSession();
         $dataSession = $session->get('shopping');
-        $idVoyage = $dataSession[0][0];
-        $class = $dataSession[0][1];
+        $price = 0;
+        for ($i = 0; $i < sizeof($dataSession); $i++){
+            $idVoyage = $dataSession[$i][0];
+            $class = $dataSession[$i][1];
 
-        $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
-        $price = null;
-        if ($class == '1'){
-            $price = $voyage[0]->getPriceClass1();
-        }else if($class == '2'){
-            $price = $voyage[0]->getPriceClass2();
+            $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
+
+            if ($class == '1'){
+                $price += $voyage[0]->getPriceClass1();
+            }else if($class == '2'){
+                $price += $voyage[0]->getPriceClass2();
+            }
         }
+
 
         $checkout_session = \Stripe\Checkout\Session::create([
             'payment_method_types' => ['card'],
@@ -240,7 +246,7 @@ class HomeController extends AbstractController
             'success_url' => $YOUR_DOMAIN . 'home/success',
             'cancel_url' => $YOUR_DOMAIN . 'home/cancel',
         ]);
-        array_push($dataSession, $checkout_session["payment_intent"]);
+        $dataSession["payment_intent"] = $checkout_session["payment_intent"];
         $session->set('shopping', $dataSession);
         header("HTTP/1.1 303 See Other");
 
