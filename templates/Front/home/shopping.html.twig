@@ -3,6 +3,8 @@
 {% block title %}Hello HomeController!{% endblock %}
 
 {% block body %}
+    <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <div class="container">
         <div class="row">
             <table class="table">
@@ -40,9 +42,19 @@
                 {% endfor %}
                 </tbody>
             </table>
-
             <p>Total: {{ total }} €</p>
         </div>
-    </div>
+        <section>
+            {% if app.user %}
+                <form action="{{ path('payment') }}" method="POST">
+                    <button type="submit" id="checkout-button">Payer</button>
+            {% else %}
+                <form action="/login" method="POST">
+                    <button type="submit" >Payer</button>
+            {% endif %}
 
+
+            </form>
+        </section>
+    </div>
 {% endblock %}
