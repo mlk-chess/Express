@@ -212,6 +212,7 @@ class HomeController extends AbstractController
     #[Route('/payment', name: 'payment', methods: ['GET','POST'])]
     public function payment(Request $request, LineTrainRepository $lineTrainRepository): Response
     {
+
         // This is your test secret API key.
         \Stripe\Stripe::setApiKey('sk_test_51Kk6uiCJ5s87DbRlsu9UTG7t0PbKcXlXM7bxLdibROOksHgDXIg1gXtp0SFv7o0MZxTcCTOLmEzjK1AVvdCR9LXg00vHipH4ZP');
 

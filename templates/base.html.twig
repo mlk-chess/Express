@@ -28,6 +28,12 @@
                 <li><a href="/home">Home</a></li>
                 <li><a href="/home/shopping">Shopping</a></li>
                 <li><a href="/profile">Profile</a></li>
+                {% if app.user %}
+                    <li><a href="/logout">Deconnexion</a></li>
+                {% else %}
+                    <li><a href="/login">Connexion</a></li>
+
+                {% endif %}
             </ul>
         </div>
     </nav>
