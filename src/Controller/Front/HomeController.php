@@ -111,25 +111,28 @@ class HomeController extends AbstractController
         $travels = [];
         $total = 0;
 
-        foreach ($dataSession as $key => $value) {
-            $query = $repository->createQueryBuilder('lt')
-                ->select('lt, line')
-                ->leftJoin('lt.line', 'line')
-                ->where('lt.id = :id')
-                ->setParameters([
-                    'id' => $value[0]
-                ]);
+        if($dataSession != null) {
+            foreach ($dataSession as $key => $value) {
+                $query = $repository->createQueryBuilder('lt')
+                    ->select('lt, line')
+                    ->leftJoin('lt.line', 'line')
+                    ->where('lt.id = :id')
+                    ->setParameters([
+                        'id' => $value[0]
+                    ]);
 
-            $q = $query->getQuery();
+                $q = $query->getQuery();
 
-            $travel = $q->execute();
-            array_push($travels, [$travel[0], $value[1], $key]);
-            if ($value[1] === 1){
-                $total += $travel[0]->getPriceClass1();
-            }else{
-                $total += $travel[0]->getPriceClass2();
+                $travel = $q->execute();
+                array_push($travels, [$travel[0], $value[1], $key]);
+                if ($value[1] === 1) {
+                    $total += $travel[0]->getPriceClass1();
+                } else {
+                    $total += $travel[0]->getPriceClass2();
+                }
             }
         }
+
         return $this->renderForm('Front/home/shopping.html.twig', [
             'controller_name' => 'HomeController',
             'travels' => $travels,
