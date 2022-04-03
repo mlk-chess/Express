@@ -47,20 +47,25 @@ class LineTrainController extends AbstractController
 
 
             $getWagonByTrain = $lineTrainRepository->findWagonByTrain($lineTrain->getTrain()->getId());
-          
-            foreach ($getWagonByTrain as $wagon){
+            
+            if(empty($getWagonByTrain)){
+                $errors[] = "Ce train n'a pas de wagon !";
+            }else{
+                foreach ($getWagonByTrain as $wagon){
 
-                if($wagon['type'] == "Voyageur"){
-                    if($wagon['class'] == 1){
-                        $placeNbclass1 += $wagon['placeNb'];
-                    }else{
-                        $placeNbclass2 += $wagon['placeNb'];
+                    if($wagon['type'] == "Voyageur"){
+                        if($wagon['class'] == 1){
+                            $placeNbclass1 += $wagon['placeNb'];
+                        }else{
+                            $placeNbclass2 += $wagon['placeNb'];
+                        }
                     }
                 }
+    
+                $lineTrain->setPlaceNbClass1($placeNbclass1);
+                $lineTrain->setPlaceNbClass2($placeNbclass2);
             }
-
-            $lineTrain->setPlaceNbClass1($placeNbclass1);
-            $lineTrain->setPlaceNbClass2($placeNbclass2);
+    
         
 
             $date = new DateTime($lineTrain->getDateDeparture()->format('Y-m-d') . " " . $lineTrain->getTimeDeparture()->format('H:i:s'));
@@ -138,13 +143,18 @@ class LineTrainController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'line_train_edit', methods: ['GET','POST'])]
-    public function edit(Request $request, LineTrain $lineTrain, LineTrainRepository $lineTrainRepository): Response
+    public function edit(Request $request, LineTrain $lineTrain, LineTrainRepository $lineTrainRepository, BookingRepository $bookingRepository): Response
     {
         $form = $this->createForm(LineTrainType::class, $lineTrain);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+
+            $booking = $bookingRepository->findBy(['lineTrain' => $lineTrain->getId()]);
+            if(!empty($booking)){
+                $errors[] = "Vous ne pouvez plus modifier ce voyage !";
+            }
 
             $lonDeparture = $lineTrain->getLine()->getLongitudeDeparture();
             $latDeparture = $lineTrain->getLine()->getLatitudeDeparture();
