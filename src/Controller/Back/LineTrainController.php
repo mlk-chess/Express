@@ -4,6 +4,7 @@ namespace App\Controller\Back;
 
 use App\Entity\LineTrain;
 use App\Form\LineTrainType;
+use App\Repository\BookingRepository;
 use App\Repository\LineRepository;
 use App\Repository\LineTrainRepository;
 use App\Service\Helper;
@@ -215,12 +216,21 @@ class LineTrainController extends AbstractController
     }
 
     #[Route('/{id}', name: 'line_train_delete', methods: ['POST'])]
-    public function delete(Request $request, LineTrain $lineTrain): Response
+    public function delete(Request $request, LineTrain $lineTrain,BookingRepository $bookingRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$lineTrain->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($lineTrain);
-            $entityManager->flush();
+            
+            $booking = $bookingRepository->findBy(['lineTrain' => $lineTrain->getId()]);
+
+            if(empty($booking)){
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->remove($lineTrain);
+                $entityManager->flush();
+                $this->addFlash('green', "Voyage supprimé !");
+            }else{
+                $this->addFlash('red', "Impossible de supprimer ce voyage !");
+            }
+          
         }
 
         return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
