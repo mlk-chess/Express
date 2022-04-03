@@ -2,16 +2,21 @@
 
 namespace App\Controller\Front;
 
+use App\Entity\Booking;
 use App\Entity\LineTrain;
 use App\Entity\Option;
 use App\Form\HomeType;
+use App\Repository\BookingRepository;
+use App\Repository\LineTrainRepository;
 use DateTime;
+use Error;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
+use function Doctrine\Common\Cache\Psr6\set;
 
 #[Route('/home')]
 class HomeController extends AbstractController
@@ -125,7 +130,6 @@ class HomeController extends AbstractController
                 $total += $travel[0]->getPriceClass2();
             }
         }
-
         return $this->renderForm('Front/home/shopping.html.twig', [
             'controller_name' => 'HomeController',
             'travels' => $travels,
@@ -166,6 +170,110 @@ class HomeController extends AbstractController
         }
         return new JsonResponse(false);
     }
+    #[Route('/success', name: 'success', methods: ['GET','POST'])]
+    public function success(Request $request, LineTrainRepository $lineTrainRepository, BookingRepository $bookingRepository): Response
+    {
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+        $session = $this->requestStack->getSession();
+        $dataSession = $session->get('shopping');
+        for ($i = 0; $i < sizeof($dataSession)-1; $i++) {
+            $idVoyage = $dataSession[$i][0];
+            $class = $dataSession[$i][1];
+            $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
+            $price = null;
+            if ($class == '1') {
+                $voyage[0]->setPlaceNbClass1($voyage[0]->getPlaceNbClass1()-1);
+                $price = $voyage[0]->getPriceClass1();
+            } else if ($class == '2') {
+                $voyage[0]->setPlaceNbClass2($voyage[0]->getPlaceNbClass2()-1);
+                $price = $voyage[0]->getPriceClass2();
+            }
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($voyage[0]);
+            $entityManager->flush();
+
+            $booking = new Booking();
+            $booking->setLineTrain($voyage[0]);
+            $booking->setPrice($price);
+            $booking->setStatus(1);
+
+            $booking->setIdUser($userConnected);
+            $booking->setPaymentIntent($dataSession["payment_intent"]);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($booking);
+            $entityManager->flush();
+        }
+
+        $session->remove('shopping');
+        return $this->render('Front/home/success.html.twig');
+    }
+
+    #[Route('/payment', name: 'payment', methods: ['GET','POST'])]
+    public function payment(Request $request, LineTrainRepository $lineTrainRepository): Response
+    {
+
+        // This is your test secret API key.
+        \Stripe\Stripe::setApiKey('sk_test_51Kk6uiCJ5s87DbRlsu9UTG7t0PbKcXlXM7bxLdibROOksHgDXIg1gXtp0SFv7o0MZxTcCTOLmEzjK1AVvdCR9LXg00vHipH4ZP');
+
+        header('Content-Type: application/json');
+
+        $YOUR_DOMAIN = 'http://localhost:8090/';
+        $session = $this->requestStack->getSession();
+        $dataSession = $session->get('shopping');
+        $price = 0;
+        $placeClass1 = 0;
+        $placeClass2 = 0;
+
+        for ($i = 0; $i < sizeof($dataSession); $i++){
+            $idVoyage = $dataSession[$i][0];
+            $class = $dataSession[$i][1];
+
+            $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
+
+            if ($class == '1'){
+                if ($voyage[0]->getPlaceNbClass1()-1 < 0){
+                    return $this->render('Front/home/error.html.twig');
+                }else{
+                    $voyage[0]->setPlaceNbClass1($voyage[0]->getPlaceNbClass1()-1);
+                }
+                $placeClass1 += 1;
+                $price += $voyage[0]->getPriceClass1();
+            }else if($class == '2'){
+                if ($voyage[0]->getPlaceNbClass2()-1 < 0){
+                    return $this->render('Front/home/error.html.twig');
+                }else{
+                    $voyage[0]->setPlaceNbClass2($voyage[0]->getPlaceNbClass2()-1);
+                }
+                $placeClass2 += 1;
+                $price += $voyage[0]->getPriceClass2();
+            }
+        }
+
+
+        $checkout_session = \Stripe\Checkout\Session::create([
+            'payment_method_types' => ['card'],
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'eur',
+                    'unit_amount' => $price*100,
+                    'product_data' => [
+                        'name' => 'Paiement de votre billet de train',
+                        'images' => ["https://i.imgur.com/EHyR2nP.png"],
+                    ],
+                ],
+                'quantity' => 1,
+            ]],
+            'mode' => 'payment',
+            'success_url' => $YOUR_DOMAIN . 'home/success',
+            'cancel_url' => $YOUR_DOMAIN . 'home/cancel',
+        ]);
+        $dataSession["payment_intent"] = $checkout_session["payment_intent"];
+        $session->set('shopping', $dataSession);
+        header("HTTP/1.1 303 See Other");
+
+        return $this->redirect($checkout_session->url);
+    }
 
     #[Route('/{id}', name: 'shopping_delete', methods: ['POST'])]
     public function delete(Request $request): Response
@@ -183,4 +291,6 @@ class HomeController extends AbstractController
 
         return $this->redirectToRoute('shopping', [], Response::HTTP_SEE_OTHER);
     }
+
+
 }
