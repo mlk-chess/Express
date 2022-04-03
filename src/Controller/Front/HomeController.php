@@ -240,7 +240,7 @@ class HomeController extends AbstractController
                 $placeClass1 += 1;
                 $price += $voyage[0]->getPriceClass1();
             }else if($class == '2'){
-                if ($voyage[0]->getPlaceNbClass2()-1 < 0){
+                if ($voyage[0]->getPlaceNbClass2()-1 < 0 || $voyage[0]->getPlaceNbClass2() == 0){
                     return $this->render('Front/home/error.html.twig');
                 }else{
                     $voyage[0]->setPlaceNbClass2($voyage[0]->getPlaceNbClass2()-1);
