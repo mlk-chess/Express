@@ -227,7 +227,6 @@ class HomeController extends AbstractController
         $price = 0;
         $placeClass1 = 0;
         $placeClass2 = 0;
-
         for ($i = 0; $i < sizeof($dataSession); $i++){
             $idVoyage = $dataSession[$i][0];
             $class = $dataSession[$i][1];
@@ -271,6 +270,7 @@ class HomeController extends AbstractController
             'success_url' => $YOUR_DOMAIN . 'home/success',
             'cancel_url' => $YOUR_DOMAIN . 'home/cancel',
         ]);
+        unset($dataSession["payment_intent"]);
         $dataSession["payment_intent"] = $checkout_session["payment_intent"];
         $session->set('shopping', $dataSession);
         header("HTTP/1.1 303 See Other");
