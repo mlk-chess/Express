@@ -7,54 +7,62 @@
     <script src="https://js.stripe.com/v3/"></script>
     <div class="container">
         <div class="row">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Gare de départ</th>
-                    <th>Gare d'arrivée</th>
-                    <th>Jour de départ</th>
-                    <th>Heure de départ</th>
-                    <th>Classe</th>
-                    <th>Prix</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for key, travel in travels %}
-                    <tr>
-                        <td>{{ travel[0].getLine().getNameStationDeparture() }}</td>
-                        <td>{{ travel[0].getLine().getNameStationArrival() }}</td>
-                        <td>{{ travel[0].getDateDeparture()|date('d-m-Y') }}</td>
-                        <td>{{ travel[0].getTimeDeparture()|date('H:i') }}</td>
-                        <td>{{ travel[1] }}</td>
-                        {% if travel[1] == 1 %}
-                            <td>{{ travel[0].getPriceClass1() }} €</td>
-                        {% else %}
-                            <td>{{ travel[0].getPriceClass2() }} €</td>
-                        {% endif %}
-                        <td>
-                            {{ include('Front/home/_delete_form.html.twig') }}
-                        </td>
-                    </tr>
+            <div class="col-sm-12">
+
+                {% if travels %}
+                    {% for key, travel in travels %}
+                        <div class="mt-5 d-flex justify-content-between align-items-center border shadow-sm rounded px-3 me-4 bg-white pt-3">
+                            <div class="d-flex flex-column">
+                                <p class="fw-bold">{{ travel[0].getDateDeparture()|date('d-m-Y') }}</p>
+                                <div class="d-flex flex-row">
+                                    <p class="fw-bold">{{ travel[0].getTimeDeparture()|date('H') }}</p>
+                                    <p class="fw-bold">h</p>
+                                    <p class="fw-bold">{{ travel[0].getTimeDeparture()|date('i') }}</p>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-column mx-4">
+                                <p>{{ travel[0].getLine().getNameStationDeparture() }}</p>
+                                <p>{{ travel[0].getLine().getNameStationArrival() }}</p>
+                            </div>
+
+                            <div>
+                                {% if travel[1] == 1 %}
+                                    <td>{{ travel[0].getPriceClass1() }} €</td>
+                                {% else %}
+                                    <td>{{ travel[0].getPriceClass2() }} €</td>
+                                {% endif %}
+                            </div>
+
+                            <div>
+                                {{ include('Front/home/_delete_form.html.twig') }}
+                            </div>
+                        </div>
+
+
+                    {% endfor %}
+
+                    <p>Total: {{ total }} €</p>
+
+                    <section>
+                        {% if app.user %}
+                        <form action="{{ path('payment') }}" method="POST">
+                            <button class="btn btn-primary" type="submit" id="checkout-button">Payer</button>
+                            {% else %}
+                            <form action="/login" method="POST">
+                                <button class="btn btn-primary" type="submit">Payer</button>
+                                {% endif %}
+
+
+                            </form>
+                    </section>
                 {% else %}
-                    <tr>
-                        <td colspan="6">no records found</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            <p>Total: {{ total }} €</p>
+                    <div class="d-flex flex-column align-items-center mt-5">
+                        <h3>Votre panier est vide</h3>
+                        <a href="/" class="mt-5"><button type="button" class="btn btn-primary">Rechercher un voyage</button></a>
+                    </div>
+                {% endif %}
+            </div>
         </div>
-        <section>
-            {% if app.user %}
-                <form action="{{ path('payment') }}" method="POST">
-                    <button type="submit" id="checkout-button">Payer</button>
-            {% else %}
-                <form action="/login" method="POST">
-                    <button type="submit" >Payer</button>
-            {% endif %}
-
-
-            </form>
-        </section>
     </div>
 {% endblock %}
