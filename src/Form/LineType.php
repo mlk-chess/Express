@@ -22,10 +22,14 @@ class LineType extends AbstractType{
 
         $builder
             ->add('name_station_departure',ChoiceType::class, [
-                'choices' => $stations
+                'choices' => $stations,
+                'label' => "Station de départ",
+                "attr" => ["class" => "form-control"]
             ])
             ->add('name_station_arrival',ChoiceType::class, [
-                'choices' => $stations
+                'choices' => $stations,
+                'label' => "Station d'arrivée",
+                "attr" => ["class" => "form-control"]
             ]);
 
     }
