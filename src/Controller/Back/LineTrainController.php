@@ -245,4 +245,16 @@ class LineTrainController extends AbstractController
 
         return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/planning', name: 'line_train_planning', methods: ['GET'])]
+    public function planning(LineTrainRepository $lineTrainRepository): Response
+    {
+
+        return $this->render('Back/line_train/index.html.twig', [
+            'line_trains' => $lineTrainRepository->findAll(),
+        ]);
+    }
+
+
+
 }
