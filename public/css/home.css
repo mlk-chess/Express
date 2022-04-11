@@ -1,3 +1,7 @@
+/*body {*/
+/*    background-color: #f4f4f5;*/
+/*}*/
+
 #updateDepartureStation {
     display: none;
 }
@@ -14,12 +18,21 @@
     cursor: pointer;
 }
 
-#optionContainer {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 30%;
-    height: 100vh;
-    background-color: #8f8989a6;
-    display: none;
+.mycluster {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: #3498db;
+    color: white;
+    text-align: center;
+    font-size: 20px;
+    line-height: 40px;
+    margin-top: -20px;
+    margin-left: -20px;
 }
+
+.button-price:hover {
+    background-color: #eeeaea !important;
+    cursor: pointer;
+}
+

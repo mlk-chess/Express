@@ -6,7 +6,7 @@ let stations;
 
 $.ajax({
     type: 'GET',
-    url: '/home/stations',
+    url: '/stations',
     data: '',
     success: function(data) {
         stations = JSON.parse(data);
@@ -96,7 +96,18 @@ const updateDepartureStation = document.getElementById('updateDepartureStation')
 const updateArrivalStation = document.getElementById('updateArrivalStation');
 
 
+$(window).click(function() {
+    listStationsDeparture.innerHTML = '';
+    listStationsArrival.innerHTML = '';
+});
 
+$("#listStationsDeparture").click(function(event){
+    event.stopPropagation();
+});
+
+$("#listStationsArrival").click(function(event){
+    event.stopPropagation();
+});
 
 
 
@@ -140,7 +151,7 @@ function handleKeyPress(input, list, type) {
 
             for (let key in stations) {
                 if (stations[key].Nom_Gare.toLowerCase().search(regexSearch) === 0) {
-                    html += "<li onclick='addStation(\""+stations[key].Nom_Gare+"\", "+type+")'>" + stations[key].Nom_Gare + "</li>";
+                    html += "<li class='list-group-item' onclick='addStation(\""+stations[key].Nom_Gare+"\", "+type+")'>" + stations[key].Nom_Gare + "</li>";
                 }
             }
             list.innerHTML = html;
@@ -153,13 +164,13 @@ function handleKeyPress(input, list, type) {
 function addStation(station, type) {
 
     if (type){
-        departureStation.innerHTML = "<p>"+station+"</p>";
+        $("#departureStation").append('<p class="form-control">'+station+' </p>');
         departureStationInput.value = station
         listStationsDeparture.innerHTML = '';
         departureStationSearch.style.display = "none";
         updateDepartureStation.style.display = "block";
     }else {
-        arrivalStation.innerHTML = "<p>"+station+"</p>";
+        $("#arrivalStation").append('<p class="form-control">'+station+' </p>');
         arrivalStationInput.value = station
         listStationsArrival.innerHTML = '';
         arrivalStationSearch.style.display = "none";
@@ -170,7 +181,7 @@ function addStation(station, type) {
 
 
 function selectDepartureStation(name){
-    departureStation.innerHTML = "<p>"+name+"</p>";
+    $("#departureStation").append('<p class="form-control">'+name+' </p>');
     departureStationInput.value = name;
     listStationsDeparture.innerHTML = '';
     departureStationSearch.style.display = "none";
@@ -178,7 +189,7 @@ function selectDepartureStation(name){
 }
 
 function selectArrivalStation(name){
-    arrivalStation.innerHTML = "<p>"+name+"</p>";
+    $("#arrivalStation").append('<p class="form-control">'+name+' </p>');
     arrivalStationInput.value = name;
     listStationsArrival.innerHTML = '';
     arrivalStationSearch.style.display = "none";
@@ -202,7 +213,7 @@ function clickUpdate(update, station, search, input) {
 function addOption(id, classWagon) {
     $.ajax({
         type: 'POST',
-        url: '/home/add-option',
+        url: '/add-option',
         data: {
             id: id,
             classWagon: classWagon

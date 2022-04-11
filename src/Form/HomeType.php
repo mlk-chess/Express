@@ -24,12 +24,14 @@ class HomeType extends AbstractType
             ->add('date', DateType::class, [
                 'label' => 'Le : ',
                 'required' => true,
-                'widget' => 'single_text'
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control mb-3']
             ])
             ->add('time', TimeType::class, [
                 'label' => 'A partir de : ',
                 'required' => true,
-                'widget' => 'single_text'
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control mb-3']
             ])
         ;
     }
