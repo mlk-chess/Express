@@ -164,13 +164,13 @@ function handleKeyPress(input, list, type) {
 function addStation(station, type) {
 
     if (type){
-        departureStation.innerHTML = "<p>"+station+"</p>";
+        $("#departureStation").append('<p class="form-control">'+station+' </p>');
         departureStationInput.value = station
         listStationsDeparture.innerHTML = '';
         departureStationSearch.style.display = "none";
         updateDepartureStation.style.display = "block";
     }else {
-        arrivalStation.innerHTML = "<p>"+station+"</p>";
+        $("#arrivalStation").append('<p class="form-control">'+station+' </p>');
         arrivalStationInput.value = station
         listStationsArrival.innerHTML = '';
         arrivalStationSearch.style.display = "none";
@@ -181,7 +181,7 @@ function addStation(station, type) {
 
 
 function selectDepartureStation(name){
-    departureStation.innerHTML = "<p>"+name+"</p>";
+    $("#departureStation").append('<p class="form-control">'+name+' </p>');
     departureStationInput.value = name;
     listStationsDeparture.innerHTML = '';
     departureStationSearch.style.display = "none";
@@ -189,7 +189,7 @@ function selectDepartureStation(name){
 }
 
 function selectArrivalStation(name){
-    arrivalStation.innerHTML = "<p>"+name+"</p>";
+    $("#arrivalStation").append('<p class="form-control">'+name+' </p>');
     arrivalStationInput.value = name;
     listStationsArrival.innerHTML = '';
     arrivalStationSearch.style.display = "none";
