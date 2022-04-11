@@ -1,37 +1,44 @@
 {% extends 'base_home.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}PA EXPRESS{% endblock %}
 
 {% block body %}
-    <a href="/home/shopping">Panier</a>
+    <div class="text-end me-4 mt-2">
+        <a href="/shopping">
+            <button type="button" class="btn btn-outline-dark">Panier<i class="fa-solid fa-pencil"></i></button>
+        </a>
+    </div>
 
     <div class="container">
         <h1 class="text-center mb-3">Bienvenue chez PA EXPRESS</h1>
         <div class="row border shadow-sm rounded p-3 mb-4 bg-white">
-            <div class="col-sm-6 d-flex flex-column">
+            <div class="col-sm-6 d-flex flex-column pe-3">
 
                 <div class="mb-3">
                     <label for="departureStationSearch">Gare de départ : </label>
                     <input class="form-control" type="text" id="departureStationSearch" placeholder="Paris-Montparnasse">
+                    <ul class="list-group" id="listStationsDeparture"></ul>
                 </div>
 
                 <div class="d-flex flex-row">
                     <div id="departureStation"></div>
-                    <i class="fas fa-edit" id="updateDepartureStation"></i>
+                    <i class="fa-solid fa-pencil" id="updateDepartureStation"></i>
                 </div>
 
                 <div class="mb-3">
                     <label for="arrivalStationSearch">Gare d'arrivée : </label>
                     <input class="form-control" type="text" id="arrivalStationSearch" placeholder="Poitiers">
+                    <ul class="list-group" id="listStationsArrival"></ul>
                 </div>
 
                 <div class="d-flex flex-row">
-                    <div id="departureStation"></div>
-                    <i class="fas fa-edit" id="updateDepartureStation"></i>
+                    <div id="arrivalStation"></div>
+                    <i class="fa-solid fa-pencil" id="updateArrivalStation"></i>
                 </div>
 
             </div>
-            <div class="col-sm-6 flex">
+
+            <div class="col-sm-6 flex ps-5">
                 {{ include('Front/home/_form.html.twig') }}
             </div>
         </div>
@@ -39,11 +46,11 @@
         <div class="accordion mb-5">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <button class="accordion-button {% if (travels or noTravels) %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="{% if (travels or noTravels) %}false{% else %}true{% endif %}" aria-controls="collapseOne">
                         Sélectionnez une gare sur la carte
                     </button>
                 </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div id="collapseOne" class="accordion-collapse collapse {% if (travels == false and noTravels == false) %}show{% endif %}" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <div id="map" style="height: 500px; width: 100%"></div>
                     </div>
@@ -56,7 +63,7 @@
                 <div class="row mb-5">
                     <div class="col-sm-8">
                         <div>
-                            <div class=" d-flex border shadow-sm rounded px-3 me-4 bg-white">
+                            <div class=" d-flex border shadow-sm rounded px-3 me-4 bg-white pt-3">
                                 <div class="d-flex flex-column">
                                     <p class="fw-bold">{{ travel.getDateDeparture()|date('d-m-Y')}}</p>
                                     <div class="d-flex flex-row">
@@ -74,15 +81,15 @@
                         </div>
                     </div>
                     <div class="col-sm-2">
-                        <div onclick="addOption({{ travel.id }}, 1)" class="border shadow-sm rounded px-3 bg-white">
-                            <p>Classe 1</p>
-                            <p>{{ travel.getPriceClass1  }} €</p>
+                        <div onclick="addOption({{ travel.id }}, 1)" class="border shadow-sm rounded px-3 bg-white button-price">
+                            <p class="text-center pt-3">Classe 1</p>
+                            <p class="text-center">{{ travel.getPriceClass1  }} €</p>
                         </div>
                     </div>
                     <div class="col-sm-2">
-                        <div onclick="addOption({{ travel.id }}, 2)" class="border shadow-sm rounded px-3 ms-3 bg-white">
-                            <p>Classe 2</p>
-                            <p>{{ travel.getPriceClass2  }} €</p>
+                        <div onclick="addOption({{ travel.id }}, 2)" class="border shadow-sm rounded px-3 ms-3 bg-white button-price">
+                            <p class="text-center pt-3">Classe 2</p>
+                            <p class="text-center">{{ travel.getPriceClass2  }} €</p>
                         </div>
                     </div>
                 </div>
@@ -90,26 +97,14 @@
         {% endif %}
 
         {% if noTravels %}
-            <p>Aucun voyages pour cette date à cette heure</p>
+            <p>Aucun résultat pour la recherche</p>
         {% endif %}
     </div>
-
-    <div id="arrivalStation"></div>
-    <i class="fas fa-edit" id="updateArrivalStation"></i>
-
-    <div id="listStationsDeparture"></div>
-    <div id="listStationsArrival"></div>
 
     <script>
         const linkAsset = "{{ asset('img/') }}"
     </script>
 
     <script src="{{ asset('js/home.js') }}"></script>
-
-    <script>
-        $(document).ready(function() {
-            $('select').formSelect();
-        });
-    </script>
 
 {% endblock %}

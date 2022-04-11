@@ -31,3 +31,8 @@
     margin-left: -20px;
 }
 
+.button-price:hover {
+    background-color: #eeeaea !important;
+    cursor: pointer;
+}
+

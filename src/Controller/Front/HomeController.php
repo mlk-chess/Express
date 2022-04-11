@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
 use function Doctrine\Common\Cache\Psr6\set;
 
-#[Route('/home')]
+#[Route('/')]
 class HomeController extends AbstractController
 {
 

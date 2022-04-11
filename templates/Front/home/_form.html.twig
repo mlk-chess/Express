@@ -1,4 +1,6 @@
 {{ form_start(form) }}
     {{ form_widget(form) }}
-    <button class="btn btn-secondary">{{ button_label|default('Rechercher') }}</button>
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-secondary">{{ button_label|default('Rechercher') }}</button>
+    </div>
 {{ form_end(form) }}
