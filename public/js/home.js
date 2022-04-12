@@ -1,3 +1,5 @@
+let counterTraveler = 1;
+
 ////////////////////////////
 //      MAP     //
 ////////////////////////////
@@ -210,21 +212,96 @@ function clickUpdate(update, station, search, input) {
 //      OPTIONS     //
 ////////////////////////////
 
+function selectOption(id, classWagon, price, date, time, departure, arrival) {
+    counterTraveler = 1;
+
+    $("#footerModal").show();
+
+    $("#bodyModal").html('<div class="d-flex justify-content-between">' +
+        '                        <div class="d-flex flex-column">' +
+        '                            <p id="dateModal"></p>' +
+        '                            <p id="timeModal"></p>' +
+        '                        </div>' +
+        '                        <div class="d-flex flex-column">' +
+        '                            <p id="departureModal"></p>' +
+        '                            <p id="arrivalModal"></p>' +
+        '                        </div>' +
+        '                    </div>' +
+        '                    <p class="my-4 text-center fw-bold" id="priceModal"></p>' +
+        '                    <div class="d-flex flex-column" id="containerModal"></div>' +
+        '                    <div class="mt-3 d-flex justify-content-between">' +
+        '                        <button class="btn btn-outline-secondary" onclick="addTraveler()">Ajouter un voyageur</button>' +
+        '                        <button class="btn btn-outline-danger" id="deleteTraveler" onclick="deleteTraveler()">Supprimer' +
+        '                            un voyageur' +
+        '                        </button>' +
+        '                    </div>')
+
+    $("#dateModal").html(date);
+    $("#timeModal").html(time);
+    $("#priceModal").html(price + "€ par voyageur");
+    $("#departureModal").html(departure);
+    $("#arrivalModal").html(arrival);
+
+    const html = '<p class="mt-5">Voyageur '+counterTraveler+'</p>' +
+
+        '<label for="firstname'+counterTraveler+'">Prénom</label>' +
+        '<input type="text" class="form-control" name="firstname'+counterTraveler+'" id="firstname'+counterTraveler+'">' +
+
+        '<label for="lastname'+counterTraveler+'">Nom</label>' +
+        '<input type="text" class="form-control" name="lastName'+counterTraveler+'" id="lastname'+counterTraveler+'">';
+
+    $("#containerModal").html(html);
+    counterTraveler++;
+}
+
+function addTraveler() {
+    const html = '<div id="traveler'+counterTraveler+'">' +
+            '<p class="mt-5">Voyageur '+counterTraveler+'</p>' +
+
+            '<label for="firstname'+counterTraveler+'">Prénom</label>' +
+            '<input type="text" class="form-control" name="firstname'+counterTraveler+'" id="firstname'+counterTraveler+'">' +
+
+            '<label for="lastname'+counterTraveler+'">Nom</label>' +
+            '<input type="text" class="form-control" name="lastName'+counterTraveler+'" id="lastname'+counterTraveler+'">' +
+        '</div>';
+
+    $("#containerModal").append(html);
+    $("#deleteTraveler").show();
+    counterTraveler++;
+}
+
+function deleteTraveler() {
+    $("#traveler"+(counterTraveler - 1)).remove();
+    counterTraveler--;
+    if (counterTraveler === 2) {
+        $("#deleteTraveler").hide();
+    }
+}
+
 function addOption(id, classWagon) {
-    $.ajax({
-        type: 'POST',
-        url: '/add-option',
-        data: {
-            id: id,
-            classWagon: classWagon
-        },
-        success: function(data) {
-        },
-        error: function (xhr, ajaxOptions, thrownError){
-            alert(xhr.responseText);
-            alert(ajaxOptions);
-            alert(thrownError);
-            alert(xhr.status);
-        }
-    });
+    // $.ajax({
+    //     type: 'POST',
+    //     url: '/add-option',
+    //     data: {
+    //         id: id,
+    //         classWagon: classWagon
+    //     },
+    //     success: function(data) {
+    //     },
+    //     error: function (xhr, ajaxOptions, thrownError){
+    //         alert(xhr.responseText);
+    //         alert(ajaxOptions);
+    //         alert(thrownError);
+    //         alert(xhr.status);
+    //     }
+    // });
+
+    $("#footerModal").hide();
+
+    $("#bodyModal").html('<p class="text-center">Le voyage a été ajouté à votre panier</p>' +
+        '<div class="my-4 d-flex justify-content-between">' +
+            '<button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Choisir un autre voyage</button>\n' +
+            '<a href="/shopping"><button type="button" class="btn btn-outline-dark">Voir mon panier</button></a>' +
+        '</div>');
+
 }
