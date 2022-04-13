@@ -16,7 +16,7 @@
 
                 <div class="mb-3">
                     <label for="departureStationSearch">Gare de départ : </label>
-                    <input class="form-control" type="text" id="departureStationSearch"
+                    <input class="form-control mt-3" type="text" id="departureStationSearch"
                            placeholder="Paris-Montparnasse">
                     <ul class="list-group" id="listStationsDeparture"></ul>
                 </div>
@@ -28,7 +28,7 @@
 
                 <div class="mb-3">
                     <label for="arrivalStationSearch">Gare d'arrivée : </label>
-                    <input class="form-control" type="text" id="arrivalStationSearch" placeholder="Poitiers">
+                    <input class="form-control mt-3" type="text" id="arrivalStationSearch" placeholder="Poitiers">
                     <ul class="list-group" id="listStationsArrival"></ul>
                 </div>
 
@@ -56,7 +56,7 @@
                 </h2>
                 <div id="collapseOne"
                      class="accordion-collapse collapse {% if (travels == false and noTravels == false) %}show{% endif %}"
-                     aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                     aria-labelledby="headingOne" data-bs-parent="#accordion">
                     <div class="accordion-body">
                         <div id="map" style="height: 500px; width: 100%"></div>
                     </div>
@@ -150,7 +150,8 @@
                 </div>
                 <div class="modal-footer" id="footerModal">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                    <button type="button" class="btn btn-primary" onclick="addOption()">Ajouter au panier</button>
+                    <button type="button" class="btn btn-primary" id="buttonSaveModal">Ajouter au panier</button>
+                    <p id="errorModal">Veuillez remplir tous les champs</p>
                 </div>
             </div>
         </div>

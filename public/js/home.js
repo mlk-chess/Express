@@ -215,6 +215,8 @@ function clickUpdate(update, station, search, input) {
 function selectOption(id, classWagon, price, date, time, departure, arrival) {
     counterTraveler = 1;
 
+    $("#buttonSaveModal").attr('onclick', 'addOption('+id+','+classWagon+')')
+    $("#errorModal").hide();
     $("#footerModal").show();
 
     $("#bodyModal").html('<div class="d-flex justify-content-between">' +
@@ -279,22 +281,39 @@ function deleteTraveler() {
 }
 
 function addOption(id, classWagon) {
-    // $.ajax({
-    //     type: 'POST',
-    //     url: '/add-option',
-    //     data: {
-    //         id: id,
-    //         classWagon: classWagon
-    //     },
-    //     success: function(data) {
-    //     },
-    //     error: function (xhr, ajaxOptions, thrownError){
-    //         alert(xhr.responseText);
-    //         alert(ajaxOptions);
-    //         alert(thrownError);
-    //         alert(xhr.status);
-    //     }
-    // });
+    let travelers = [];
+    for (let i = 1; i < counterTraveler; i++){
+        if ($("#firstname"+i).val() === '' || $("#lastname"+i).val() === ''){
+            travelers = [];
+            break;
+        }else {
+            travelers.push([$("#firstname" + i).val(), $("#lastname" + i).val()]);
+        }
+    }
+
+    if (travelers.length === 0) {
+        $("#errorModal").show();
+        return;
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: '/add-option',
+        data: {
+            id: id,
+            classWagon: classWagon,
+            travelers: travelers
+        },
+        success: function(data) {
+        },
+        error: function (xhr, ajaxOptions, thrownError){
+            alert(xhr.responseText);
+            alert(ajaxOptions);
+            alert(thrownError);
+            alert(xhr.status);
+        }
+    });
+
 
     $("#footerModal").hide();
 

@@ -40,3 +40,8 @@
     display: none;
 }
 
+#errorModal {
+    display: none;
+    color: red;
+}
+
