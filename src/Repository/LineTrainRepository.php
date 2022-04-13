@@ -20,6 +20,19 @@ class LineTrainRepository extends ServiceEntityRepository
     }
 
 
+    public function findLineTrainByDate(){
+
+        $qb = $this->createQueryBuilder('lt')
+        ->select('COUNT(lt) as nb, lt.date_departure')
+        ->groupBy('lt.date_departure');
+
+        $query = $qb->getQuery();
+
+        return $query->execute();
+
+    }
+
+
     public function findTrainByDate($trainId,$id = null): array
     {
         $entityManager = $this->getEntityManager();

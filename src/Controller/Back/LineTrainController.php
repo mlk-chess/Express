@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/line-train')]
 class LineTrainController extends AbstractController
@@ -25,6 +26,33 @@ class LineTrainController extends AbstractController
             'line_trains' => $lineTrainRepository->findAll(),
         ]);
     }
+
+    #[Route('/planning', name: 'line_train_planning', methods: ['GET'])]
+    public function planning(LineTrainRepository $lineTrainRepository): Response
+    {   
+
+        $getTravels = $lineTrainRepository->findLineTrainByDate();
+        $travels = [];
+
+        foreach($getTravels as $travel){
+            $travels[] = [
+                'title' => $travel["nb"] . " départ(s) prévu(s)",
+                'start' => $travel["date_departure"]->format('Y-m-d'),
+                'display' => "background",
+               
+             
+               
+            ];
+        }
+
+
+        $data = json_encode($travels);
+
+        return $this->render('Back/line_train/planning.html.twig', [
+            'data' => $data
+        ]);
+    }
+
 
     #[Route('/new', name: 'line_train_new', methods: ['GET','POST'])]
     public function new(Request $request, LineTrainRepository $lineTrainRepository ): Response
@@ -246,14 +274,43 @@ class LineTrainController extends AbstractController
         return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/planning', name: 'line_train_planning', methods: ['GET'])]
-    public function planning(LineTrainRepository $lineTrainRepository): Response
-    {
+    #[Route('/planning/{date}', name: 'line_train_planning_show', methods: ['GET'])]
+    public function planningShow(LineTrainRepository $lineTrainRepository, Request $request, DateTime $date): Response
+    {   
+        $output = [];
+        if ($request->isXmlHttpRequest()) {
 
-        return $this->render('Back/line_train/index.html.twig', [
-            'line_trains' => $lineTrainRepository->findAll(),
-        ]);
+           $travels = $lineTrainRepository->findBy(
+               ['date_departure' => $date],
+               ['time_departure' => 'ASC'],
+            
+            );
+
+        
+            foreach ($travels as $travel){
+
+            
+                $output[] = [
+                    $travel->getId(),
+                    $travel->getTrain()->getName(),
+                    $travel->getLine()->getNameStationDeparture(),
+                    $travel->getLine()->getNameStationArrival(),
+                    $travel->getDateDeparture(),
+                    $travel->getDateArrival(),
+                    $travel->getTimeDeparture()->format('H:i'),
+                    $travel->getTimeArrival()->format('H:i'),
+                  
+                
+                ];
+            }
+        
+            return new JsonResponse($output);
+        }
+        return new JsonResponse(false);
+       
     }
+
+
 
 
 
