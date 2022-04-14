@@ -52,7 +52,12 @@ class Booking
     /**
      * @ORM\Column(type="integer")
      */
+
     private $status;
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $travelers = [];
 
     public function getId(): ?int
     {
@@ -139,6 +144,18 @@ class Booking
     public function setStatus(int $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getTravelers(): array
+    {
+        return $this->status;
+    }
+
+    public function setTravelers(array $travelers): self
+    {
+        $this->travelers = $travelers;
 
         return $this;
     }

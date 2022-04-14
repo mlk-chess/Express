@@ -212,24 +212,24 @@ function clickUpdate(update, station, search, input) {
 //      OPTIONS     //
 ////////////////////////////
 
-function selectOption(id, classWagon, price, date, time, departure, arrival) {
+function selectOption(id, classWagon, price, dateDeparture, dateArrival, departure, arrival) {
     counterTraveler = 1;
 
     $("#buttonSaveModal").attr('onclick', 'addOption('+id+','+classWagon+')')
     $("#errorModal").hide();
     $("#footerModal").show();
 
-    $("#bodyModal").html('<div class="d-flex justify-content-between">' +
+    $("#bodyModal").html('<div class="d-flex">' +
         '                        <div class="d-flex flex-column">' +
-        '                            <p id="dateModal"></p>' +
-        '                            <p id="timeModal"></p>' +
+        '                            <p>'+dateDeparture+'</p>' +
+        '                            <p>'+dateArrival+'</p>' +
         '                        </div>' +
-        '                        <div class="d-flex flex-column">' +
-        '                            <p id="departureModal"></p>' +
-        '                            <p id="arrivalModal"></p>' +
+        '                        <div class="d-flex flex-column ms-4">' +
+        '                            <p>'+departure+'</p>' +
+        '                            <p>'+arrival+'</p>' +
         '                        </div>' +
         '                    </div>' +
-        '                    <p class="my-4 text-center fw-bold" id="priceModal"></p>' +
+        '                    <p class="my-4 text-center fw-bold">'+price+'€ par voyageur</p>' +
         '                    <div class="d-flex flex-column" id="containerModal"></div>' +
         '                    <div class="mt-3 d-flex justify-content-between">' +
         '                        <button class="btn btn-outline-secondary" onclick="addTraveler()">Ajouter un voyageur</button>' +
@@ -238,18 +238,13 @@ function selectOption(id, classWagon, price, date, time, departure, arrival) {
         '                        </button>' +
         '                    </div>')
 
-    $("#dateModal").html(date);
-    $("#timeModal").html(time);
-    $("#priceModal").html(price + "€ par voyageur");
-    $("#departureModal").html(departure);
-    $("#arrivalModal").html(arrival);
 
     const html = '<p class="mt-5">Voyageur '+counterTraveler+'</p>' +
 
         '<label for="firstname'+counterTraveler+'">Prénom</label>' +
         '<input type="text" class="form-control" name="firstname'+counterTraveler+'" id="firstname'+counterTraveler+'">' +
 
-        '<label for="lastname'+counterTraveler+'">Nom</label>' +
+        '<label for="lastname'+counterTraveler+'" class="mt-2">Nom</label>' +
         '<input type="text" class="form-control" name="lastName'+counterTraveler+'" id="lastname'+counterTraveler+'">';
 
     $("#containerModal").html(html);
@@ -263,7 +258,7 @@ function addTraveler() {
             '<label for="firstname'+counterTraveler+'">Prénom</label>' +
             '<input type="text" class="form-control" name="firstname'+counterTraveler+'" id="firstname'+counterTraveler+'">' +
 
-            '<label for="lastname'+counterTraveler+'">Nom</label>' +
+            '<label for="lastname'+counterTraveler+'" class="mt-2">Nom</label>' +
             '<input type="text" class="form-control" name="lastName'+counterTraveler+'" id="lastname'+counterTraveler+'">' +
         '</div>';
 

@@ -156,14 +156,15 @@ class HomeController extends AbstractController
         if ($request->isXmlHttpRequest()) {
             $id = intval($request->request->get('id'));
             $classWagon = intval($request->request->get('classWagon'));
+            $travelers = intval($request->request->get('travelers'));
 
             $session = $this->requestStack->getSession();
             $dataSession = $session->get('shopping');
 
             if ($dataSession === null){
-                $session->set('shopping', [[$id, $classWagon]]);
+                $session->set('shopping', [[$id, $classWagon, $travelers]]);
             } else {
-                array_push($dataSession, [$id, $classWagon]);
+                array_push($dataSession, [$id, $classWagon, $travelers]);
                 $session->set('shopping', $dataSession);
             }
 
@@ -182,6 +183,7 @@ class HomeController extends AbstractController
         for ($i = 0; $i < sizeof($dataSession)-1; $i++) {
             $idVoyage = $dataSession[$i][0];
             $class = $dataSession[$i][1];
+            $travelers = $dataSession[$i][2];
             $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
             $price = null;
             if ($class == '1') {
@@ -199,6 +201,7 @@ class HomeController extends AbstractController
             $booking->setLineTrain($voyage[0]);
             $booking->setPrice($price);
             $booking->setStatus(1);
+            $booking->setTravelers($travelers);
 
             $booking->setIdUser($userConnected);
             $booking->setPaymentIntent($dataSession["payment_intent"]);

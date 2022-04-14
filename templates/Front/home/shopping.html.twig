@@ -12,12 +12,18 @@
                 {% if travels %}
                     {% for key, travel in travels %}
                         <div class="mt-5 d-flex justify-content-between align-items-center border shadow-sm rounded px-3 me-4 bg-white pt-3">
+                            <p class="fw-bold">{{ travel[0].getDateDeparture()|date('d-m-Y') }}</p>
+
                             <div class="d-flex flex-column">
-                                <p class="fw-bold">{{ travel[0].getDateDeparture()|date('d-m-Y') }}</p>
                                 <div class="d-flex flex-row">
                                     <p class="fw-bold">{{ travel[0].getTimeDeparture()|date('H') }}</p>
                                     <p class="fw-bold">h</p>
                                     <p class="fw-bold">{{ travel[0].getTimeDeparture()|date('i') }}</p>
+                                </div>
+                                <div class="d-flex flex-row">
+                                    <p class="fw-bold">{{ travel[0].getTimeArrival()|date('H') }}</p>
+                                    <p class="fw-bold">h</p>
+                                    <p class="fw-bold">{{ travel[0].getTimeArrival()|date('i') }}</p>
                                 </div>
                             </div>
 
