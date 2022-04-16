@@ -65,7 +65,7 @@ function loadMarkers(){
             closeButton: false,
             className: 'marker',
             maxWidth: 400
-        }).setContent(stations[key].Nom_Gare+'</p><br/><button onclick=\'selectDepartureStation("'+stations[key].Nom_Gare+'")\'>Gare de départ</button><br/><button onclick=\'selectArrivalStation("'+stations[key].Nom_Gare+'")\'>Gare d\'arrivée</button>');
+        }).setContent('<h5>'+stations[key].Nom_Gare+'</h5><br/><button class="btn btn-primary mb-3" onclick=\'selectDepartureStation("'+stations[key].Nom_Gare+'")\'>Gare de départ</button><br/><button class="btn btn-primary" onclick=\'selectArrivalStation("'+stations[key].Nom_Gare+'")\'>Gare d\'arrivée</button>');
 
         marker.bindPopup(popup);
 
@@ -290,7 +290,9 @@ function addOption(id, classWagon) {
         $("#errorModal").show();
         return;
     }
-
+    console.log(id);
+    console.log(classWagon);
+    console.log(travelers);
     $.ajax({
         type: 'POST',
         url: '/add-option',
@@ -300,6 +302,18 @@ function addOption(id, classWagon) {
             travelers: travelers
         },
         success: function(data) {
+            console.log(data);
+            if (data === false) {
+
+            }else {
+                $("#footerModal").hide();
+
+                $("#bodyModal").html('<p class="text-center">Le voyage a été ajouté à votre panier</p>' +
+                    '<div class="my-4 d-flex justify-content-between">' +
+                    '<button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Choisir un autre voyage</button>\n' +
+                    '<a href="/shopping"><button type="button" class="btn btn-outline-dark">Voir mon panier</button></a>' +
+                    '</div>');
+            }
         },
         error: function (xhr, ajaxOptions, thrownError){
             alert(xhr.responseText);
@@ -308,14 +322,4 @@ function addOption(id, classWagon) {
             alert(xhr.status);
         }
     });
-
-
-    $("#footerModal").hide();
-
-    $("#bodyModal").html('<p class="text-center">Le voyage a été ajouté à votre panier</p>' +
-        '<div class="my-4 d-flex justify-content-between">' +
-            '<button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Choisir un autre voyage</button>\n' +
-            '<a href="/shopping"><button type="button" class="btn btn-outline-dark">Voir mon panier</button></a>' +
-        '</div>');
-
 }
