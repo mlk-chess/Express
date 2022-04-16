@@ -1,10 +1,9 @@
 let counterTraveler = 1;
+let stations;
 
 ////////////////////////////
 //      MAP     //
 ////////////////////////////
-
-let stations;
 
 $.ajax({
     type: 'GET',
@@ -73,6 +72,12 @@ function loadMarkers(){
     }
     map.addLayer(markersCluster);
 
+    if ($("#resultSearch").val() !== undefined) {
+        console.log('test');
+        $("#headingOne").children().attr('aria-expanded', false);
+        $("#headingOne").children().attr('class', 'accordion-button collapsed');
+        $("#collapseOne").attr('class', 'accordion-collapse collapse');
+    }
 }
 
 

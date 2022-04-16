@@ -44,19 +44,14 @@
             </div>
         </div>
 
-        <div class="accordion mb-5">
+        <div class="accordion mb-5" id="accordionMap">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button {% if (travels or noTravels) %}collapsed{% endif %}" type="button"
-                            data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                            aria-expanded="{% if (travels or noTravels) %}false{% else %}true{% endif %}"
-                            aria-controls="collapseOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                         Sélectionnez une gare sur la carte
                     </button>
                 </h2>
-                <div id="collapseOne"
-                     class="accordion-collapse collapse {% if (travels == false and noTravels == false) %}show{% endif %}"
-                     aria-labelledby="headingOne" data-bs-parent="#accordion">
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionMap">
                     <div class="accordion-body">
                         <div id="map" style="height: 500px; width: 100%"></div>
                     </div>
@@ -66,7 +61,7 @@
 
         {% if travels %}
             {% for travel in travels %}
-                <div class="row mb-5">
+                <div class="row mb-5" id="resultSearch">
                     <div class="col-sm-8">
                         <div>
                             <div class=" d-flex border shadow-sm rounded px-3 me-4 bg-white pt-3">
