@@ -287,12 +287,11 @@ function addOption(id, classWagon) {
     }
 
     if (travelers.length === 0) {
+        $("#errorModal").html('Veuillez remplir tous les champs')
         $("#errorModal").show();
         return;
     }
-    console.log(id);
-    console.log(classWagon);
-    console.log(travelers);
+
     $.ajax({
         type: 'POST',
         url: '/add-option',
@@ -304,7 +303,7 @@ function addOption(id, classWagon) {
         success: function(data) {
             console.log(data);
             if (data === false) {
-
+                $("#errorModal").html('Une erreur est survenue')
             }else {
                 $("#footerModal").hide();
 
