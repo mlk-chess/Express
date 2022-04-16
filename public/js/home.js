@@ -306,9 +306,9 @@ function addOption(id, classWagon) {
             travelers: travelers
         },
         success: function(data) {
-            console.log(data);
             if (data === false) {
-                $("#errorModal").html('Une erreur est survenue')
+                $("#errorModal").html('Une erreur est survenue');
+                $("#errorModal").show();
             }else {
                 $("#footerModal").hide();
 
