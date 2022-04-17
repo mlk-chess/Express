@@ -234,6 +234,12 @@ class HomeController extends AbstractController
     public function payment(Request $request, LineTrainRepository $lineTrainRepository): Response
     {
 
+        $securityContext = $this->container->get('security.authorization_checker');
+
+        if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED') === false) {
+            // authenticated REMEMBERED, FULLY will imply REMEMBERED (NON anonymous)
+            return $this->redirect("/login");
+        }
         // This is your test secret API key.
         \Stripe\Stripe::setApiKey('sk_test_51Kk6uiCJ5s87DbRlsu9UTG7t0PbKcXlXM7bxLdibROOksHgDXIg1gXtp0SFv7o0MZxTcCTOLmEzjK1AVvdCR9LXg00vHipH4ZP');
 
@@ -297,7 +303,7 @@ class HomeController extends AbstractController
         return $this->redirect($checkout_session->url);
     }
 
-    #[Route('/{id}', name: 'shopping_delete', methods: ['POST'])]
+    #[Route('/delete-shopping/{id}', name: 'shopping_delete', methods: ['POST'])]
     public function delete(Request $request): Response
     {
         $id = $request->request->get('id');

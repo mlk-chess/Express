@@ -62,16 +62,10 @@
                     <p class="mt-3">Total du panier : {{ total }} €</p>
 
                     <section>
-                        {% if app.user %}
                         <form action="{{ path('payment') }}" method="POST">
                             <button class="btn btn-primary" type="submit" id="checkout-button">Payer</button>
-                            {% else %}
-                            <form action="/login" method="POST">
-                                <button class="btn btn-primary" type="submit">Payer</button>
-                                {% endif %}
+                        </form>
 
-
-                            </form>
                     </section>
                 {% else %}
                     <div class="d-flex flex-column align-items-center mt-5">
