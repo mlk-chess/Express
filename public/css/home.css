@@ -36,3 +36,12 @@
     cursor: pointer;
 }
 
+#deleteTraveler {
+    display: none;
+}
+
+#errorModal {
+    display: none;
+    color: red;
+}
+

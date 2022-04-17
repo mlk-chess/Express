@@ -25,13 +25,13 @@ class HomeType extends AbstractType
                 'label' => 'Le : ',
                 'required' => true,
                 'widget' => 'single_text',
-                'attr' => ['class' => 'form-control mb-3']
+                'attr' => ['class' => 'form-control my-3']
             ])
             ->add('time', TimeType::class, [
                 'label' => 'A partir de : ',
                 'required' => true,
                 'widget' => 'single_text',
-                'attr' => ['class' => 'form-control mb-3']
+                'attr' => ['class' => 'form-control my-3']
             ])
         ;
     }

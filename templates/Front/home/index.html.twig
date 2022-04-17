@@ -16,7 +16,8 @@
 
                 <div class="mb-3">
                     <label for="departureStationSearch">Gare de départ : </label>
-                    <input class="form-control" type="text" id="departureStationSearch" placeholder="Paris-Montparnasse">
+                    <input class="form-control mt-3" type="text" id="departureStationSearch"
+                           placeholder="Paris-Montparnasse">
                     <ul class="list-group" id="listStationsDeparture"></ul>
                 </div>
 
@@ -27,7 +28,7 @@
 
                 <div class="mb-3">
                     <label for="arrivalStationSearch">Gare d'arrivée : </label>
-                    <input class="form-control" type="text" id="arrivalStationSearch" placeholder="Poitiers">
+                    <input class="form-control mt-3" type="text" id="arrivalStationSearch" placeholder="Poitiers">
                     <ul class="list-group" id="listStationsArrival"></ul>
                 </div>
 
@@ -43,14 +44,14 @@
             </div>
         </div>
 
-        <div class="accordion mb-5">
+        <div class="accordion mb-5" id="accordionMap">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button {% if (travels or noTravels) %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="{% if (travels or noTravels) %}false{% else %}true{% endif %}" aria-controls="collapseOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                         Sélectionnez une gare sur la carte
                     </button>
                 </h2>
-                <div id="collapseOne" class="accordion-collapse collapse {% if (travels == false and noTravels == false) %}show{% endif %}" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionMap">
                     <div class="accordion-body">
                         <div id="map" style="height: 500px; width: 100%"></div>
                     </div>
@@ -60,16 +61,20 @@
 
         {% if travels %}
             {% for travel in travels %}
-                <div class="row mb-5">
+                <div class="row mb-5" id="resultSearch">
                     <div class="col-sm-8">
                         <div>
                             <div class=" d-flex border shadow-sm rounded px-3 me-4 bg-white pt-3">
                                 <div class="d-flex flex-column">
-                                    <p class="fw-bold">{{ travel.getDateDeparture()|date('d-m-Y')}}</p>
                                     <div class="d-flex flex-row">
-                                        <p class="fw-bold">{{ travel.getTimeDeparture()|date('H')}}</p>
+                                        <p class="fw-bold">{{ travel.getTimeDeparture()|date('H') }}</p>
                                         <p class="fw-bold">h</p>
-                                        <p class="fw-bold">{{ travel.getTimeDeparture()|date('i')}}</p>
+                                        <p class="fw-bold">{{ travel.getTimeDeparture()|date('i') }}</p>
+                                    </div>
+                                    <div class="d-flex flex-row">
+                                        <p class="fw-bold">{{ travel.getTimeArrival()|date('H') }}</p>
+                                        <p class="fw-bold">h</p>
+                                        <p class="fw-bold">{{ travel.getTimeArrival()|date('i') }}</p>
                                     </div>
                                 </div>
 
@@ -80,16 +85,35 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-sm-2">
-                        <div onclick="addOption({{ travel.id }}, 1)" class="border shadow-sm rounded px-3 bg-white button-price">
+                        <div onclick="selectOption(
+                        {{ travel.id }},
+                                1,
+                        {{ travel.getPriceClass1 }},
+                        {{ travel.getTimeDeparture()|date('H') }} +'h'+{{ travel.getTimeDeparture()|date('i') }},
+                        {{ travel.getTimeArrival()|date('H') }} +'h'+{{ travel.getTimeArrival()|date('i') }},
+                                '{{ travel.getLine().getNameStationDeparture() }}',
+                                '{{ travel.getLine().getNameStationArrival() }}'
+                                )" class="border shadow-sm rounded px-3 bg-white button-price" data-bs-toggle="modal"
+                             data-bs-target="#modalOptions">
                             <p class="text-center pt-3">Classe 1</p>
-                            <p class="text-center">{{ travel.getPriceClass1  }} €</p>
+                            <p class="text-center">{{ travel.getPriceClass1 }} €</p>
                         </div>
                     </div>
                     <div class="col-sm-2">
-                        <div onclick="addOption({{ travel.id }}, 2)" class="border shadow-sm rounded px-3 ms-3 bg-white button-price">
+                        <div onclick="selectOption(
+                        {{ travel.id }},
+                                2,
+                        {{ travel.getPriceClass2 }},
+                                '{{ travel.getDateDeparture()|date('d-m-Y') }}',
+                        {{ travel.getTimeDeparture()|date('H') }} +'h'+{{ travel.getTimeDeparture()|date('i') }},
+                                '{{ travel.getLine().getNameStationDeparture() }}',
+                                '{{ travel.getLine().getNameStationArrival() }}'
+                                )" class="border shadow-sm rounded px-3 ms-3 bg-white button-price"
+                             data-bs-toggle="modal" data-bs-target="#modalOptions">
                             <p class="text-center pt-3">Classe 2</p>
-                            <p class="text-center">{{ travel.getPriceClass2  }} €</p>
+                            <p class="text-center">{{ travel.getPriceClass2 }} €</p>
                         </div>
                     </div>
                 </div>
@@ -99,6 +123,26 @@
         {% if noTravels %}
             <p>Aucun résultat pour la recherche</p>
         {% endif %}
+    </div>
+
+
+    <div class="modal fade" id="modalOptions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Détails du voyage</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="bodyModal">
+                </div>
+                <div class="modal-footer" id="footerModal">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-primary" id="buttonSaveModal">Ajouter au panier</button>
+                    <p id="errorModal"></p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>

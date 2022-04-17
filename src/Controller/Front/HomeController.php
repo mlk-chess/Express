@@ -110,6 +110,7 @@ class HomeController extends AbstractController
 
         $travels = [];
         $total = 0;
+        $travelers = [];
 
         if($dataSession != null) {
             foreach ($dataSession as $key => $value) {
@@ -126,17 +127,19 @@ class HomeController extends AbstractController
                 $travel = $q->execute();
                 array_push($travels, [$travel[0], $value[1], $key]);
                 if ($value[1] === 1) {
-                    $total += $travel[0]->getPriceClass1();
+                    $total += ($travel[0]->getPriceClass1())*count($value[2]);
                 } else {
-                    $total += $travel[0]->getPriceClass2();
-                }
+                    $total += ($travel[0]->getPriceClass2())*count($value[2]);                }
+
+                array_push($travelers, $value[2]);
             }
         }
 
         return $this->renderForm('Front/home/shopping.html.twig', [
             'controller_name' => 'HomeController',
             'travels' => $travels,
-            'total' => $total
+            'total' => $total,
+            'travelers' => $travelers
         ]);
     }
 
@@ -151,19 +154,32 @@ class HomeController extends AbstractController
     }
 
     #[Route('/add-option', name: 'addOption')]
-    public function addOption(Request $request): JsonResponse
+    public function addOption(Request $request, LineTrainRepository $lineTrainRepository): JsonResponse
     {
         if ($request->isXmlHttpRequest()) {
             $id = intval($request->request->get('id'));
             $classWagon = intval($request->request->get('classWagon'));
+            $travelers = $request->request->get('travelers');
+
+            if (is_null($travelers) ||
+                ($classWagon !== 1 && $classWagon !== 2) ||
+                $id === 0) {
+                return new JsonResponse(false);
+            }
+
+            $travel = $lineTrainRepository->findBy(['id' => $id]);
+
+            if (count($travel) === 0) {
+                return new JsonResponse(false);
+            }
 
             $session = $this->requestStack->getSession();
             $dataSession = $session->get('shopping');
 
             if ($dataSession === null){
-                $session->set('shopping', [[$id, $classWagon]]);
+                $session->set('shopping', [[$id, $classWagon, $travelers]]);
             } else {
-                array_push($dataSession, [$id, $classWagon]);
+                array_push($dataSession, [$id, $classWagon, $travelers]);
                 $session->set('shopping', $dataSession);
             }
 
@@ -174,7 +190,7 @@ class HomeController extends AbstractController
         return new JsonResponse(false);
     }
     #[Route('/success', name: 'success', methods: ['GET','POST'])]
-    public function success(Request $request, LineTrainRepository $lineTrainRepository, BookingRepository $bookingRepository): Response
+    public function success(Request $request, LineTrainRepository $lineTrainRepository): Response
     {
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
         $session = $this->requestStack->getSession();
@@ -182,6 +198,7 @@ class HomeController extends AbstractController
         for ($i = 0; $i < sizeof($dataSession)-1; $i++) {
             $idVoyage = $dataSession[$i][0];
             $class = $dataSession[$i][1];
+            $travelers = $dataSession[$i][2];
             $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
             $price = null;
             if ($class == '1') {
@@ -199,6 +216,7 @@ class HomeController extends AbstractController
             $booking->setLineTrain($voyage[0]);
             $booking->setPrice($price);
             $booking->setStatus(1);
+            $booking->setTravelers($travelers);
 
             $booking->setIdUser($userConnected);
             $booking->setPaymentIntent($dataSession["payment_intent"]);
@@ -230,6 +248,7 @@ class HomeController extends AbstractController
         for ($i = 0; $i < sizeof($dataSession); $i++){
             $idVoyage = $dataSession[$i][0];
             $class = $dataSession[$i][1];
+            $travelers = $dataSession[$i][2];
 
             $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
 
@@ -240,7 +259,7 @@ class HomeController extends AbstractController
                     $voyage[0]->setPlaceNbClass1($voyage[0]->getPlaceNbClass1()-1);
                 }
                 $placeClass1 += 1;
-                $price += $voyage[0]->getPriceClass1();
+                $price += ($voyage[0]->getPriceClass1()*count($travelers));
             }else if($class == '2'){
                 if ($voyage[0]->getPlaceNbClass2()-1 < 0 || $voyage[0]->getPlaceNbClass2() == 0){
                     return $this->render('Front/home/error.html.twig');
@@ -248,7 +267,7 @@ class HomeController extends AbstractController
                     $voyage[0]->setPlaceNbClass2($voyage[0]->getPlaceNbClass2()-1);
                 }
                 $placeClass2 += 1;
-                $price += $voyage[0]->getPriceClass2();
+                $price += ($voyage[0]->getPriceClass2()*count($travelers));
             }
         }
 
@@ -267,8 +286,8 @@ class HomeController extends AbstractController
                 'quantity' => 1,
             ]],
             'mode' => 'payment',
-            'success_url' => $YOUR_DOMAIN . 'home/success',
-            'cancel_url' => $YOUR_DOMAIN . 'home/cancel',
+            'success_url' => $YOUR_DOMAIN . 'success',
+            'cancel_url' => $YOUR_DOMAIN . 'cancel',
         ]);
         unset($dataSession["payment_intent"]);
         $dataSession["payment_intent"] = $checkout_session["payment_intent"];
