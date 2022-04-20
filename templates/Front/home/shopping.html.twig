@@ -43,9 +43,9 @@
                                         {% endfor %}
 
                                         {% if travel[1] == 1 %}
-                                            <p>Total : {{ travel[0].getPriceClass1()*(travelers[key]|length) }} €</p>
+                                            <p>Total : {{ travel[0].getPriceClass1()*(travelers[key]|length) }} € / Classe 1</p>
                                         {% else %}
-                                            <p>Total : {{ travel[0].getPriceClass2()*(travelers[key]|length) }} €</p>
+                                            <p>Total : {{ travel[0].getPriceClass2()*(travelers[key]|length) }} € / Classe 2</p>
                                         {% endif %}
                                     </td>
 

@@ -73,9 +73,10 @@ function loadMarkers(){
     map.addLayer(markersCluster);
 
     if ($("#resultSearch").val() !== undefined) {
-        console.log('test');
-        $("#headingOne").children().attr('aria-expanded', false);
-        $("#headingOne").children().attr('class', 'accordion-button collapsed');
+        $("#headingOne").children().attr({
+            'aria-expanded': false,
+            'class': 'accordion-button collapsed'
+        });
         $("#collapseOne").attr('class', 'accordion-collapse collapse');
     }
 }
@@ -281,6 +282,7 @@ function deleteTraveler() {
 }
 
 function addOption(id, classWagon) {
+    console.log('test');
     let travelers = [];
     for (let i = 1; i < counterTraveler; i++){
         if ($("#firstname"+i).val() === '' || $("#lastname"+i).val() === ''){
