@@ -30,7 +30,7 @@ class HomeController extends AbstractController
         $session = $this->requestStack->getSession();
     }
 
-    #[Route('/', name: 'home')]
+    #[Route('/', name: 'home', methods: ['GET', 'POST'])]
     public function index(Request $request): Response
     {
         $form = $this->createForm(HomeType::class);
@@ -99,7 +99,7 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/shopping', name: 'shopping')]
+    #[Route('/shopping', name: 'shopping', methods: 'GET')]
     public function shopping(Request $request): Response
     {
         $session = $this->requestStack->getSession();
@@ -129,7 +129,8 @@ class HomeController extends AbstractController
                 if ($value[1] === 1) {
                     $total += ($travel[0]->getPriceClass1())*count($value[2]);
                 } else {
-                    $total += ($travel[0]->getPriceClass2())*count($value[2]);                }
+                    $total += ($travel[0]->getPriceClass2())*count($value[2]);
+                }
 
                 array_push($travelers, $value[2]);
             }
@@ -143,7 +144,7 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/stations', name: 'stations')]
+    #[Route('/stations', name: 'stations', methods: 'GET')]
     public function getStations(Request $request): JsonResponse
     {
         if ($request->isXmlHttpRequest()) {
@@ -153,7 +154,7 @@ class HomeController extends AbstractController
         return new JsonResponse(false);
     }
 
-    #[Route('/add-option', name: 'addOption')]
+    #[Route('/add-option', name: 'addOption', methods: 'POST')]
     public function addOption(Request $request, LineTrainRepository $lineTrainRepository): JsonResponse
     {
         if ($request->isXmlHttpRequest()) {
