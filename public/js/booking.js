@@ -9,7 +9,7 @@ function getBooking(id) {
             const dateArrival = (new Date(data[2].date)).toLocaleDateString("fr");
             const timeDeparture = (new Date(data[3].date)).toLocaleTimeString("fr");
             const timeArrival = (new Date(data[4].date)).toLocaleTimeString("fr");
-            
+
             let content ='<div>' +
                 '<div class="mt-3 mb-5">' +
                     '<div class="d-flex align-items-center">' +
