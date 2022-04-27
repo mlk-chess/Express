@@ -53,9 +53,15 @@ class Wagon
      */
     private $options;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Seat::class, mappedBy="wagon")
+     */
+    private $seats;
+
     public function __construct()
     {
         $this->options = new ArrayCollection();
+        $this->seats = new ArrayCollection();
     }
 
 
@@ -164,6 +170,36 @@ class Wagon
             // set the owning side to null (unless already changed)
             if ($option->getWagon() === $this) {
                 $option->setWagon(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Seat>
+     */
+    public function getSeats(): Collection
+    {
+        return $this->seats;
+    }
+
+    public function addSeat(Seat $seat): self
+    {
+        if (!$this->seats->contains($seat)) {
+            $this->seats[] = $seat;
+            $seat->setWagon($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeat(Seat $seat): self
+    {
+        if ($this->seats->removeElement($seat)) {
+            // set the owning side to null (unless already changed)
+            if ($seat->getWagon() === $this) {
+                $seat->setWagon(null);
             }
         }
 

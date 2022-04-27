@@ -2,11 +2,14 @@
 
 namespace App\Controller\Back;
 
+use App\Entity\BookingSeat;
 use App\Entity\LineTrain;
 use App\Form\LineTrainType;
 use App\Repository\BookingRepository;
+use App\Repository\BookingSeatRepository;
 use App\Repository\LineRepository;
 use App\Repository\LineTrainRepository;
+use App\Repository\SeatRepository;
 use App\Service\Helper;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,19 +32,19 @@ class LineTrainController extends AbstractController
 
     #[Route('/planning', name: 'line_train_planning', methods: ['GET'])]
     public function planning(LineTrainRepository $lineTrainRepository): Response
-    {   
+    {
 
         $getTravels = $lineTrainRepository->findLineTrainByDate();
         $travels = [];
 
-        foreach($getTravels as $travel){
+        foreach ($getTravels as $travel) {
             $travels[] = [
                 'title' => $travel["nb"] . " départ(s) prévu(s)",
                 'start' => $travel["date_departure"]->format('Y-m-d'),
                 'display' => "background",
-               
-             
-               
+
+
+
             ];
         }
 
@@ -54,8 +57,8 @@ class LineTrainController extends AbstractController
     }
 
 
-    #[Route('/new', name: 'line_train_new', methods: ['GET','POST'])]
-    public function new(Request $request, LineTrainRepository $lineTrainRepository ): Response
+    #[Route('/new', name: 'line_train_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, LineTrainRepository $lineTrainRepository): Response
     {
 
         $errors = [];
@@ -75,40 +78,40 @@ class LineTrainController extends AbstractController
 
 
             $getWagonByTrain = $lineTrainRepository->findWagonByTrain($lineTrain->getTrain()->getId());
-            
-            if(empty($getWagonByTrain)){
-                $errors[] = "Ce train n'a pas de wagon !";
-            }else{
-                foreach ($getWagonByTrain as $wagon){
 
-                    if($wagon['type'] == "Voyageur"){
-                        if($wagon['class'] == 1){
+            if (empty($getWagonByTrain)) {
+                $errors[] = "Ce train n'a pas de wagon !";
+            } else {
+                foreach ($getWagonByTrain as $wagon) {
+
+                    if ($wagon['type'] == "Voyageur") {
+                        if ($wagon['class'] == 1) {
                             $placeNbclass1 += $wagon['placeNb'];
-                        }else{
+                        } else {
                             $placeNbclass2 += $wagon['placeNb'];
                         }
                     }
                 }
-    
+
                 $lineTrain->setPlaceNbClass1($placeNbclass1);
                 $lineTrain->setPlaceNbClass2($placeNbclass2);
             }
-    
-        
+
+
 
             $date = new DateTime($lineTrain->getDateDeparture()->format('Y-m-d') . " " . $lineTrain->getTimeDeparture()->format('H:i:s'));
             $date = $date->format('Y-m-d H:i:s');
 
-            if($date < date('Y-m-d H:i:s')){
+            if ($date < date('Y-m-d H:i:s')) {
                 $errors[] = "La date de départ ne peut pas être inférieur à celle d'aujourd'hui !";
             }
-           
-            $distance = Helper::distance($latDeparture,$lonDeparture,$latArrival,$lonArrival,"K");
-           
-            $getTime = ($distance * 60 ) / 300;
+
+            $distance = Helper::distance($latDeparture, $lonDeparture, $latArrival, $lonArrival, "K");
+
+            $getTime = ($distance * 60) / 300;
             $getTime = round($getTime * 3600 / 60);
-        
-            $dateTimeArrival = date( "Y-m-d H:i:s", strtotime( "$date +$getTime seconds"));
+
+            $dateTimeArrival = date("Y-m-d H:i:s", strtotime("$date +$getTime seconds"));
 
             $lineTrain->setDateArrival(new DateTime($dateTimeArrival));
             $lineTrain->setTimeArrival(new DateTime($dateTimeArrival));
@@ -116,41 +119,40 @@ class LineTrainController extends AbstractController
 
             $getTrainByDate = $lineTrainRepository->findTrainByDate($lineTrain->getTrain()->getId());
 
-            if($getTrainByDate){
+            if ($getTrainByDate) {
 
-                foreach( $getTrainByDate as $value){
+                foreach ($getTrainByDate as $value) {
 
-                    if( ($date >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) || ($dateTimeArrival >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) ){
+                    if (($date >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) || ($dateTimeArrival >= $value["timestampdeparture"] && $date <= $value["timestamparrival"])) {
                         $isBetween = true;
                     }
                 }
             }
-           
+
             if ($isBetween) $errors[] = "Le train est indisponible à cette date !";
 
-            if($lineTrain->getDateDeparture() > $lineTrain->getDateArrival()){
+            if ($lineTrain->getDateDeparture() > $lineTrain->getDateArrival()) {
                 $errors[] = "La date de départ ne peut pas être supérieur à la date d'arrivée";
             }
 
-            if($lineTrain->getDateDeparture() == $lineTrain->getDateArrival()){
+            if ($lineTrain->getDateDeparture() == $lineTrain->getDateArrival()) {
 
-                if ($lineTrain->getTimeDeparture()->format('H-i-s') < date('H-i-s')){
+                if ($lineTrain->getTimeDeparture()->format('H-i-s') < date('H-i-s')) {
                     $errors[] = "Erreur horaire de départ !";
                 }
-                if($lineTrain->getTimeDeparture() >= $lineTrain->getTimeArrival() ){
+                if ($lineTrain->getTimeDeparture() >= $lineTrain->getTimeArrival()) {
                     $errors[] = "L'horaire de départ ne peut pas être supérieur à l'horaire d'arrivée";
-                }    
+                }
             }
-            
-            if(empty($errors)){
+
+            if (empty($errors)) {
 
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($lineTrain);
                 $entityManager->flush();
                 $this->addFlash('green', "Voyage crée !");
                 return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
-              
-            }else{
+            } else {
                 $this->addFlash('red', $errors[0]);
                 return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
             }
@@ -170,7 +172,7 @@ class LineTrainController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'line_train_edit', methods: ['GET','POST'])]
+    #[Route('/{id}/edit', name: 'line_train_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, LineTrain $lineTrain, LineTrainRepository $lineTrainRepository, BookingRepository $bookingRepository): Response
     {
         $form = $this->createForm(LineTrainType::class, $lineTrain);
@@ -180,7 +182,7 @@ class LineTrainController extends AbstractController
 
 
             $booking = $bookingRepository->findBy(['lineTrain' => $lineTrain->getId()]);
-            if(!empty($booking)){
+            if (!empty($booking)) {
                 $errors[] = "Vous ne pouvez plus modifier ce voyage !";
             }
 
@@ -192,28 +194,28 @@ class LineTrainController extends AbstractController
             $date = new DateTime($lineTrain->getDateDeparture()->format('Y-m-d') . " " . $lineTrain->getTimeDeparture()->format('H:i:s'));
             $date = $date->format('Y-m-d H:i:s');
 
-            if($date < date('Y-m-d H:i:s')){
+            if ($date < date('Y-m-d H:i:s')) {
                 $errors[] = "La date de départ ne peut pas être inférieur à celle d'aujourd'hui !";
             }
 
-            $distance = Helper::distance($latDeparture,$lonDeparture,$latArrival,$lonArrival,"K");
-           
-            $getTime = ($distance * 60 ) / 300;
+            $distance = Helper::distance($latDeparture, $lonDeparture, $latArrival, $lonArrival, "K");
+
+            $getTime = ($distance * 60) / 300;
             $getTime = round($getTime * 3600 / 60);
-        
-            $dateTimeArrival = date( "Y-m-d H:i:s", strtotime( "$date +$getTime seconds"));
+
+            $dateTimeArrival = date("Y-m-d H:i:s", strtotime("$date +$getTime seconds"));
 
             $lineTrain->setDateArrival(new DateTime($dateTimeArrival));
             $lineTrain->setTimeArrival(new DateTime($dateTimeArrival));
 
-            $getTrainByDate = $lineTrainRepository->findTrainByDate($lineTrain->getTrain()->getId(),$lineTrain->getId());
+            $getTrainByDate = $lineTrainRepository->findTrainByDate($lineTrain->getTrain()->getId(), $lineTrain->getId());
             $isBetween = false;
 
-            if($getTrainByDate){
+            if ($getTrainByDate) {
 
-                foreach( $getTrainByDate as $value){
+                foreach ($getTrainByDate as $value) {
 
-                    if( ($date >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) || ($dateTimeArrival >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) ){
+                    if (($date >= $value["timestampdeparture"] && $date <= $value["timestamparrival"]) || ($dateTimeArrival >= $value["timestampdeparture"] && $date <= $value["timestamparrival"])) {
                         $isBetween = true;
                     }
                 }
@@ -221,27 +223,26 @@ class LineTrainController extends AbstractController
 
             if ($isBetween) $errors[] = "Le train est indisponible à cette date !";
 
-            if($lineTrain->getDateDeparture() > $lineTrain->getDateArrival()){
+            if ($lineTrain->getDateDeparture() > $lineTrain->getDateArrival()) {
                 $errors[] = "La date de départ ne peut pas être supérieur à la date d'arrivée";
             }
 
-            if($lineTrain->getDateDeparture() == $lineTrain->getDateArrival()){
+            if ($lineTrain->getDateDeparture() == $lineTrain->getDateArrival()) {
 
-                if ($lineTrain->getTimeDeparture()->format('H-i-s') < date('H-i-s')){
+                if ($lineTrain->getTimeDeparture()->format('H-i-s') < date('H-i-s')) {
                     $errors[] = "Erreur horaire de départ !";
                 }
-                if($lineTrain->getTimeDeparture() >= $lineTrain->getTimeArrival() ){
+                if ($lineTrain->getTimeDeparture() >= $lineTrain->getTimeArrival()) {
                     $errors[] = "L'horaire de départ ne peut pas être supérieur à l'horaire d'arrivée";
-                }    
+                }
             }
 
-            if(empty($errors)){
+            if (empty($errors)) {
 
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash('green', "Voyage modifié !");
                 return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
-              
-            }else{
+            } else {
                 $this->addFlash('red', $errors[0]);
                 return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
             }
@@ -254,42 +255,87 @@ class LineTrainController extends AbstractController
     }
 
     #[Route('/{id}', name: 'line_train_delete', methods: ['POST'])]
-    public function delete(Request $request, LineTrain $lineTrain,BookingRepository $bookingRepository): Response
+    public function delete(Request $request, LineTrain $lineTrain, BookingRepository $bookingRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$lineTrain->getId(), $request->request->get('_token'))) {
-            
+        if ($this->isCsrfTokenValid('delete' . $lineTrain->getId(), $request->request->get('_token'))) {
+
             $booking = $bookingRepository->findBy(['lineTrain' => $lineTrain->getId()]);
 
-            if(empty($booking)){
+            if (empty($booking)) {
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->remove($lineTrain);
                 $entityManager->flush();
                 $this->addFlash('green', "Voyage supprimé !");
-            }else{
+            } else {
                 $this->addFlash('red', "Impossible de supprimer ce voyage !");
             }
-          
         }
 
         return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/planning/{date}', name: 'line_train_planning_show', methods: ['GET'])]
-    public function planningShow(LineTrainRepository $lineTrainRepository, Request $request, DateTime $date): Response
-    {   
-        $output = [];
+    #[Route('/plan/{id}', name: 'line_train_plan', methods: ['GET'])]
+    public function plan(Request $request, int $id, BookingSeatRepository $bookingSeatRepository, LineTrainRepository $lineTrainRepository): Response
+    {
+
+        $seatNotAvailable = count($bookingSeatRepository->findSeatTravel($id));
+
+        $travel = $lineTrainRepository->find($id);
+        $getTrain = $travel->getTrain();
+        $getWagons = $getTrain->getWagons()->getValues();
+        $seatAvailable = 0;
+        foreach ($getWagons as $wagon) {
+            if ($wagon->getType() == "Voyageur") $seatAvailable += $wagon->getPlaceNb();
+        }
+
+        return $this->render('Back/line_train/plan.html.twig', [
+            "getWagons" => $getWagons,
+            "id" => $id,
+            "train" => $getTrain,
+            "seatNotAvailable" => $seatNotAvailable,
+            "seatAvailable" => $seatAvailable - $seatNotAvailable
+        ]);
+    }
+
+    #[Route('/display/seat/{id}', name: 'line_train_display_seat', methods: ['GET'])]
+    public function displaySeat(Request $request, int $id, BookingSeatRepository $bookingSeatRepository): Response
+    {
+
         if ($request->isXmlHttpRequest()) {
 
-           $travels = $lineTrainRepository->findBy(
-               ['date_departure' => $date],
-               ['time_departure' => 'ASC'],
-            
+            $seat = $bookingSeatRepository->find($id);
+            $output[] = [
+                "lastname" => $seat->getLastname(),
+                "firstname" => $seat->getFirstname(),
+                "number" => $seat->getSeat()->getNumber(),
+                "class" => $seat->getSeat()->getWagon()->getClass(),
+
+            ];
+
+
+            return new JsonResponse($output);
+        }
+        return new JsonResponse(false);
+    }
+
+    #[Route('/planning/{date}', name: 'line_train_planning_show', methods: ['GET'])]
+    public function planningShow(LineTrainRepository $lineTrainRepository, Request $request, DateTime $date): Response
+    {
+
+        if ($request->isXmlHttpRequest()) {
+
+            $output = [];
+
+            $travels = $lineTrainRepository->findBy(
+                ['date_departure' => $date],
+                ['time_departure' => 'ASC'],
+
             );
 
-        
-            foreach ($travels as $travel){
 
-            
+            foreach ($travels as $travel) {
+
+
                 $output[] = [
                     $travel->getId(),
                     $travel->getTrain()->getName(),
@@ -299,19 +345,13 @@ class LineTrainController extends AbstractController
                     $travel->getDateArrival(),
                     $travel->getTimeDeparture()->format('H:i'),
                     $travel->getTimeArrival()->format('H:i'),
-                  
-                
+
+
                 ];
             }
-        
+
             return new JsonResponse($output);
         }
         return new JsonResponse(false);
-       
     }
-
-
-
-
-
 }

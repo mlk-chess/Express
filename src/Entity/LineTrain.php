@@ -21,7 +21,7 @@ class LineTrain
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Train::class, inversedBy="lineTrains")
+     * @ORM\ManyToOne(targetEntity=Train::class, inversedBy="lineTrains",fetch="EAGER")
      * @Assert\NotNull
      */
     private $train;
@@ -74,6 +74,12 @@ class LineTrain
        * @Assert\NotNull
        */
     private $price_class_2;
+
+      /**
+       * @ORM\Column(type="integer")
+
+       */
+      private $status = 0;
 
     /**
      * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="lineTrain")
@@ -207,6 +213,18 @@ class LineTrain
     public function setPriceClass2(float $priceClass2): self
     {
         $this->price_class_2 = $priceClass2;
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
