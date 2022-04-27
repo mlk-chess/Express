@@ -54,7 +54,12 @@ class Booking
     /**
      * @ORM\Column(type="integer")
      */
+
     private $status;
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $travelers = [];
 
     /**
      * @ORM\OneToMany(targetEntity=BookingSeat::class, mappedBy="booking")
@@ -155,6 +160,7 @@ class Booking
         return $this;
     }
 
+
     /**
      * @return Collection<int, BookingSeat>
      */
@@ -181,6 +187,26 @@ class Booking
                 $bookingSeat->setBooking(null);
             }
         }
+    }
+    public function getTravelers(): array
+    {
+        $travelers = $this->travelers;
+
+        return $travelers;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setTravelers(array $travelers): self
+    {
+        $this->travelers = $travelers;
 
         return $this;
     }

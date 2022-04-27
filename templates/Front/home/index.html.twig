@@ -1,74 +1,168 @@
 {% extends 'base_home.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}PA EXPRESS{% endblock %}
 
 {% block body %}
-<style>
-    .mycluster {
-        height: 40px;
-        width: 40px;
-        border-radius: 50%;
-        background-color: #3498db;
-        color: white;
-        text-align: center;
-        font-size: 20px;
-        line-height: 40px;
-        margin-top: -20px;
-        margin-left: -20px;
-    }
-</style>
+    <div class="text-end me-4 mt-2">
+        <a href="/shopping">
+            <button type="button" class="btn btn-outline-dark">Panier <i class="fa-solid fa-cart-shopping"></i></button>
+        </a>
+    </div>
 
     <div class="container">
-        <div class="row">
-            <div class="col s6">
-                <a href="/home/shopping">Panier</a>
+        <h1 class="text-center mb-3">Bienvenue chez PA EXPRESS</h1>
+        <div class="row border shadow-sm rounded p-3 mb-4 bg-white">
+            <div class="col-sm-6 d-flex flex-column pe-3">
 
-                <input type="text" id="departureStationSearch" placeholder="Gare de départ">
-                <input type="text" id="arrivalStationSearch" placeholder="Gare d'arrivée">
+                <div class="mb-3">
+                    <label for="departureStationSearch">Gare de départ : </label>
+                    <input class="form-control mt-3" type="text" id="departureStationSearch"
+                           placeholder="Paris-Montparnasse">
+                    <ul class="list-group" id="listStationsDeparture"></ul>
+                </div>
 
+                <div class="d-flex flex-row align-items-center">
+                    <div id="departureStation"></div>
+                    <i class="fa-solid fa-pencil mb-3 ms-3" id="updateDepartureStation"></i>
+                </div>
+
+                <div class="mb-3">
+                    <label for="arrivalStationSearch">Gare d'arrivée : </label>
+                    <input class="form-control mt-3" type="text" id="arrivalStationSearch" placeholder="Poitiers">
+                    <ul class="list-group" id="listStationsArrival"></ul>
+                </div>
+
+                <div class="d-flex flex-row align-items-center">
+                    <div id="arrivalStation"></div>
+                    <i class="fa-solid fa-pencil mb-3 ms-3" id="updateArrivalStation"></i>
+                </div>
+
+            </div>
+
+            <div class="col-sm-6 flex ps-5">
                 {{ include('Front/home/_form.html.twig') }}
+            </div>
+        </div>
+
+        <div class="accordion mb-5" id="accordionMap">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Sélectionnez une gare sur la carte
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionMap">
+                    <div class="accordion-body">
+                        <div id="map" style="height: 500px; width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if travels %}
+            {% for travel in travels %}
+                <div class="row mb-5" id="resultSearch">
+                    <div class="col-sm-8">
+                        <div>
+                            <div class=" d-flex border shadow-sm rounded px-3 me-4 bg-white pt-3">
+                                <div class="d-flex flex-column">
+                                    <div class="d-flex flex-row">
+                                        <p class="fw-bold">{{ travel.getTimeDeparture()|date('H') }}</p>
+                                        <p class="fw-bold">h</p>
+                                        <p class="fw-bold">{{ travel.getTimeDeparture()|date('i') }}</p>
+                                    </div>
+                                    <div class="d-flex flex-row">
+                                        <p class="fw-bold">{{ travel.getTimeArrival()|date('H') }}</p>
+                                        <p class="fw-bold">h</p>
+                                        <p class="fw-bold">{{ travel.getTimeArrival()|date('i') }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex flex-column mx-4">
+                                    <p>{{ travel.getLine().getNameStationDeparture() }}</p>
+                                    <p>{{ travel.getLine().getNameStationArrival() }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        {% if travel.getPlaceNbClass1 == 0 %}
+                            <div class="border shadow-sm rounded px-3 bg-white button-price">
+                                <p class="text-center pt-3">Classe 1</p>
+                                <p class="text-center">Aucune place</p>
+                            </div>
+                        {% else %}
+                            <div onclick="selectOption(
+                            {{ travel.id }},
+                                    1,
+                            {{ travel.getPriceClass1 }},
+                            {{ travel.getTimeDeparture()|date('H') }} +'h'+{{ travel.getTimeDeparture()|date('i') }},
+                            {{ travel.getTimeArrival()|date('H') }} +'h'+{{ travel.getTimeArrival()|date('i') }},
+                                    '{{ travel.getLine().getNameStationDeparture() }}',
+                                    '{{ travel.getLine().getNameStationArrival() }}'
+                                    )" class="border shadow-sm rounded px-3 bg-white button-price"
+                                 data-bs-toggle="modal" data-bs-target="#modalOptions">
+                                <p class="text-center pt-3">Classe 1</p>
+                                <p class="text-center">{{ travel.getPriceClass1 }} €</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-2">
+                        {% if travel.getPlaceNbClass2 == 0 %}
+                            <div class="border shadow-sm rounded px-3 bg-white button-price">
+                                <p class="text-center pt-3">Classe 2</p>
+                                <p class="text-center">Aucune place</p>
+                            </div>
+                        {% else %}
+                            <div onclick="selectOption(
+                            {{ travel.id }},
+                                    2,
+                            {{ travel.getPriceClass2 }},
+                                    '{{ travel.getDateDeparture()|date('d-m-Y') }}',
+                            {{ travel.getTimeDeparture()|date('H') }} +'h'+{{ travel.getTimeDeparture()|date('i') }},
+                                    '{{ travel.getLine().getNameStationDeparture() }}',
+                                    '{{ travel.getLine().getNameStationArrival() }}'
+                                    )" class="border shadow-sm rounded px-3 ms-3 bg-white button-price"
+                                 data-bs-toggle="modal" data-bs-target="#modalOptions">
+                                <p class="text-center pt-3">Classe 2</p>
+                                <p class="text-center">{{ travel.getPriceClass2 }} €</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if noTravels %}
+            <p>Aucun résultat pour la recherche</p>
+        {% endif %}
+    </div>
 
 
-                <div id="departureStation"></div>
-                <i class="fas fa-edit" id="updateDepartureStation"></i>
-
-                <div id="arrivalStation"></div>
-                <i class="fas fa-edit" id="updateArrivalStation"></i>
-
-                <div id="listStationsDeparture"></div>
-                <div id="listStationsArrival"></div>
-
-                {% if travels %}
-                    {% for travel in travels %}
-                        <li>Départ le : {{ travel.getDateDeparture()|date('d-m-Y')}} à : {{ travel.getTimeDeparture()|date('H-i')}}</li>
-                        <li>Gare de Départ : {{ travel.getLine().getNameStationDeparture() }}</li>
-                        <li>Gare d'arrivée : {{ travel.getLine().getNameStationArrival() }}</li>
-                        <li>Classe 1 : {{ travel.getPriceClass1  }} €</li>
-                        <li>Classe 2 : {{ travel.getPriceClass2  }} €</li>
-                        <button onclick="addOption({{ travel.id }}, 1)">Réserver en classe 1</button>
-                        <button onclick="addOption({{ travel.id }}, 2)">Réserver en classe 2</button>
-                    {% endfor %}
-                {% endif %}
-
-                {% if noTravels %}
-                    <p>Aucun voyages pour cette date à cette heure</p>
-                {% endif %}
+    <div class="modal fade" id="modalOptions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Détails du voyage</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="bodyModal">
+                </div>
+                <div class="modal-footer" id="footerModal">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-primary" id="buttonSaveModal">Ajouter au panier</button>
+                    <p id="errorModal"></p>
+                </div>
             </div>
         </div>
     </div>
-
-    <div id="map" style="height: 500px; width: 1000px"></div>
 
     <script>
         const linkAsset = "{{ asset('img/') }}"
     </script>
 
     <script src="{{ asset('js/home.js') }}"></script>
-
-    <script>
-        $(document).ready(function() {
-            $('select').formSelect();
-        });
-    </script>
 
 {% endblock %}

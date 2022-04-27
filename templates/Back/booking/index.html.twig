@@ -1,0 +1,64 @@
+{% extends 'base_back.html.twig' %}
+
+{% block title %}Réservations{% endblock %}
+
+{% block body %}
+    <h1>Réservations</h1>
+
+    <table id="table_wagon" class="display">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Email</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.id }}</td>
+                <td>{{ booking.idUser.email }}</td>
+                <td class="d-flex">
+                    <button type="button" class="btn btn-primary me-4" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="getBooking({{ booking.id }})">Informations</button>
+                    {% if booking.status == -1%}
+                        <p>Annulé</p>
+                    {% else %}
+                        {{ include('Back/booking/_delete_form.html.twig') }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Pas de wagon enregistré</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="infoModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="containerModalInfo"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        $(document).ready( function () {
+            $('#table_wagon').DataTable();
+        } );
+    </script>
+
+    <script src="{{ asset('js/booking.js') }}"></script>
+{% endblock %}

@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
 use function Doctrine\Common\Cache\Psr6\set;
 
-#[Route('/home')]
+#[Route('/')]
 class HomeController extends AbstractController
 {
 
@@ -30,7 +30,7 @@ class HomeController extends AbstractController
         $session = $this->requestStack->getSession();
     }
 
-    #[Route('/', name: 'home')]
+    #[Route('/', name: 'home', methods: ['GET', 'POST'])]
     public function index(Request $request): Response
     {
         $form = $this->createForm(HomeType::class);
@@ -99,7 +99,7 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/shopping', name: 'shopping')]
+    #[Route('/shopping', name: 'shopping', methods: 'GET')]
     public function shopping(Request $request): Response
     {
         $session = $this->requestStack->getSession();
@@ -110,6 +110,7 @@ class HomeController extends AbstractController
 
         $travels = [];
         $total = 0;
+        $travelers = [];
 
         if($dataSession != null) {
             foreach ($dataSession as $key => $value) {
@@ -126,21 +127,24 @@ class HomeController extends AbstractController
                 $travel = $q->execute();
                 array_push($travels, [$travel[0], $value[1], $key]);
                 if ($value[1] === 1) {
-                    $total += $travel[0]->getPriceClass1();
+                    $total += ($travel[0]->getPriceClass1())*count($value[2]);
                 } else {
-                    $total += $travel[0]->getPriceClass2();
+                    $total += ($travel[0]->getPriceClass2())*count($value[2]);
                 }
+
+                array_push($travelers, $value[2]);
             }
         }
 
         return $this->renderForm('Front/home/shopping.html.twig', [
             'controller_name' => 'HomeController',
             'travels' => $travels,
-            'total' => $total
+            'total' => $total,
+            'travelers' => $travelers
         ]);
     }
 
-    #[Route('/stations', name: 'stations')]
+    #[Route('/stations', name: 'stations', methods: 'GET')]
     public function getStations(Request $request): JsonResponse
     {
         if ($request->isXmlHttpRequest()) {
@@ -150,20 +154,33 @@ class HomeController extends AbstractController
         return new JsonResponse(false);
     }
 
-    #[Route('/add-option', name: 'addOption')]
-    public function addOption(Request $request): JsonResponse
+    #[Route('/add-option', name: 'addOption', methods: 'POST')]
+    public function addOption(Request $request, LineTrainRepository $lineTrainRepository): JsonResponse
     {
         if ($request->isXmlHttpRequest()) {
             $id = intval($request->request->get('id'));
             $classWagon = intval($request->request->get('classWagon'));
+            $travelers = $request->request->get('travelers');
+
+            if (is_null($travelers) ||
+                ($classWagon !== 1 && $classWagon !== 2) ||
+                $id === 0) {
+                return new JsonResponse(false);
+            }
+
+            $travel = $lineTrainRepository->findBy(['id' => $id]);
+
+            if (count($travel) === 0) {
+                return new JsonResponse(false);
+            }
 
             $session = $this->requestStack->getSession();
             $dataSession = $session->get('shopping');
 
             if ($dataSession === null){
-                $session->set('shopping', [[$id, $classWagon]]);
+                $session->set('shopping', [[$id, $classWagon, $travelers]]);
             } else {
-                array_push($dataSession, [$id, $classWagon]);
+                array_push($dataSession, [$id, $classWagon, $travelers]);
                 $session->set('shopping', $dataSession);
             }
 
@@ -174,7 +191,7 @@ class HomeController extends AbstractController
         return new JsonResponse(false);
     }
     #[Route('/success', name: 'success', methods: ['GET','POST'])]
-    public function success(Request $request, LineTrainRepository $lineTrainRepository, BookingRepository $bookingRepository): Response
+    public function success(Request $request, LineTrainRepository $lineTrainRepository): Response
     {
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
         $session = $this->requestStack->getSession();
@@ -182,6 +199,7 @@ class HomeController extends AbstractController
         for ($i = 0; $i < sizeof($dataSession)-1; $i++) {
             $idVoyage = $dataSession[$i][0];
             $class = $dataSession[$i][1];
+            $travelers = $dataSession[$i][2];
             $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
             $price = null;
             if ($class == '1') {
@@ -199,6 +217,7 @@ class HomeController extends AbstractController
             $booking->setLineTrain($voyage[0]);
             $booking->setPrice($price);
             $booking->setStatus(1);
+            $booking->setTravelers($travelers);
 
             $booking->setIdUser($userConnected);
             $booking->setPaymentIntent($dataSession["payment_intent"]);
@@ -216,6 +235,12 @@ class HomeController extends AbstractController
     public function payment(Request $request, LineTrainRepository $lineTrainRepository): Response
     {
 
+        $securityContext = $this->container->get('security.authorization_checker');
+
+        if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED') === false) {
+            // authenticated REMEMBERED, FULLY will imply REMEMBERED (NON anonymous)
+            return $this->redirect("/login");
+        }
         // This is your test secret API key.
         \Stripe\Stripe::setApiKey('sk_test_51Kk6uiCJ5s87DbRlsu9UTG7t0PbKcXlXM7bxLdibROOksHgDXIg1gXtp0SFv7o0MZxTcCTOLmEzjK1AVvdCR9LXg00vHipH4ZP');
 
@@ -230,6 +255,7 @@ class HomeController extends AbstractController
         for ($i = 0; $i < sizeof($dataSession); $i++){
             $idVoyage = $dataSession[$i][0];
             $class = $dataSession[$i][1];
+            $travelers = $dataSession[$i][2];
 
             $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
 
@@ -240,7 +266,7 @@ class HomeController extends AbstractController
                     $voyage[0]->setPlaceNbClass1($voyage[0]->getPlaceNbClass1()-1);
                 }
                 $placeClass1 += 1;
-                $price += $voyage[0]->getPriceClass1();
+                $price += ($voyage[0]->getPriceClass1()*count($travelers));
             }else if($class == '2'){
                 if ($voyage[0]->getPlaceNbClass2()-1 < 0 || $voyage[0]->getPlaceNbClass2() == 0){
                     return $this->render('Front/home/error.html.twig');
@@ -248,7 +274,7 @@ class HomeController extends AbstractController
                     $voyage[0]->setPlaceNbClass2($voyage[0]->getPlaceNbClass2()-1);
                 }
                 $placeClass2 += 1;
-                $price += $voyage[0]->getPriceClass2();
+                $price += ($voyage[0]->getPriceClass2()*count($travelers));
             }
         }
 
@@ -267,8 +293,8 @@ class HomeController extends AbstractController
                 'quantity' => 1,
             ]],
             'mode' => 'payment',
-            'success_url' => $YOUR_DOMAIN . 'home/success',
-            'cancel_url' => $YOUR_DOMAIN . 'home/cancel',
+            'success_url' => $YOUR_DOMAIN . 'success',
+            'cancel_url' => $YOUR_DOMAIN . 'cancel',
         ]);
         unset($dataSession["payment_intent"]);
         $dataSession["payment_intent"] = $checkout_session["payment_intent"];
@@ -278,7 +304,7 @@ class HomeController extends AbstractController
         return $this->redirect($checkout_session->url);
     }
 
-    #[Route('/{id}', name: 'shopping_delete', methods: ['POST'])]
+    #[Route('/delete-shopping/{id}', name: 'shopping_delete', methods: ['POST'])]
     public function delete(Request $request): Response
     {
         $id = $request->request->get('id');

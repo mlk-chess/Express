@@ -1,12 +1,13 @@
+let counterTraveler = 1;
+let stations;
+
 ////////////////////////////
 //      MAP     //
 ////////////////////////////
 
-let stations;
-
 $.ajax({
     type: 'GET',
-    url: '/home/stations',
+    url: '/stations',
     data: '',
     success: function(data) {
         stations = JSON.parse(data);
@@ -63,7 +64,7 @@ function loadMarkers(){
             closeButton: false,
             className: 'marker',
             maxWidth: 400
-        }).setContent(stations[key].Nom_Gare+'</p><br/><button onclick=\'selectDepartureStation("'+stations[key].Nom_Gare+'")\'>Gare de départ</button><br/><button onclick=\'selectArrivalStation("'+stations[key].Nom_Gare+'")\'>Gare d\'arrivée</button>');
+        }).setContent('<h5>'+stations[key].Nom_Gare+'</h5><br/><button class="btn btn-primary mb-3" onclick=\'selectDepartureStation("'+stations[key].Nom_Gare+'")\'>Gare de départ</button><br/><button class="btn btn-primary" onclick=\'selectArrivalStation("'+stations[key].Nom_Gare+'")\'>Gare d\'arrivée</button>');
 
         marker.bindPopup(popup);
 
@@ -71,6 +72,13 @@ function loadMarkers(){
     }
     map.addLayer(markersCluster);
 
+    if ($("#resultSearch").val() !== undefined) {
+        $("#headingOne").children().attr({
+            'aria-expanded': false,
+            'class': 'accordion-button collapsed'
+        });
+        $("#collapseOne").attr('class', 'accordion-collapse collapse');
+    }
 }
 
 
@@ -96,7 +104,18 @@ const updateDepartureStation = document.getElementById('updateDepartureStation')
 const updateArrivalStation = document.getElementById('updateArrivalStation');
 
 
+$(window).click(function() {
+    listStationsDeparture.innerHTML = '';
+    listStationsArrival.innerHTML = '';
+});
 
+$("#listStationsDeparture").click(function(event){
+    event.stopPropagation();
+});
+
+$("#listStationsArrival").click(function(event){
+    event.stopPropagation();
+});
 
 
 
@@ -140,7 +159,7 @@ function handleKeyPress(input, list, type) {
 
             for (let key in stations) {
                 if (stations[key].Nom_Gare.toLowerCase().search(regexSearch) === 0) {
-                    html += "<li onclick='addStation(\""+stations[key].Nom_Gare+"\", "+type+")'>" + stations[key].Nom_Gare + "</li>";
+                    html += "<li class='list-group-item' onclick='addStation(\""+stations[key].Nom_Gare+"\", "+type+")'>" + stations[key].Nom_Gare + "</li>";
                 }
             }
             list.innerHTML = html;
@@ -153,13 +172,13 @@ function handleKeyPress(input, list, type) {
 function addStation(station, type) {
 
     if (type){
-        departureStation.innerHTML = "<p>"+station+"</p>";
+        $("#departureStation").append('<p class="form-control">'+station+' </p>');
         departureStationInput.value = station
         listStationsDeparture.innerHTML = '';
         departureStationSearch.style.display = "none";
         updateDepartureStation.style.display = "block";
     }else {
-        arrivalStation.innerHTML = "<p>"+station+"</p>";
+        $("#arrivalStation").append('<p class="form-control">'+station+' </p>');
         arrivalStationInput.value = station
         listStationsArrival.innerHTML = '';
         arrivalStationSearch.style.display = "none";
@@ -170,7 +189,7 @@ function addStation(station, type) {
 
 
 function selectDepartureStation(name){
-    departureStation.innerHTML = "<p>"+name+"</p>";
+    $("#departureStation").append('<p class="form-control">'+name+' </p>');
     departureStationInput.value = name;
     listStationsDeparture.innerHTML = '';
     departureStationSearch.style.display = "none";
@@ -178,7 +197,7 @@ function selectDepartureStation(name){
 }
 
 function selectArrivalStation(name){
-    arrivalStation.innerHTML = "<p>"+name+"</p>";
+    $("#arrivalStation").append('<p class="form-control">'+name+' </p>');
     arrivalStationInput.value = name;
     listStationsArrival.innerHTML = '';
     arrivalStationSearch.style.display = "none";
@@ -199,15 +218,108 @@ function clickUpdate(update, station, search, input) {
 //      OPTIONS     //
 ////////////////////////////
 
+function selectOption(id, classWagon, price, dateDeparture, dateArrival, departure, arrival) {
+    counterTraveler = 1;
+
+    $("#buttonSaveModal").attr('onclick', 'addOption('+id+','+classWagon+')')
+    $("#errorModal").hide();
+    $("#footerModal").show();
+
+    $("#bodyModal").html('<div class="d-flex">' +
+        '                        <div class="d-flex flex-column">' +
+        '                            <p>'+dateDeparture+'</p>' +
+        '                            <p>'+dateArrival+'</p>' +
+        '                        </div>' +
+        '                        <div class="d-flex flex-column ms-4">' +
+        '                            <p>'+departure+'</p>' +
+        '                            <p>'+arrival+'</p>' +
+        '                        </div>' +
+        '                    </div>' +
+        '                    <p class="my-4 text-center fw-bold">'+price+'€ par voyageur</p>' +
+        '                    <div class="d-flex flex-column" id="containerModal"></div>' +
+        '                    <div class="mt-3 d-flex justify-content-between">' +
+        '                        <button class="btn btn-outline-secondary" onclick="addTraveler()">Ajouter un voyageur</button>' +
+        '                        <button class="btn btn-outline-danger" id="deleteTraveler" onclick="deleteTraveler()">Supprimer' +
+        '                            un voyageur' +
+        '                        </button>' +
+        '                    </div>')
+
+
+    const html = '<p class="mt-5">Voyageur '+counterTraveler+'</p>' +
+
+        '<label for="firstname'+counterTraveler+'">Prénom</label>' +
+        '<input type="text" class="form-control" name="firstname'+counterTraveler+'" id="firstname'+counterTraveler+'">' +
+
+        '<label for="lastname'+counterTraveler+'" class="mt-2">Nom</label>' +
+        '<input type="text" class="form-control" name="lastName'+counterTraveler+'" id="lastname'+counterTraveler+'">';
+
+    $("#containerModal").html(html);
+    counterTraveler++;
+}
+
+function addTraveler() {
+    const html = '<div id="traveler'+counterTraveler+'">' +
+            '<p class="mt-5">Voyageur '+counterTraveler+'</p>' +
+
+            '<label for="firstname'+counterTraveler+'">Prénom</label>' +
+            '<input type="text" class="form-control" name="firstname'+counterTraveler+'" id="firstname'+counterTraveler+'">' +
+
+            '<label for="lastname'+counterTraveler+'" class="mt-2">Nom</label>' +
+            '<input type="text" class="form-control" name="lastName'+counterTraveler+'" id="lastname'+counterTraveler+'">' +
+        '</div>';
+
+    $("#containerModal").append(html);
+    $("#deleteTraveler").show();
+    counterTraveler++;
+}
+
+function deleteTraveler() {
+    $("#traveler"+(counterTraveler - 1)).remove();
+    counterTraveler--;
+    if (counterTraveler === 2) {
+        $("#deleteTraveler").hide();
+    }
+}
+
 function addOption(id, classWagon) {
+    console.log('test');
+    let travelers = [];
+    for (let i = 1; i < counterTraveler; i++){
+        if ($("#firstname"+i).val() === '' || $("#lastname"+i).val() === ''){
+            travelers = [];
+            break;
+        }else {
+            travelers.push([$("#firstname" + i).val(), $("#lastname" + i).val()]);
+        }
+    }
+
+    if (travelers.length === 0) {
+        $("#errorModal").html('Veuillez remplir tous les champs')
+        $("#errorModal").show();
+        return;
+    }
+
     $.ajax({
         type: 'POST',
-        url: '/home/add-option',
+        url: '/add-option',
         data: {
             id: id,
-            classWagon: classWagon
+            classWagon: classWagon,
+            travelers: travelers
         },
         success: function(data) {
+            if (data === false) {
+                $("#errorModal").html('Une erreur est survenue');
+                $("#errorModal").show();
+            }else {
+                $("#footerModal").hide();
+
+                $("#bodyModal").html('<p class="text-center">Le voyage a été ajouté à votre panier</p>' +
+                    '<div class="my-4 d-flex justify-content-between">' +
+                    '<button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Choisir un autre voyage</button>\n' +
+                    '<a href="/shopping"><button type="button" class="btn btn-outline-dark">Voir mon panier</button></a>' +
+                    '</div>');
+            }
         },
         error: function (xhr, ajaxOptions, thrownError){
             alert(xhr.responseText);
