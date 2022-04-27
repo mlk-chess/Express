@@ -3,7 +3,12 @@
 {% block title %}Line{% endblock %}
 
 {% block body %}
-    <h1>Ligne</h1>
+    <div class="d-flex justify-content-between">
+        <h1>Ligne : {{ line.nameStationDeparture }} - {{ line.nameStationArrival }}</h1>
+        <div>
+            <a class="btn btn-primary" href="{{ path('admin_line_index') }}">Retour</a>
+        </div>
+    </div>
 
     <table class="table">
         <tbody>
@@ -12,35 +17,37 @@
                 <td>{{ line.id }}</td>
             </tr>
             <tr>
-                <th>Longitude_departure</th>
+                <th>Gare de départ | Longitude</th>
                 <td>{{ line.longitudeDeparture }}</td>
             </tr>
             <tr>
-                <th>Latitude_departure</th>
+                <th>Gare de départ | Latitude</th>
                 <td>{{ line.latitudeDeparture }}</td>
             </tr>
             <tr>
-                <th>Longitude_arrival</th>
+                <th>Gare d'arrivée | Longitude</th>
                 <td>{{ line.longitudeArrival }}</td>
             </tr>
             <tr>
-                <th>Latitude_arrival</th>
+                <th>Gare d'arrivée | Latitude</th>
                 <td>{{ line.latitudeArrival }}</td>
             </tr>
             <tr>
-                <th>Name_station_departure</th>
+                <th>Gare de départ</th>
                 <td>{{ line.nameStationDeparture }}</td>
             </tr>
             <tr>
-                <th>Name_station_arrival</th>
+                <th>Gare d'arrivée</th>
                 <td>{{ line.nameStationArrival }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('admin_line_index') }}">Retour</a>
+   
+    <div class="d-flex">
+        <a class="btn btn-warning mx-2"href="{{ path('admin_line_edit', {'id': line.id}) }}">Modifier</a>
+        {{ include('Back/line/_delete_form.html.twig') }}
+    </div>
 
-    <a href="{{ path('admin_line_edit', {'id': line.id}) }}">Modifier</a>
 
-    {{ include('Back/line/_delete_form.html.twig') }}
 {% endblock %}

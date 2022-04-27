@@ -3,44 +3,44 @@
 {% block title %}LineTrain index{% endblock %}
 
 {% block body %}
-    <h1>Voyage</h1>
+<h1>Voyage</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Train</th>
-                <th>Ligne</th>
-                <th>Date départ</th>
-                <th>Date d'arrivée</th>
-                <th>€ classe 1</th>
-                <th>€ classe 2</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Train</th>
+            <th>Ligne</th>
+            <th>Date départ</th>
+            <th>Date d'arrivée</th>
+            <th>€ classe 1</th>
+            <th>€ classe 2</th>
+            <th>actions</th>
+        </tr>
+    </thead>
+    <tbody>
         {% for line_train in line_trains %}
-            <tr>
-                <td>{{ line_train.id }}</td>
-                <td>{{ line_train.train.name ?? "" }}</td>
-                <td>{{ line_train.line.nameStationDeparture }} - {{ line_train.line.nameStationArrival }}</td>
-                <td>{{ line_train.getDateDeparture()|date('d/m/Y')}} {{line_train.getTimeDeparture()|date('H:i:s') }} </td>
-                <td>{{ line_train.getDateArrival()|date('d/m/Y')}} {{line_train.getTimeArrival()|date('H:i:s') }} </td>
-                <td>{{ line_train.priceClass1 }} €</td>
-                <td>{{ line_train.priceClass2 }} €</td>
-               
-                <td>
-                    <a href="{{ path('admin_line_train_show', {'id': line_train.id}) }}">Voir</a>
-                    <a href="{{ path('admin_line_train_edit', {'id': line_train.id}) }}">Modifier</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">Aucune données</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <tr>
 
-    <a href="{{ path('admin_line_train_new') }}">Créer un voyage</a>
+            <td>{{ line_train.train.name ?? "" }}</td>
+            <td>{{ line_train.line.nameStationDeparture }} - {{ line_train.line.nameStationArrival }}</td>
+            <td>{{ line_train.getDateDeparture()|date('d/m/Y')}} {{line_train.getTimeDeparture()|date('H:i:s') }} </td>
+            <td>{{ line_train.getDateArrival()|date('d/m/Y')}} {{line_train.getTimeArrival()|date('H:i:s') }} </td>
+            <td>{{ line_train.priceClass1 }} €</td>
+            <td>{{ line_train.priceClass2 }} €</td>
+
+            <td>
+                <a href="{{ path('admin_line_train_show', {'id': line_train.id}) }}">Voir</a>
+                <a href="{{ path('admin_line_train_edit', {'id': line_train.id}) }}">Modifier</a>
+                <a href="{{ path('admin_line_train_plan', {'id': line_train.id}) }}"><i class="fa-solid fa-train"></i></a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="4">Aucune données</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('admin_line_train_new') }}">Créer un voyage</a>
 {% endblock %}

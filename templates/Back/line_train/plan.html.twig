@@ -1,0 +1,227 @@
+{% extends 'base_back.html.twig' %}
+
+{% block title %}Plan{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .wagon,
+    .last {
+
+        border: 2px solid #dee2e6;
+        background-color: white;
+        width: 300px;
+
+    }
+
+    .wagon {
+        height: 200px;
+        border-radius: 4px;
+        margin: 5px;
+    }
+
+    .last {
+        min-height: 200px;
+        border-radius: 0 200px 0 0;
+    }
+
+    .train {
+        display: flex;
+    }
+
+    .block {
+        padding: 30px;
+        background-color: #FFF;
+        border-radius: 5px;
+        border: 1px solid rgba(0, 0, 0, .125);
+    }
+
+    .block-train {
+        display: flex;
+        overflow-x: scroll;
+
+    }
+
+    .seat {
+        width: 40px;
+        height: 40px;
+        border: 2px solid #dee2e6;
+        margin: 4px;
+
+    }
+
+    p {
+        font-size: 14px;
+    }
+
+
+    .notAvailable {
+        background-color: #dee2e6;
+        cursor: pointer;
+        transition: transform 1.5s;
+    }
+
+    .notAvailable:hover {
+        transform: scale(1.2);
+    }
+
+    .available {
+        background-color: #FFF;
+    }
+
+    .bar {
+        background-color: rgba(255, 220, 40, .15);
+    }
+
+    .traveler {
+        background-color: rgba(148, 183, 247, .15)
+    }
+</style>
+
+{% endblock %}
+
+
+
+{% block body %}
+<div>
+    <h1></h1>
+    <a href="{{ path('admin_line_train_index') }}">Retour</a>
+
+    <div class="mt-4 d-flex justify-content-between">
+
+        <div id="seatBooking">
+        </div>
+        <div class="d-flex">
+            <div class="card mt-3 me-2">
+                <div class="card-body">
+                    <h6 class="card-title">Place(s) disponible(s)</h6>
+                    <h5 class="card-subtitle mb-2 text-muted">{{ seatAvailable }}</h5>
+
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6 class="card-title">Place(s) occupée(s) </h6>
+                    <h5 class="card-subtitle mb-2 text-muted">{{ seatNotAvailable }}</h5>
+
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <div class="block d-flex flex-column mt-5">
+        <div class="block-train">
+            <div>
+                <div class="train">
+                    {% for wagon in getWagons %}
+
+
+                    <div class="wagon d-flex {% if wagon.getType() == 'Voyageur' %} traveler {%else%} bar {% endif%}">
+                        <div class="d-flex flex-column flex-wrap">
+                            {% for key,seat in wagon.getSeats().getValues() %}
+
+
+                            {% if seat.getBookingSeats().getValues() is empty %}
+                            <div class="seat available"></div>
+
+
+                            {% else %}
+                            {% set break = false %}
+                            {% set bookingId = false %}
+
+                            {% for test in seat.getBookingSeats().getValues() %}
+
+                            {% if not break %}
+                            {% if test.booking.lineTrain.getId() == id %}
+                            {% set break = true %}
+                            {% set bookingId = test.getId() %}
+                            {% endif %}
+                            {% endif %}
+                            {% endfor %}
+
+                            {% if break %}
+                            <div class="seat notAvailable" onclick="display({{ bookingId }})"></div>
+                            {% else %}
+                            <div class="seat available"></div>
+                            {% endif %}
+                            {% endif %}
+
+
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                    <div class="last"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex mt-4">
+            <div class="">
+                <div class="seat available"></div>
+                <p>Disponible</p>
+            </div>
+            <div class="mx-3">
+                <div class="seat notAvailable"></div>
+                <p>Occupé</p>
+            </div>
+            <div class="mx-3">
+                <div class="seat traveler"></div>
+                <p>Voyageur</p>
+            </div>
+            <div class="mx-3">
+                <div class="seat bar"></div>
+                <p> Bar</p>
+            </div>
+
+
+        </div>
+
+        <div class="text-center mt-3">{{ train }}</div>
+
+
+    </div>
+
+
+
+
+    {% endblock %}
+
+
+
+    {% block javascripts %}
+    <script>
+        function display(id) {
+            $.ajax({
+                type: 'GET',
+                url: `/admin/line-train/display/seat/${id}`,
+                data: '',
+                success: function(data) {
+                    let seatBooking = document.getElementById('seatBooking');
+                    let html = `
+                        <div class="card mt-3 ">
+                            <div class="card-body">
+                                    <h5 class="card-title">${data[0].lastname} ${data[0].lastname}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">Classe : ${data[0].class}</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">Siège : ${data[0].number}</h6>
+                                
+                            </div>
+                        </div>`;
+
+                    seatBooking.innerHTML = html;
+
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    alert(xhr.responseText);
+                    alert(ajaxOptions);
+                    alert(thrownError);
+                    alert(xhr.status);
+                }
+            });
+
+        }
+    </script>
+    {% endblock %}

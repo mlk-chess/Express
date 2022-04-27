@@ -20,12 +20,25 @@ class LineTrainRepository extends ServiceEntityRepository
     }
 
 
-    public function findTrainByDate($trainId,$id = null): array
+    public function findLineTrainByDate()
+    {
+
+        $qb = $this->createQueryBuilder('lt')
+            ->select('COUNT(lt) as nb, lt.date_departure')
+            ->groupBy('lt.date_departure');
+
+        $query = $qb->getQuery();
+
+        return $query->execute();
+    }
+
+
+    public function findTrainByDate($trainId, $id = null): array
     {
         $entityManager = $this->getEntityManager();
 
 
-        if ($id){
+        if ($id) {
             $query = $entityManager->createQuery(
                 "SELECT concat(lt.date_departure, ' ', lt.time_departure) AS timestampdeparture,
                 concat(lt.date_arrival, ' ', lt.time_arrival) AS timestamparrival,
@@ -34,8 +47,8 @@ class LineTrainRepository extends ServiceEntityRepository
                 WHERE lt.train = t.id
                 AND t.id = :id
                 AND lt.id != :idLineTrain"
-             )->setParameters(['id' => $trainId, 'idLineTrain' => $id]);
-        }else{
+            )->setParameters(['id' => $trainId, 'idLineTrain' => $id]);
+        } else {
             $query = $entityManager->createQuery(
                 "SELECT concat(lt.date_departure, ' ', lt.time_departure) AS timestampdeparture,
                 concat(lt.date_arrival, ' ', lt.time_arrival) AS timestamparrival,
@@ -43,11 +56,11 @@ class LineTrainRepository extends ServiceEntityRepository
                 FROM App\Entity\LineTrain lt , App\Entity\Train t 
                 WHERE lt.train = t.id
                 AND t.id = :id"
-             )->setParameter('id', $trainId);
+            )->setParameter('id', $trainId);
         }
 
 
-       
+
         return $query->getResult();
     }
 
@@ -56,22 +69,22 @@ class LineTrainRepository extends ServiceEntityRepository
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
-           "SELECT w.class, w.type, w.placeNb
+            "SELECT w.class, w.type, w.placeNb
             FROM App\Entity\Wagon w
             WHERE w.train = :id"
         )->setParameter('id', $trainId);
 
-       
+
         return $query->getResult();
     }
 
 
-    public function findLineByLineTrain($departure,$arrival): array
+    public function findLineByLineTrain($departure, $arrival): array
     {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
-           "SELECT lt.id
+            "SELECT lt.id
            FROM App\Entity\LineTrain lt , App\Entity\Line l
            WHERE lt.line = l.id
            AND l.name_station_departure = :departure
@@ -81,7 +94,7 @@ class LineTrainRepository extends ServiceEntityRepository
             'arrival' => $arrival
         ]);
 
-       
+
         return $query->getResult();
     }
 
@@ -99,7 +112,7 @@ class LineTrainRepository extends ServiceEntityRepository
     //        AND t.id = :id"
     //     )->setParameter('id', $trainId);
 
-       
+
     //     return $query->getResult();
     // }
 

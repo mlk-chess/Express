@@ -1,0 +1,142 @@
+{% extends 'base_back.html.twig' %}
+
+{% block title %}New LineTrain{% endblock %}
+{% block stylesheets %}
+    <style>
+        .fc .fc-col-header-cell-cushion {
+           color: #000000;
+           text-decoration: none;
+           text-transform: uppercase;
+        }
+
+        .fc-daygrid-day-number{
+            color: #000000;
+            text-decoration: none;
+        }
+
+        .fc-event-title{
+            font-size: 20px !important;
+           
+        }
+
+        .fc .fc-bg-event {
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        #accordionFlushExample{
+            
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 9999;
+            width: 100%;
+        }
+    </style>
+{% endblock %}
+
+
+{% block body %}
+    <h1>Planning</h1>
+
+    <div id="calendar"></div>
+
+
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingOne">
+            <button id="btn-show" style="height: 5vh; border-top:1px solid black;" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                
+            </button>
+            </h2>
+            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                <div style="height:95vh;overflow-y: scroll; background-color: #f2f2f2;" class="accordion-body">
+                    <div class="">
+                        <div id="now" class="pt-4 pb-4">
+                        </div>
+                    </div>
+                    <div id="travels"></div>
+                   
+                </div>
+
+            <div></div>
+            </div>
+        </div>
+  
+</div>
+{% endblock %}
+
+
+
+{% block javascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'fr',
+            timeZone: 'Europe/Paris',
+            events: {{ data|raw }},
+            })
+
+            calendar.render();
+
+            calendar.on('dateClick', function(e) {
+
+
+                let btn = document.getElementById('btn-show');
+                let now = document.getElementById('now');
+                btn.click();
+                let date = e.date.toLocaleString('fr').split(',');
+                now.innerHTML =  `<h3><i class="me-3 fa-solid fa-calendar"></i>${date[0]}</h3>`;
+               
+                $.ajax({
+                    type: 'GET',
+                    url: `/admin/line-train/planning/${e.dateStr}`,
+                    data: '',
+                    success: function(data) {
+                        let html = "";
+                        let travels = document.getElementById('travels');
+                        data.forEach(element => {
+                            html += 
+                            `<div class="row mt-2">
+                                <div class="col-sm-12">
+                                    <div class="d-flex justify-content-between border shadow-sm rounded px-3 me-4 bg-white pt-3">
+                                        <div class="d-flex flex-column">
+                                            <h4 class="fw-bold">${element[6]} <i class="fa-solid fa-arrow-right"></i> ${element[7]} </h4>
+                                            <div class="">
+                                                <p class="fw-bold">${element[1]}</p>
+                                            </div>
+                                        </div>
+                                        <div class="mx-4">
+                                            <h4>${element[2]} <i class="fa-solid fa-arrow-right"></i> ${element[3]}</h4>
+                                        </div>
+
+                                        <div class="mx-4">
+                                            <h4><i class="fa-solid fa-train"></i></h4>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            
+                            </div>`
+                        });
+
+                        travels.innerHTML = html;
+
+                    },
+                    error: function (xhr, ajaxOptions, thrownError){
+                        alert(xhr.responseText);
+                        alert(ajaxOptions);
+                        alert(thrownError);
+                        alert(xhr.status);
+                    }
+                }); 
+                
+            });
+
+
+
+});
+</script>
+{% endblock %}

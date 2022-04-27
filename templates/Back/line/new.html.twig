@@ -3,9 +3,16 @@
 {% block title %}Ligne{% endblock %}
 
 {% block body %}
-    <h1>Créer une ligne</h1>
 
-    {{ include('Back/line/_form.html.twig') }}
+    <div class='d-flex justify-content-between'>
+        <h1 class="f-12">Créer une ligne</h1>
+        <div>
+            <a class="btn btn-primary" href="{{ path('admin_line_index') }}">Liste des lignes</a>
+        </div> 
+    </div>
+    <div class="w-75">
+        {{ include('Back/line/_form.html.twig') }}
+    </div>
 
-    <a href="{{ path('admin_line_index') }}">Liste des lignes</a>
+  
 {% endblock %}

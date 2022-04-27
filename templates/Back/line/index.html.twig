@@ -3,16 +3,17 @@
 {% block title %}Lignes{% endblock %}
 
 {% block body %}
-    <h1>Les lignes</h1>
+    <div class="d-flex justify-content-between mb-5">
+        <h1>Les lignes</h1>
+        <div>
+            <a class="btn btn-primary" href="{{ path('admin_line_new') }}">Créer une nouvelle ligne</a>
+        </div>
+    </div>
 
-    <table class="table">
+    <table id="table_line" class=" display">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Longitude gare de départ</th>
-                <th>Latitude gare de départ</th>
-                <th>Longitude gare d'arrivée</th>
-                <th>Latitude gare d'arrivée</th>
                 <th>Gare de départ</th>
                 <th>Gare d'arrivée</th>
                 <th>Actions</th>
@@ -22,15 +23,11 @@
         {% for line in lines %}
             <tr>
                 <td>{{ line.id }}</td>
-                <td>{{ line.longitudeDeparture }}</td>
-                <td>{{ line.latitudeDeparture }}</td>
-                <td>{{ line.longitudeArrival }}</td>
-                <td>{{ line.latitudeArrival }}</td>
                 <td>{{ line.nameStationDeparture }}</td>
                 <td>{{ line.nameStationArrival }}</td>
                 <td>
-                    <a href="{{ path('admin_line_show', {'id': line.id}) }}">Voir</a>
-                    <a href="{{ path('admin_line_edit', {'id': line.id}) }}">Modifier</a>
+                    <a class="btn btn-primary" href="{{ path('admin_line_show', {'id': line.id}) }}">Voir</a>
+                    <a class="btn btn-warning" href="{{ path('admin_line_edit', {'id': line.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
@@ -41,5 +38,10 @@
         </tbody>
     </table>
 
-    <a href="{{ path('admin_line_new') }}">Créer une nouvelle ligne</a>
+     <script>
+
+        $(document).ready( function () {
+            $('#table_line').DataTable();
+        } );
+    </script>
 {% endblock %}

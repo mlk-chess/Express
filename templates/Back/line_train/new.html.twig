@@ -1,11 +1,19 @@
 {% extends 'base_back.html.twig' %}
 
-{% block title %}New LineTrain{% endblock %}
+{% block title %}Voyage{% endblock %}
+
+
+
 
 {% block body %}
+<div>
     <h1>Créer un voyage</h1>
-
-    {{ include('Back/line_train/_form.html.twig') }}
-
     <a href="{{ path('admin_line_train_index') }}">Retour</a>
+
+    <div>
+        {{ include('Back/line_train/_form.html.twig') }}
+    </div>
+</div>
+
+
 {% endblock %}
