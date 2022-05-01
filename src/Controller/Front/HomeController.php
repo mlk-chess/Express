@@ -217,6 +217,7 @@ class HomeController extends AbstractController
             $booking->setLineTrain($voyage[0]);
             $booking->setPrice($price);
             $booking->setStatus(1);
+            $booking->setDateBooking(new DateTime());
             $booking->setTravelers($travelers);
 
             $booking->setIdUser($userConnected);

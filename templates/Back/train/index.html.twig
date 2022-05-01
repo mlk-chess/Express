@@ -23,11 +23,11 @@
                 <td>
 
                     <div class="row">
-                        <div class="valign-wrapper">
-                                <div class="col">
+                        <div class="d-flex flex-row bd-highlight">
+                                <div>
                                     <a href="{{ path('admin_train_show', {'id': train.id}) }}"><button class="btn">Voir</button></a>
                                 </div>
-                                <div class="col">
+                                <div>
                                     <form method="post" action="{{ path('admin_train_edit', {'id': train.id}) }}">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ train.id) }}">
                                         <button class="btn">Modifier</button>
@@ -54,6 +54,6 @@
     </table>
 
 
-    <a class="row" href="{{ path('admin_train_new') }}"><button class="btn">Nouveau train</button></a>
+    <a href="{{ path('admin_train_new') }}"><button type="button" class="btn btn-outline-primary">Nouveau train</button></a>
 
 {% endblock %}
