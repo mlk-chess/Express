@@ -26,7 +26,7 @@ class BookingController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'booking_show', methods: ['GET'])]
+    #[Route('voyage/{id}', name: 'booking_show', methods: ['GET'])]
     public function show(Booking $booking): Response
     {
         return $this->render('Front/trip/show.html.twig', [
