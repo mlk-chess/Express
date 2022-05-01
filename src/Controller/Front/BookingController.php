@@ -34,7 +34,7 @@ class BookingController extends AbstractController
         ]);
     }
 
-    #[Route('monVoyage/{id}', name: 'booking_show', methods: ['GET'])]
+    #[Route('monVoyage/{id}', name: 'booking_facture', methods: ['GET'])]
     public function monVoyage(Booking $booking): Response
     {
         //dd($booking->getLineTrain()->getLine()->getNameStationArrival());
@@ -111,7 +111,7 @@ class BookingController extends AbstractController
         $html .= '<td align="right">' . $i+1 . '</td>';
         $html .= '<td align="right">' . $booking->getTravelers()[$i][0] . '</td>';
         $html .= '<td align="right">' . $booking->getTravelers()[$i][1] . '</td>';
-        $html .= '<td align="right">' . $booking->getPrice()/sizeof($booking->getTravelers()) . '</td>';
+        $html .= '<td align="right">' . number_format((float)$booking->getPrice()/sizeof($booking->getTravelers()), 2, '.', '') . '</td>';
         $html .= '</tr>';
     }
 $html .= '

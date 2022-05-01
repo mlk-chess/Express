@@ -152,7 +152,7 @@ class HomeController extends AbstractController
             return new JsonResponse($json);
         }
         return new JsonResponse(false);
-    }
+    } 
 
     #[Route('/add-option', name: 'addOption', methods: 'POST')]
     public function addOption(Request $request, LineTrainRepository $lineTrainRepository): JsonResponse
