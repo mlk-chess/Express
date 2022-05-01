@@ -1,0 +1,44 @@
+{% extends 'base_home.html.twig' %}
+
+{% block title %}Mes voyages{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <h1>Mes voyages</h1>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Heure départ</th>
+                        <th>Depart</th>
+                        <th>Arrivé</th>
+                        <th>Nb voyageur</th>
+                        <th>Prix</th>
+                        <th>actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for booking in bookings %}
+                    <tr>
+                        <td class="center">{{ booking.id }}</td>
+                        <td class="center">{{ booking.lineTrain.dateDeparture |date('d-m-Y')}}</td>
+                        <td class="center">{{ booking.lineTrain.line.nameStationDeparture }}</td>
+                        <td class="center">{{ booking.lineTrain.line.nameStationArrival }}</td>
+                        <td class="center">{{ booking.travelers | length }}</td>
+                        <td class="center">{{ booking.price }} €</td>
+                        <td>
+                            <a href="{{ path('booking_show', {'id': booking.id}) }}"><button type="button" class="btn btn-primary">Information</button></a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">no records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

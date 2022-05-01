@@ -1,0 +1,59 @@
+{% extends 'base_home.html.twig' %}
+
+{% block title %}Voyage{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+
+
+            <h1>Voyage</h1>
+            <div class="col-md-6">
+                <label class="form-label">Date du départ</label>
+                <input class="form-control" value="{{ booking.lineTrain.dateDeparture |date('d-m-Y')}}" disabled>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Gare de départ</label>
+                <input class="form-control" value="{{ booking.lineTrain.line.nameStationDeparture }}" disabled>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Gare d'arrivé</label>
+                <input class="form-control" value="{{ booking.lineTrain.line.nameStationArrival }}" disabled>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Prix</label>
+                <input class="form-control" value="{{ booking.price }} €" disabled>
+            </div>
+            <h5>Voyageurs</h5>
+            {% for travelers in booking.travelers %}
+                {% for traveler in travelers %}
+                    <div class="col-md-6">
+                        <label class="form-label"></label>
+                        <input class="form-control" value="{{ traveler }}" disabled>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            <a class="row" style="text-decoration: none" href="{{ path('booking_facture', {'id': booking.id}) }}"><button type="button" class="btn btn-outline-success mt-4">Facture</button></a>
+            <button type="button" class="btn btn-outline-danger mt-4" data-bs-toggle="modal" data-bs-target="#annulerModal">Annuler le voyage</button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="annulerModal" tabindex="-1" aria-labelledby="annulerModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="annulerModalLabel">Etes-vous sûr de vouloir annuler votre voyage ? </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            L'annulation entrainera le remboursement total du voyage.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                            <button type="button" class="btn btn-danger">Continuer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

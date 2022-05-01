@@ -152,7 +152,7 @@ class HomeController extends AbstractController
             return new JsonResponse($json);
         }
         return new JsonResponse(false);
-    }
+    } 
 
     #[Route('/add-option', name: 'addOption', methods: 'POST')]
     public function addOption(Request $request, LineTrainRepository $lineTrainRepository): JsonResponse
@@ -217,6 +217,7 @@ class HomeController extends AbstractController
             $booking->setLineTrain($voyage[0]);
             $booking->setPrice($price);
             $booking->setStatus(1);
+            $booking->setDateBooking(new DateTime());
             $booking->setTravelers($travelers);
 
             $booking->setIdUser($userConnected);

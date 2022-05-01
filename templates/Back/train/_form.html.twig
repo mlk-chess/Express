@@ -1,4 +1,13 @@
+
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Enregistrer') }}</button>
+<div class="row">
+
+    {{ form_label(form.name, 'name', { 'attr': {'class': 'foo'} }) }}
+    {{ form_widget(form.name, { 'attr': {'class': 'form-control'} }) }}
+    {{ form_label(form.description, 'description', { 'attr': {'class': 'foo'} }) }}
+    {{ form_widget(form.description, { 'attr': {'class': 'form-control'} }) }}
+
+</div>
+
+    <button class="mt-3 btn btn-outline-success">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}

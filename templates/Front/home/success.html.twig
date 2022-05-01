@@ -3,5 +3,19 @@
 {% block title %}Paiement validé{% endblock %}
 
 {% block body %}
-    <p>Le paiement de votre billet a été confirmer</p>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="alert alert-success" role="alert">
+                <h4 class="alert-heading">PA Express</h4>
+                <p>Votre commande a bien été prise en compte, vous recevrez un mail de confirmation d'ici 5-15 minutes.</p>
+                <p>Vous trouverez votre facture en piece jointe du mail de confirmation ou dans votre espace rubrique "Mes voyages".</p>
+                <p><b>Rappel :</b></p>
+                <p>Vous pouvez annuler votre commande jusqu'à 2 heures avant le départ. Une fois passé ce délai vous ne serez plus éligible au remboursement.</p>
+                <hr>
+                <p class="mb-0">Merci de nous avoir fait confiance ! </p><br>
+                <p><a href="/mesVoyages"><button type="button" class="btn btn-outline-success">Mes voyages</button></a></p>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
