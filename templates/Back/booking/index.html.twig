@@ -19,6 +19,7 @@
                 <td>{{ booking.id }}</td>
                 <td>{{ booking.idUser.email }}</td>
                 <td class="d-flex">
+                    <a class="row me-4" style="text-decoration: none" href="{{ path('booking_facture', {'id': booking.id}) }}"><button type="button" class="btn btn-success me-4 mr-3">Facture</button></a>
                     <button type="button" class="btn btn-primary me-4" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="getBooking({{ booking.id }})">Informations</button>
                     {% if booking.status == -1%}
                         <p>Annulé</p>
