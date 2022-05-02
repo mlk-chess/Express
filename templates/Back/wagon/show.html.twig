@@ -20,41 +20,23 @@
                 <td>{{ wagon.type }}</td>
             </tr>
             <tr>
-                <th>PlaceNb</th>
+                <th>Nombre de places</th>
                 <td>{{ wagon.placeNb }}</td>
             </tr>
         </tbody>
     </table>
-    <br>
-    <a href="{{ path('wagon_edit', {'id': wagon.id}) }}"><button class="btn">Modifier</button></a>
+    <div class="d-flex">
+        <form method="post" action="{{ path('admin_wagon_edit', {'id': wagon.id}) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ wagon.id) }}">
+            <button class="btn btn-primary">Editer</button>
+        </form>
 
-    <hr>
-    <h4>Option</h4>
-    {% if wagon.options is not null %}
-        <table class="table">
-            <thead>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Prix</th>
-                <th>Description</th>
-            </thead>
-            <tbody>
-            {% for option in wagon.options%}
-                <td>{{ option.id }}</td>
-                <td>{{ option.name }}</td>
-                <td>{{ option.type }}</td>
-                <td>{{ option.price }}</td>
-                <td>{{ option.description }}</td>
+        <div class="mx-2">
+            {{ include('Back/wagon/_delete_form.html.twig') }}
+        </div>
+    </div>
 
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
-    {% if wagon.options is null %}
-        <p>Aucune option liée au wagon</p>
-    {% endif %}
-    <br>
-    <a href="{{ path('wagon_index') }}"><button class="btn">Retour</button></a>
 
+  
+    
 {% endblock %}

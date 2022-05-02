@@ -4,10 +4,15 @@
 
 
 {% block body %}
-    <h1>Edit Wagon</h1>
+  <div class='d-flex justify-content-between'>    
+        <h1 class="f-12">Modification</h1>
+        <div>
+            <a class="btn btn-primary" href="{{ path('admin_train_index') }}">Retour</a>
+        </div> 
+    </div>
 
     {{ include('Back/wagon/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
 
-    <a href="{{ path('admin_wagon_index') }}">Retour</a>
+   
 
 {% endblock %}
