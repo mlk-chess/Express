@@ -2,10 +2,41 @@
 
 {% block title %}Log in!{% endblock %}
 
-{% block body %}
-    {{ form_start(form) }}
-        {{ form_rest(form) }}
-    <button type="submit"> save</button>
-    {{ form_end(form) }}
+{% block stylesheets %}
+    <style>
+        .logo {
+            width: 200px;
+        }
 
+        input {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-center mt-5">
+        <div class="card" style="width: 18rem;">
+            <div class="text-center">
+                <img src="{{ asset('img/logo.png') }}" class="card-img-top logo" alt="logo">
+            </div>
+            <div class="card-body">
+                {{ form_start(form) }}
+                    {{ form_rest(form) }}
+                    <button type="submit" class="btn btn-primary mt-3">Save</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

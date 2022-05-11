@@ -14,10 +14,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
 
     /* Create company */
     #[Route('/register-company', name: 'app_register_company', methods: ['GET', 'POST'])]
@@ -123,6 +131,10 @@ class SecurityController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
+
+        if ($this->security->getUser()) {
+            return $this->redirectToRoute('home', [], 301);
+        }
 
         return $this->render('security/login.html.twig',
             [
