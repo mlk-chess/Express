@@ -7,48 +7,57 @@
         .logo {
             width: 200px;
         }
+
+        .card-login {
+            width: 500px;
+        }
     </style>
 {% endblock %}
 
 {% block body %}
+    <div class="container">
+        <div class="d-flex justify-content-center mt-5">
+            <div class="card card-login">
+                <div class="d-flex mt-3 ms-3">
+                    <a href="/"><button class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i> Retourner à l'accueil</button></a>
+                </div>
 
-    <div class="d-flex justify-content-center mt-5">
-        <div class="card d-flex">
-            <div class="text-center">
-                <img src="{{ asset('img/logo.png') }}" class="card-img-top logo" alt="logo">
-            </div>
-            <div class="card-body">
-                <form action="{{ path('app_login') }}" method="post" class="d-flex flex-column justify-content-center">
-                    {% if error %}
-                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-                    {% endif %}
+                <div class="text-center">
+                    <img src="{{ asset('img/logo.png') }}" class="card-img-top logo" alt="logo">
+                </div>
+                <div class="card-body">
+                    <form action="{{ path('app_login') }}" method="post" class="d-flex flex-column justify-content-center">
+                        {% if error %}
+                            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                        {% endif %}
 
-                    {% if app.user %}
-                        <div class="mb-3 text-center">
-                            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
-                        </div>
-                    {% else %}
-                        <h1 class="h3 mb-3 font-weight-normal text-center">Please sign in</h1>
-                        <label for="inputEmail">Email</label>
-                        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control"
-                               autocomplete="email" required autofocus>
-                        <label for="inputPassword">Password</label>
-                        <input type="password" name="password" id="inputPassword" class="form-control"
-                               autocomplete="current-password" required>
+                        {% if app.user %}
+                            <div class="mb-3 text-center">
+                                You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+                            </div>
+                        {% else %}
+                            <h1 class="h3 mb-3 font-weight-normal text-center">Please sign in</h1>
+                            <label for="inputEmail">Email</label>
+                            <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control"
+                                   autocomplete="email" required autofocus>
+                            <label for="inputPassword">Password</label>
+                            <input type="password" name="password" id="inputPassword" class="form-control"
+                                   autocomplete="current-password" required>
 
-                        <input type="hidden" name="_csrf_token"
-                               value="{{ csrf_token('authenticate') }}"
-                        >
+                            <input type="hidden" name="_csrf_token"
+                                   value="{{ csrf_token('authenticate') }}"
+                            >
 
 
-                        <button class="btn btn-lg btn-primary mt-4" type="submit">
-                            Sign in
-                        </button>
+                            <button class="btn btn-lg btn-primary mt-4" type="submit">
+                                Sign in
+                            </button>
 
-                        <a href="{{ path('app_forgot_password_request') }}" class="text-center mt-3">Forgot your
-                            password?</a>
-                    {% endif %}
-                </form>
+                            <a href="{{ path('app_forgot_password_request') }}" class="text-center mt-3">Forgot your
+                                password?</a>
+                        {% endif %}
+                    </form>
+                </div>
             </div>
         </div>
     </div>

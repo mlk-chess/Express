@@ -4,8 +4,12 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,21 +19,54 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email')
-            ->add('password', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'first_options' => [
-                    'label' => 'Mot de passe'
-                ],
-                'second_options' => [
-                    'label' => 'Confirmation du mot de passe'
-                ],
-                'invalid_message' => 'Le mot de passe de confirmation ne correspond pas',
+            ->add('email', EmailType::class, [
+                    'attr' => ['class' => 'form-control mb-3']
             ])
-            ->add('address',TextType::class,  ['label' => 'Adresse'])
-            ->add('city',TextType::class,  ['label' => 'Ville'])
-            ->add('zipCode',TextType::class,  ['label' => 'Code postal'])
-            ->add('phoneNumber',TextType::class,  ['label' => 'Numéro de téléphone'])
+            ->add($builder->create('group1', FormType::class, [
+                'inherit_data' => true,
+                'label' => false,
+                'attr' => ['class' => 'd-flex mb-3'],
+            ])
+                ->add('password', RepeatedType::class, [
+                    'type' => PasswordType::class,
+                    'first_options' => [
+                        'label' => 'Mot de passe',
+                        'row_attr' => ['class' => 'ma-4']
+                    ],
+                    'second_options' => [
+                        'label' => 'Confirmation du mot de passe',
+                        'row_attr' => ['class' => 'ms-4']
+                    ],
+                    'invalid_message' => 'Le mot de passe de confirmation ne correspond pas',
+                    'options' => [
+                        'attr' => ['class' => 'form-control']
+                    ]
+                ])
+            )
+            ->add('address',TextType::class,  [
+                'label' => 'Adresse',
+                'attr' => ['class' => 'form-control mb-3']
+            ])
+            ->add($builder->create('group2', FormType::class, [
+                'inherit_data' => true,
+                'label' => false,
+                'attr' => ['class' => 'd-flex mb-3'],
+            ])
+                ->add('city',TextType::class,  [
+                    'label' => 'Ville',
+                    'attr' => ['class' => 'form-control'],
+                    'row_attr' => ['class' => 'ma-4']
+                ])
+                ->add('zipCode',NumberType::class,  [
+                    'label' => 'Code postal',
+                    'attr' => ['class' => 'form-control'],
+                    'row_attr' => ['class' => 'ms-4']
+                ])
+            )
+            ->add('phoneNumber',TelType::class,  [
+                'label' => 'Numéro de téléphone',
+                'attr' => ['class' => 'form-control mb-3']
+            ])
         ;
     }
 
