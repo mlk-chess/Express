@@ -76,6 +76,10 @@ class SecurityController extends AbstractController
     #[Route('/register', name: 'app_register', methods: ['GET', 'POST'])]
     public function new(Request $request, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
     {
+        if ($this->security->getUser()) {
+            return $this->redirectToRoute('home', [], 301);
+        }
+
         $user = new User();
         $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
         $user->setToken($token);
@@ -123,18 +127,14 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils, ManagerRegistry $doctrine): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
-
+        if ($this->security->getUser()) {
+            return $this->redirectToRoute('home', [], 301);
+        }
+        
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
-
-        if ($this->security->getUser()) {
-            return $this->redirectToRoute('home', [], 301);
-        }
 
         return $this->render('security/login.html.twig',
             [
