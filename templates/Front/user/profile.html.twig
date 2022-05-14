@@ -11,6 +11,10 @@
         .containerProfile {
             width: 85%;
         }
+
+        .errorMessage {
+            color: red;
+        }
     </style>
 {% endblock %}
 
@@ -27,35 +31,22 @@
                     <div class="row">
                         <div class="col-12 col-sm-6 mb-4">{{ include('Front/user/_form.html.twig', {'button_label': 'Mettre à jour'}) }}</div>
                         <div class="col-12 col-sm-6 mb-4">
-                            {{ include('Front/user/_formPwd.html.twig', {'button_label': 'Mettre à jour'}) }}
+                            {{ form_start(formPwd) }}
+                                {{ form_label(formPwd.plainPassword.first) }}
+                                {{ form_widget(formPwd.plainPassword.first) }}
+                                {{ form_label(formPwd.plainPassword.second) }}
+                                {{ form_widget(formPwd.plainPassword.second) }}
+                                <div class="errorMessage">{{ form_errors(formPwd.plainPassword.first) }}</div>
+                                <div class="errorMessage">{{ form_errors(formPwd.plainPassword.second) }}</div>
+
+                                <div class="errorMessage">{{ form_errors(formPwd) }}</div>
+
+                            <button type="submit" class="btn btn-primary mt-2">Mettre à jour</button>
+                            {{ form_end(formPwd) }}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-{#<div class="card-panel grey lighten-2" style="padding-bottom: 150px;box-shadow: 200px 0px 0px 0px rgba(0,0,0,0)">#}
-{#    <div class="">#}
-{#        <h1>Page de profil</h1>#}
-{#        <div class="container">#}
-
-
-{#            <div class="row">#}
-{#                <div class="col s12">#}
-{#                    <ul class="tabs">#}
-{#                        <li class="tab col s3"><a class="active" href="#test1">Information</a></li>#}
-{#                        <li class="tab col s3"><a href="#test2">Sécurité et confidentialité</a></li>#}
-{#                    </ul>#}
-{#                </div>#}
-{#                <div id="test1" class="col s12">{{ include('Front/user/_form.html.twig', {'button_label': 'Mettre à jour'}) }}</div>#}
-{#                <div id="test2" class="col s12">#}
-{#                    {{ include('Front/user/_formPwd.html.twig', {'button_label': 'Mettre à jouer'}) }}#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#</div>#}
-
-
 {% endblock %}

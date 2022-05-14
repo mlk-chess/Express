@@ -23,9 +23,10 @@ class UserPwdType extends AbstractType
                         'attr' => ['class' => 'form-control mb-3']
                     ],
                     'second_options' => [
-                        'label' => 'Répéter votre mot de passe',
+                        'label' => 'Confirmer votre mot de passe',
                         'attr' => ['class' => 'form-control mb-3']
                     ],
+                    'invalid_message' => 'Le mot de passe de confirmation ne correspond pas',
                 ]);
     }
 
