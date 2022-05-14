@@ -1,22 +1,40 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_home.html.twig' %}
 
 {% block title %}Reset your password{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .logo {
+            width: 200px;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
     {% for flash_error in app.flashes('reset_password_error') %}
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
-    <h1>Reset your password</h1>
+    <div class="container">
+        <div class="d-flex justify-content-center mt-2 mb-5">
+            <div class="card card-login">
+                <div class="d-flex mt-3 ms-3">
+                    <a href="/"><button class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i> Retourner à l'accueil</button></a>
+                </div>
 
-    {{ form_start(requestForm) }}
-        {{ form_row(requestForm.email) }}
-        <div>
-            <small>
-                Enter your email address and we will send you a
-                link to reset your password.
-            </small>
+                <div class="text-center">
+                    <img src="{{ asset('img/logo.png') }}" class="card-img-top logo" alt="logo">
+                    <h3 class="px-4">Réinitialisation du mot de passe</h3>
+                </div>
+                <div class="card-body">
+                    {{ form_start(requestForm) }}
+                        {{ form_row(requestForm.email) }}
+
+                    <div class="d-flex justify-content-center my-4">
+                        <button class="btn btn-lg btn-primary">Envoyer</button>
+                    </div>
+                    {{ form_end(requestForm) }}
+                </div>
+            </div>
         </div>
-
-        <button class="btn btn-primary">Send password reset email</button>
-    {{ form_end(requestForm) }}
+    </div>
 {% endblock %}

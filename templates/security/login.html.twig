@@ -19,43 +19,42 @@
         <div class="d-flex justify-content-center mt-2 mb-5">
             <div class="card card-login">
                 <div class="d-flex mt-3 ms-3">
-                    <a href="/"><button class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i> Retourner à l'accueil</button></a>
+                    <a href="/">
+                        <button class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i> Retourner à l'accueil
+                        </button>
+                    </a>
                 </div>
 
                 <div class="text-center">
                     <img src="{{ asset('img/logo.png') }}" class="card-img-top logo" alt="logo">
+                    <h3>Connexion</h3>
                 </div>
                 <div class="card-body">
-                    <form action="{{ path('app_login') }}" method="post" class="d-flex flex-column justify-content-center">
+                    <form action="{{ path('app_login') }}" method="post"
+                          class="d-flex flex-column justify-content-center">
                         {% if error %}
                             <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                         {% endif %}
 
-                        {% if app.user %}
-                            <div class="mb-3 text-center">
-                                You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
-                            </div>
-                        {% else %}
-                            <h1 class="h3 mb-3 font-weight-normal text-center">Please sign in</h1>
-                            <label for="inputEmail">Email</label>
-                            <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control mb-3"
-                                   autocomplete="email" required autofocus>
-                            <label for="inputPassword">Password</label>
-                            <input type="password" name="password" id="inputPassword" class="form-control"
-                                   autocomplete="current-password" required>
+                        <label for="inputEmail">Email</label>
+                        <input type="email" value="{{ last_username }}" name="email" id="inputEmail"
+                               class="form-control mb-3"
+                               autocomplete="email" required autofocus>
+                        <label for="inputPassword">Password</label>
+                        <input type="password" name="password" id="inputPassword" class="form-control"
+                               autocomplete="current-password" required>
 
-                            <input type="hidden" name="_csrf_token"
-                                   value="{{ csrf_token('authenticate') }}"
-                            >
+                        <input type="hidden" name="_csrf_token"
+                               value="{{ csrf_token('authenticate') }}"
+                        >
 
 
-                            <button class="btn btn-lg btn-primary mt-4" type="submit">
-                                Sign in
-                            </button>
+                        <div class="d-flex justify-content-center">
+                            <button class="btn btn-lg btn-primary mt-4" type="submit">Connexion</button>
+                        </div>
 
-                            <a href="{{ path('app_forgot_password_request') }}" class="text-center mt-3">Forgot your
-                                password?</a>
-                        {% endif %}
+                        <a href="{{ path('app_forgot_password_request') }}" class="text-center mt-3">Mot de passe oublié
+                            ?</a>
                     </form>
                 </div>
             </div>
