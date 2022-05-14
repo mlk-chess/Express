@@ -24,19 +24,37 @@
                 </div>
                 <div class="card-body">
                     {{ form_start(form) }}
-                        {{ form_row(form.email) }}
+                        {{ form_label(form.email) }}
+                        {{ form_widget(form.email) }}
                         <div class="error" style="color: red">{{ form_errors(form.email) }}</div>
 
-                        {{ form_row(form.group1) }}
-                        <div class="list-group" style="color: red">{{ form_errors(form.group1) }}</div>
 
-                        {{ form_row(form.address) }}
+                        <div class="">
+                            {{ form_widget(form.password) }}
+                            <div class="list-group" style="color: red">{{ form_errors(form.password) }}</div>
+                        </div>
+
+                        {{ form_label(form.address) }}
+                        {{ form_widget(form.address) }}
                         <div class="error" style="color: red">{{ form_errors(form.address) }}</div>
 
-                        {{ form_row(form.group2) }}
-                        <div class="error" style="color: red">{{ form_errors(form.group2) }}</div>
 
-                        {{ form_row(form.phoneNumber) }}
+                        <div class="d-flex mb-3">
+                            <div class="ma-4">
+                                {{ form_label(form.city) }}
+                                {{ form_widget(form.city) }}
+                                <div class="error" style="color: red">{{ form_errors(form.city) }}</div>
+                            </div>
+                            <div class="ms-4">
+                                {{ form_label(form.zipCode) }}
+                                {{ form_widget(form.zipCode) }}
+                                <div class="error" style="color: red">{{ form_errors(form.zipCode) }}</div>
+                            </div>
+                        </div>
+
+
+                        {{ form_label(form.phoneNumber) }}
+                        {{ form_widget(form.phoneNumber) }}
                         <div class="error" style="color: red">{{ form_errors(form.phoneNumber) }}</div>
 
 
