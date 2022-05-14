@@ -1,5 +1,6 @@
 error.not.blank :  Ce champs ne peut pas être vide
 error.not.phone.number : Le numéro de téléphone doit avoir exactement 10 chiffres.
+error.not.phone.max : Le numéro de téléphone doit avoir exactement 10 chiffres.
 error.not.pwd.max : La longueur du mot de passe doit être inférieur à 50 caractères.
 error.not.pwd.min : La longueur du mot de passe doit être supérieur à 5 caractères.
 error.not.zipcode : Le code postal doit avoir exactement 5 chiffres.
