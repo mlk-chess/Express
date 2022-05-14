@@ -14,11 +14,26 @@ class ProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email', EmailType::class, ['disabled' => true])
-            ->add('address',TextType::class,  ['label' => 'Adresse'])
-            ->add('city',TextType::class,  ['label' => 'Ville'])
-            ->add('zipCode',TextType::class,  ['label' => 'Code postal'])
-            ->add('phoneNumber',TextType::class,  ['label' => 'Numéro de téléphone'])
+            ->add('email', EmailType::class, [
+                'disabled' => true,
+                'attr' => ['class' => 'form-control mb-3']
+            ])
+            ->add('address',TextType::class,  [
+                'label' => 'Adresse',
+                'attr' => ['class' => 'form-control mb-3']
+            ])
+            ->add('city',TextType::class,  [
+                'label' => 'Ville',
+                'attr' => ['class' => 'form-control mb-3']
+            ])
+            ->add('zipCode',TextType::class,  [
+                'label' => 'Code postal',
+                'attr' => ['class' => 'form-control mb-3']
+            ])
+            ->add('phoneNumber',TextType::class,  [
+                'label' => 'Numéro de téléphone',
+                'attr' => ['class' => 'form-control mb-3']
+            ])
         ;
     }
 

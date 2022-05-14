@@ -16,13 +16,17 @@ class UserPwdType extends AbstractType
     {
         $builder
             ->add('plainPassword',RepeatedType::class,
-                ['type' => PasswordType::class,
+                [
+                    'type' => PasswordType::class,
                     'first_options' => [
-                    'label' => 'Votre mot de passe'
+                        'label' => 'Votre mot de passe',
+                        'attr' => ['class' => 'form-control mb-3']
                     ],
                     'second_options' => [
-                    'label' => 'Repeter votre mot de passe'
+                        'label' => 'Confirmer votre mot de passe',
+                        'attr' => ['class' => 'form-control mb-3']
                     ],
+                    'invalid_message' => 'Le mot de passe de confirmation ne correspond pas',
                 ]);
     }
 

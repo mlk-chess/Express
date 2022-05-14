@@ -14,10 +14,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
 
     /* Create company */
     #[Route('/register-company', name: 'app_register_company', methods: ['GET', 'POST'])]
@@ -68,6 +76,10 @@ class SecurityController extends AbstractController
     #[Route('/register', name: 'app_register', methods: ['GET', 'POST'])]
     public function new(Request $request, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
     {
+        if ($this->security->getUser()) {
+            return $this->redirectToRoute('home', [], 301);
+        }
+
         $user = new User();
         $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
         $user->setToken($token);
@@ -115,9 +127,9 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils, ManagerRegistry $doctrine): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+        if ($this->security->getUser()) {
+            return $this->redirectToRoute('home', [], 301);
+        }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
