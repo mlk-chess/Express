@@ -29,7 +29,33 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-12 col-sm-6 mb-4">{{ include('Front/user/_form.html.twig', {'button_label': 'Mettre à jour'}) }}</div>
+                        <div class="col-12 col-sm-6 mb-4">
+                            {{ form_start(form) }}
+                                {{ form_label(form.email) }}
+                                {{ form_widget(form.email) }}
+                                <div class="errorMessage">{{ form_errors(form.email) }}</div>
+
+                                {{ form_label(form.address) }}
+                                {{ form_widget(form.address) }}
+                                <div class="errorMessage">{{ form_errors(form.address) }}</div>
+
+                                {{ form_label(form.city) }}
+                                {{ form_widget(form.city) }}
+                                <div class="errorMessage">{{ form_errors(form.city) }}</div>
+
+                                {{ form_label(form.zipCode) }}
+                                {{ form_widget(form.zipCode) }}
+                                <div class="errorMessage">{{ form_errors(form.zipCode) }}</div>
+
+                                {{ form_label(form.phoneNumber) }}
+                                {{ form_widget(form.phoneNumber) }}
+                                <div class="errorMessage">{{ form_errors(form.phoneNumber) }}</div>
+
+                                <div class="errorMessage">{{ form_errors(form) }}</div>
+                                <button type="submit" class="btn btn-primary mt-2">Mettre à jour</button>
+                            {{ form_end(form) }}
+                        </div>
+
                         <div class="col-12 col-sm-6 mb-4">
                             {{ form_start(formPwd) }}
                                 {{ form_label(formPwd.plainPassword.first) }}
