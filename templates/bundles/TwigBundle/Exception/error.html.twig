@@ -1,15 +1,17 @@
 {%  extends 'base_home.html.twig' %}
 
-{% block title %}Oops error{% endblock %}
+{% block title %}Error{% endblock %}
 
 {% block body %}
-    <h1> Error : {{ status_exception }} {{ statusText_exception }}</h1>
-
-    {% if app.environment != "prod" %}
-    <p>{{ message_exception }}</p>
-    {% endif %}
-
-    <p>
-        <a href="/">return to the homepage</a>
-    </p>
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-12 col-md-6 d-flex align-items-center justify-content-center">
+                <a href="/"><button class="btn btn-lg btn-primary">Revenir sur le site</button></a>
+            </div>
+            <div class="col-12 col-md-6 d-flex align-items-center flex-column justify-content-center">
+                <img src="{{ asset('img/worker.png') }}" alt="error404" width="500px">
+                <h2 class="mt-5 fs-1">ERROR</h2>
+            </div>
+        </div>
+    </div>
 {% endblock %}

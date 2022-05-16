@@ -1,12 +1,45 @@
 {% extends 'base_home.html.twig' %}
 
-{% block title %}Reset your password{% endblock %}
+{% block title %}Réinitialisation du mot de passe{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .logo {
+            width: 200px;
+        }
+
+        .errorMessage {
+            color: red;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Reset your password</h1>
+    <div class="container">
+        <div class="d-flex justify-content-center mt-2 mb-5">
+            <div class="card card-login">
+                <div class="text-center">
+                    <img src="{{ asset('img/logo.png') }}" class="card-img-top logo" alt="logo">
+                    <h3 class="px-4">Réinitialisation du mot de passe</h3>
+                </div>
+                <div class="card-body">
+                    {{ form_start(resetForm) }}
+                        {{ form_label(resetForm.plainPassword.first) }}
+                        {{ form_widget(resetForm.plainPassword.first) }}
 
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
+                        {{ form_label(resetForm.plainPassword.second) }}
+                        {{ form_widget(resetForm.plainPassword.second) }}
+
+                        <small class="text-muted">{{ form_help(resetForm.plainPassword.first) }}</small>
+                        <div class="errorMessage">{{ form_errors(resetForm.plainPassword.first) }}</div>
+                        <div class="errorMessage">{{ form_errors(resetForm.plainPassword.second) }}</div>
+
+                        <div class="d-flex justify-content-center my-4">
+                            <button class="btn btn-lg btn-primary">Réinitialisation</button>
+                        </div>
+                    {{ form_end(resetForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
