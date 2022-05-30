@@ -4,6 +4,8 @@ namespace App\Controller\Back;
 
 use App\Entity\Wagon;
 use App\Form\WagonType;
+use App\Entity\Train;
+use App\Repository\TrainRepository;
 use App\Repository\WagonRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,30 +15,42 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/wagon')]
 class WagonController extends AbstractController
 {
-    #[Route('/', name: 'wagon_index', methods: ['GET'])]
-    public function index(WagonRepository $wagonRepository): Response
-    {
-        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+    // #[Route('/', name: 'wagon_index', methods: ['GET'])]
+    // public function index(WagonRepository $wagonRepository): Response
+    // {
+    //     $userConnected = $this->get('security.token_storage')->getToken()->getUser();
 
-        if (in_array('COMPANY', $userConnected->getRoles())){
-            return $this->render('Back/wagon/index.html.twig', [
-                'wagons' => $wagonRepository->findBy(array('owner' => $userConnected->getId()))
-            ]);
-        }else{
-            return $this->render('Back/wagon/index.html.twig', [
-                'wagons' => $wagonRepository->findAll(),
-            ]);
-        }
-    }
+    //     if (in_array('COMPANY', $userConnected->getRoles())){
+    //         return $this->render('Back/wagon/index.html.twig', [
+    //             'wagons' => $wagonRepository->findBy(array('owner' => $userConnected->getId()))
+    //         ]);
+    //     }else{
+    //         return $this->render('Back/wagon/index.html.twig', [
+    //             'wagons' => $wagonRepository->findAll(),
+    //         ]);
+    //     }
+    // }
 
-    #[Route('/new', name: 'wagon_new', methods: ['GET','POST'])]
-    public function new(Request $request): Response
+    #[Route('/new/{id}', name: 'wagon_new', methods: ['GET','POST'])]
+    public function new(Request $request, Train $train, TrainRepository $trainRepository): Response
     {
         $wagon = new Wagon();
         $form = $this->createForm(WagonType::class, $wagon);
         $form->handleRequest($request);
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
         $error = null;
+
+    
+       
+
+        if($trainRepository->findBy(["id" => $train->getId(),"owner" => $userConnected->getId()])){
+
+           dump("test");
+        }
+
+
+
+
         if ($form->isSubmitted() && $form->isValid()) {
             for ($i = 0; $i < sizeof($wagon->getTrain()->getLineTrains()); $i++){
                 if ($wagon->getTrain()->getLineTrains()->get($i)->getId() == $wagon->getTrain()->getId()){
@@ -53,6 +67,7 @@ class WagonController extends AbstractController
             }
 
             $wagon->setOwner($userConnected);
+            $wagon->setTrain($train);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($wagon);
             $entityManager->flush();
@@ -80,8 +95,11 @@ class WagonController extends AbstractController
     #[Route('/{id}/edit', name: 'wagon_edit', methods: ['GET','POST'])]
     public function edit(Request $request, Wagon $wagon): Response
     {
+        
         $form = $this->createForm(WagonType::class, $wagon);
         $form->handleRequest($request);
+
+       
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
