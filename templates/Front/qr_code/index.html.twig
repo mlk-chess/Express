@@ -8,7 +8,9 @@
 
         <div class="row border shadow-sm rounded p-3 mb-4 bg-white">
             <div class="col-sm-12 d-flex flex-column justify-content-center">
-                <button id="start-button" class="btn btn-primary">Lancer le scan</button>
+                <div class="d-flex justify-content-center">
+                    <button id="start-button" class="btn btn-primary">Lancer le scan</button>
+                </div>
 
                 <video id="qr-video"></video>
             </div>
@@ -16,30 +18,5 @@
     </div>
 
     <script src="{{ asset('js/qrCode/qr-scanner.umd.min.js') }}"></script>
-
-
-    <script type="text/javascript">
-        const video = document.getElementById('qr-video');
-
-        function setResult(result) {
-            console.log(result.data);
-            scanner.stop();
-            document.getElementById('start-button').style.display = 'block';
-        }
-
-
-        const scanner = new QrScanner(video, result => setResult(result), {
-            onDecodeError: error => {
-
-            },
-            highlightScanRegion: true,
-            highlightCodeOutline: true,
-        });
-
-
-        document.getElementById('start-button').addEventListener('click', () => {
-            document.getElementById('start-button').style.display = 'none';
-            scanner.start();
-        });
-    </script>
+    <script src="{{ asset('js/qrCode.js') }}"></script>
 {% endblock %}
