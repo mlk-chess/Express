@@ -54,7 +54,9 @@
                                 Mon compte <i class="fa-solid fa-user"></i>
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                {% if is_granted('ROLE_CUSTOMER') %}
+                                    <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                {% endif %}
                                 <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
                             </ul>
                         </li>
