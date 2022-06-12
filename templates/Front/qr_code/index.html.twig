@@ -1,0 +1,47 @@
+{% extends 'base_home.html.twig' %}
+
+{% block title %}PA EXPRESS{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center mb-3">Scanneur de billet</h1>
+        <button id="start-button">Start</button>
+        <button id="stop-button">Stop</button>
+        <div class="row border shadow-sm rounded p-3 mb-4 bg-white">
+            <div class="col-sm-12">
+
+
+                <video id="qr-video"></video>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/qrCode/qr-scanner.umd.min.js') }}"></script>
+
+
+    <script type="text/javascript">
+        const video = document.getElementById('qr-video');
+
+        function setResult(result) {
+            console.log(result.data);
+        }
+
+
+        const scanner = new QrScanner(video, result => setResult(result), {
+            onDecodeError: error => {
+
+            },
+            highlightScanRegion: true,
+            highlightCodeOutline: true,
+        });
+
+
+        document.getElementById('start-button').addEventListener('click', () => {
+            scanner.start();
+        });
+
+        document.getElementById('stop-button').addEventListener('click', () => {
+            scanner.stop();
+        });
+    </script>
+{% endblock %}
