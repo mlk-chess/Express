@@ -38,6 +38,10 @@
             </div>
         </div>
 
+        {% if noTravels %}
+            <p>Aucun résultat pour la recherche</p>
+        {% endif %}
+
         <div class="accordion mb-5" id="accordionMap">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
@@ -126,10 +130,6 @@
                     </div>
                 </div>
             {% endfor %}
-        {% endif %}
-
-        {% if noTravels %}
-            <p>Aucun résultat pour la recherche</p>
         {% endif %}
     </div>
 
