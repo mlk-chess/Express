@@ -1,7 +1,4 @@
 security:
-    role_hierarchy:
-        ROLE_ADMIN: SOCIETE
-        SOCIETE: ROLE_USER
     # https://symfony.com/doc/current/security/authenticator_manager.html
     enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#c-hashing-passwords
@@ -47,9 +44,5 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
          - { path: ^/admin, roles: [ROLE_ADMIN] }
-         - { path: ^/profile, roles: [ROLE_USER] }
-         - { path: ^/train, roles: [ROLE_USER] }
-         - { path: ^/wagon, roles: [ROLE_USER] }
-         - { path: ^/line, roles: [ROLE_USER] }
-         - { path: ^/option, roles: [ROLE_USER] }
-         - { path: ^/qrcode, roles: [ROLE_CONTROLLER] }
+         - { path: ^/profile, roles: [ROLE_CUSTOMER] }
+         - { path: ^/qrcode, roles: [ ROLE_CONTROLLER ] }

@@ -91,7 +91,7 @@ class SecurityController extends AbstractController
                 $user->setPlainPassword($user->getPassword());
                 $user->setStatus(0);
 
-                $user->setRoles(["ROLE_USER"]);
+                $user->setRoles(["ROLE_CUSTOMER"]);
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);
                 $entityManager->flush();
