@@ -33,7 +33,7 @@
                     </div>
                 {% endfor %}
             {% endfor %}
-            <a class="row" style="text-decoration: none" href="{{ path('booking_facture', {'id': booking.id}) }}"><button type="button" class="btn btn-outline-success mt-4">Facture</button></a>
+            <a class="row" style="text-decoration: none" href="{{ path('booking_ticket', {'id': booking.id}) }}"><button type="button" class="btn btn-outline-success mt-4">Facture</button></a>
             <button type="button" class="btn btn-outline-danger mt-4" data-bs-toggle="modal" data-bs-target="#annulerModal">Annuler le voyage</button>
 
             <!-- Modal -->
