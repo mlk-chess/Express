@@ -183,6 +183,24 @@ $html .= '
 
 </head>
 <body>
+  <table width="100%">
+    <tr>
+        <td valign="top"></td>
+        <td align="right">
+            <h3>PA Express</h3>
+            <pre>
+                Pa Express - paiement voyage
+                75 Rue jean bleuzn
+                Siret : 2132154321564653212354
+                01 21 32 65 98
+            </pre>
+        </td>
+    </tr>
+
+  </table>
+  <h1> Votre E-billet</h1>
+  <p> Ce document vous sera demandé comme justificatif de paiement auprès de nos contrôleurs présents à bord du train.</p>
+  <p> Toute falsification, non-présentation du billet entrainera une amende.</p>
 <table width="100%">
     <thead style="background-color: lightgray;">
       <tr>
@@ -214,12 +232,14 @@ $html .= '
         </tr>
     </tfoot>
   </table>
+  <h3>Qr Code : </h3>
+  <p>Vous trouverez ci-dessous un Qr code permettant de simplifier les contrôles des billets</p>
   </body>
   </html>';
 
         $writer = new PngWriter();
 
-// Create QR code
+/*// Create QR code
         $qrCode = QrCode::create('Data')
             ->setEncoding(new Encoding('UTF-8'))
             ->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
@@ -239,7 +259,7 @@ $html .= '
 
         $result = $writer->write($qrCode, $logo, $label);
 
-        dd($result);
+        dd($result);*/
         $dompdf->loadHtml($html);
 
         // (Optional) Setup the paper size and orientation
