@@ -189,6 +189,7 @@ function addStation(station, type) {
 
 
 function selectDepartureStation(name){
+    $("#departureStation").html('');
     $("#departureStation").append('<p class="form-control">'+name+' </p>');
     departureStationInput.value = name;
     listStationsDeparture.innerHTML = '';
@@ -197,6 +198,7 @@ function selectDepartureStation(name){
 }
 
 function selectArrivalStation(name){
+    $("#arrivalStation").html('');
     $("#arrivalStation").append('<p class="form-control">'+name+' </p>');
     arrivalStationInput.value = name;
     listStationsArrival.innerHTML = '';
