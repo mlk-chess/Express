@@ -27,7 +27,7 @@ class CreateUserCommand extends Command
     /** @var EntityManagerInterface $manager */
     private $manager;
 
-    public function __construct(string $name = null, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $manager)
+    public function __construct(UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $manager, string $name = null)
     {
         parent::__construct($name);
 

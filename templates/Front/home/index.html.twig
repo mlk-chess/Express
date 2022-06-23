@@ -3,12 +3,6 @@
 {% block title %}PA EXPRESS{% endblock %}
 
 {% block body %}
-    <div class="text-end me-4 mt-2">
-        <a href="/shopping">
-            <button type="button" class="btn btn-outline-dark">Panier <i class="fa-solid fa-cart-shopping"></i></button>
-        </a>
-    </div>
-
     <div class="container">
         <h1 class="text-center mb-3">Bienvenue chez PA EXPRESS</h1>
         <div class="row border shadow-sm rounded p-3 mb-4 bg-white">
@@ -43,6 +37,10 @@
                 {{ include('Front/home/_form.html.twig') }}
             </div>
         </div>
+
+        {% if noTravels %}
+            <p>Aucun résultat pour la recherche</p>
+        {% endif %}
 
         <div class="accordion mb-5" id="accordionMap">
             <div class="accordion-item">
@@ -132,10 +130,6 @@
                     </div>
                 </div>
             {% endfor %}
-        {% endif %}
-
-        {% if noTravels %}
-            <p>Aucun résultat pour la recherche</p>
         {% endif %}
     </div>
 

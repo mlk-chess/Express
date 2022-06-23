@@ -18,25 +18,32 @@ class ChangePasswordFormType extends AbstractType
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'first_options' => [
-                    'attr' => ['autocomplete' => 'new-password'],
+                    'attr' => [
+                        'autocomplete' => 'Nouveau mot de passe',
+                        'class' => 'form-control mb-3'
+                    ],
                     'constraints' => [
                         new NotBlank([
-                            'message' => 'Please enter a password',
+                            'message' => 'Veuillez entrer un mot de passe',
                         ]),
                         new Length([
                             'min' => 6,
-                            'minMessage' => 'Your password should be at least {{ limit }} characters',
-                            // max length allowed by Symfony for security reasons
-                            'max' => 4096,
+                            'minMessage' => 'Votre mot de passe doit comporter au moins 6 caractères.',
+                            'maxMessage' => 'Votre mot de passe doit comporter au maximum 49 caractères.',
+                            'max' => 49,
                         ]),
                     ],
-                    'label' => 'New password',
+                    'label' => 'Nouveau mot de passe',
+                    'help' => 'Le mot de passe doit être compris entre 6 et 49 caractères'
                 ],
                 'second_options' => [
-                    'attr' => ['autocomplete' => 'new-password'],
-                    'label' => 'Repeat Password',
+                    'attr' => [
+                        'autocomplete' => 'Nouveau mot de passe',
+                        'class' => 'form-control mb-3'
+                    ],
+                    'label' => 'Confirmation du mot de passe',
                 ],
-                'invalid_message' => 'The password fields must match.',
+                'invalid_message' => 'Le mot de passe de confirmation ne correspond pas',
                 // Instead of being set onto the object directly,
                 // this is read and encoded in the controller
                 'mapped' => false,
