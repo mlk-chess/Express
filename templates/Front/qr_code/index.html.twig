@@ -2,8 +2,17 @@
 
 {% block title %}PA EXPRESS{% endblock %}
 
+{% block stylesheets %}
+    <style>
+        #qr-video {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-    <div class="container">
+    <div class="container pt-4">
         <h1 class="text-center mb-3">Scanneur de billet</h1>
 
         <div class="row border shadow-sm rounded p-3 mb-4 bg-white">
