@@ -36,6 +36,14 @@ class HomeController extends AbstractController
         $form = $this->createForm(HomeType::class);
         $form->handleRequest($request);
 
+        $banner = 'png';
+
+        if (file_exists('./img/banner.png')) {
+            $banner = 'png';
+        }elseif (file_exists('./img/banner.jpg')) {
+            $banner = 'jpg';
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('departureStationInput')->getData() == null || $form->get('arrivalStationInput')->getData() == null) {
                 $this->addFlash('red', "La gare de départ et la gare d'arrivée doivent être remplis");
@@ -86,7 +94,8 @@ class HomeController extends AbstractController
                 'controller_name' => 'HomeController',
                 'form' => $form,
                 'travels' => $travels,
-                'noTravels' => $noTravels
+                'noTravels' => $noTravels,
+                'banner' => $banner
             ]);
 
         }
@@ -95,7 +104,8 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
             'form' => $form,
             'travels' => false,
-            'noTravels' => false
+            'noTravels' => false,
+            'banner' => $banner
         ]);
     }
 

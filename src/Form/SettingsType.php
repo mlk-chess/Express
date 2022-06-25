@@ -13,7 +13,9 @@ class SettingsType extends AbstractType
         $builder
             ->add('imageFile', FileType::class, [
                 'mapped' => false,
-                'label' => 'Sélectionnez une image'
+                'label' => false,
+                'required' => true,
+                'attr' => ['accept' => '.jpg, .png', 'class' => 'form-control'],
             ])
         ;
     }

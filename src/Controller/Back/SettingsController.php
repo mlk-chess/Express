@@ -17,25 +17,55 @@ class SettingsController extends AbstractController
         $form = $this->createForm(SettingsType::class);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $banner = 'png';
+
+        if (file_exists('./img/banner.png')) {
+            $banner = 'png';
+        }elseif (file_exists('./img/banner.jpg')) {
+            $banner = 'jpg';
+        }
+
+            if ($form->isSubmitted() && $form->isValid()) {
             $uploadedFile = $form['imageFile']->getData();
             $destination = $this->getParameter('kernel.project_dir').'/public/img';
-            $newFilename = 'banner.'.$uploadedFile->guessExtension();
+            $extension = strtolower($uploadedFile->guessExtension());
+            $newFilename = 'banner.'.$extension;
 
-            $uploadedFile->move(
-                $destination,
-                $newFilename
-            );
+            if ($extension === 'png' || $extension =='jpg') {
+                if (file_exists('./img/banner.jpg') && $extension === 'png') {
+                    unlink('./img/banner.jpg');
+                }elseif (file_exists('./img/banner.png') && $extension === 'jpg') {
+                    unlink('./img/banner.png');
+                }
+
+                $uploadedFile->move(
+                    $destination,
+                    $newFilename
+                );
+
+                $banner = $extension;
+
+                return $this->renderForm('Back/settings/index.html.twig', [
+                    'controller_name' => 'SettingsController',
+                    'form' => $form,
+                    'banner' => $banner,
+                    'error' => false
+                ]);
+            }
 
             return $this->renderForm('Back/settings/index.html.twig', [
                 'controller_name' => 'SettingsController',
                 'form' => $form,
+                'banner' => $banner,
+                'error' => true
             ]);
         }
 
         return $this->renderForm('Back/settings/index.html.twig', [
             'controller_name' => 'SettingsController',
             'form' => $form,
+            'banner' => $banner,
+            'error' => false
         ]);
     }
 }
