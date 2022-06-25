@@ -91,12 +91,8 @@ class WagonController extends AbstractController
                     }
                     $entityManager->flush();
 
-                    
-        
                     return $this->redirectToRoute('admin_train_show', ['id' => $train->getId()], Response::HTTP_SEE_OTHER);
-
                 }
-
             }
 
             return $this->renderForm('Back/wagon/new.html.twig', [
@@ -118,26 +114,83 @@ class WagonController extends AbstractController
         ]);
     }
 
+
     #[Route('/{id}/edit', name: 'wagon_edit', methods: ['GET','POST'])]
-    public function edit(Request $request, Wagon $wagon, ): Response
+    public function edit(Request $request, Wagon $wagon, WagonRepository $wagonRepository, SeatRepository $seatRepository): Response
     {
         
         $form = $this->createForm(WagonType::class, $wagon);
         $form->handleRequest($request);
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+        $errors = [];
 
-       
+        if ($wagon->getTrain()->getOwner()->getId() == $userConnected->getId()){
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            if ($form->isSubmitted() && $form->isValid()) {
+                
+                if($wagon->getPlaceNb() > 24){
+                    $error[] = "Nombre de place est limité à 24 !";
+                }
 
-            return $this->redirectToRoute('admin_wagon_index', [], Response::HTTP_SEE_OTHER);
+                if($wagon->getType() == 'Bar' && $wagon->getPlaceNb() > 0){
+                    $error[] = "Un bar ne peut pas contenir de place !";
+                }
+
+                $travels = $wagon->getTrain()->getLineTrains();
+                foreach($travels as $travel){
+                    if($travel->getDateArrival()->format('Y-m-d') > date('Y-m-d')){
+                        $errors[] = "Le train associé a un voyage de prévu, vous ne pouvez pas modifier ce wagon.";
+                        break;
+                    }   
+                }
+                
+                if (!empty($errors)){
+                
+                    return $this->renderForm('Back/wagon/edit.html.twig', [
+                        'wagon' => $wagon,
+                        'form' => $form,
+                    ]);
+
+                }else{
+
+
+                    $this->getDoctrine()->getManager()->flush();
+                    $seats = $seatRepository->findBy(
+                        ['wagon' => $wagon->getId()]
+                    );
+
+                    $entityManager = $this->getDoctrine()->getManager();
+
+                    foreach($seats as $seat){
+                        $entityManager->remove($seat);
+                    }
+            
+                    $entityManager->flush();
+
+                    for($i = 1; $i <= $wagon->getPlaceNb();$i++){
+                        $seat = new Seat();
+                        $seat->setNumber($i);
+                        $seat->setWagon($wagon);
+                        $seat->setName('Wagon');
+
+                        $entityManager->persist($seat);
+                       
+                    }
+                    $entityManager->flush();
+
+
+                    //return $this->redirectToRoute('admin_wagon_show', ['id' => $wagon->getId()], Response::HTTP_SEE_OTHER);
+                }      
+            }
+         
+            return $this->renderForm('Back/wagon/edit.html.twig', [
+                'wagon' => $wagon,
+                'form' => $form,
+            ]);
+        }else{
+            return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->renderForm('Back/wagon/edit.html.twig', [
-            'wagon' => $wagon,
-            'form' => $form,
-        ]);
+       
     }
 
     #[Route('/{id}', name: 'wagon_delete', methods: ['POST'])]

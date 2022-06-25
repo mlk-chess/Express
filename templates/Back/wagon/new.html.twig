@@ -10,11 +10,13 @@
             <a class="btn btn-primary" href="{{ path('admin_train_index') }}">Retour</a>
         </div> 
     </div>
+    {% if errors %}
     <div class="alert alert-danger" role="alert">
-    {% for error in errors %}
-        <li>{{ error }}</li>
-    {%  endfor %}
+        {% for error in errors %}
+            <li>{{ error }}</li>
+        {%  endfor %}
     </div>
+    {% endif %}
 
     {{ include('Back/wagon/_form.html.twig') }}
 

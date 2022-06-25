@@ -28,7 +28,7 @@ class WagonType extends AbstractType
                 ]]
             )
             ->add('placeNb')
-            ->add('train')
+            
         ;
     }
 
