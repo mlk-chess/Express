@@ -68,7 +68,12 @@ class BookingController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
 
             $booking->setStatus(-1);
-
+            $stripe = new \Stripe\StripeClient(
+                'sk_test_51Kk6uiCJ5s87DbRlsu9UTG7t0PbKcXlXM7bxLdibROOksHgDXIg1gXtp0SFv7o0MZxTcCTOLmEzjK1AVvdCR9LXg00vHipH4ZP'
+            );
+            $stripe->refunds->create([
+                'payment_intent' => $booking->getPaymentIntent(),
+            ]);
             $entityManager->persist($booking);
             $entityManager->flush();
         }

@@ -42,7 +42,26 @@ class BookingController extends AbstractController
             'booking' => $booking,
         ]);
     }
+    #[Route('voyage/delete/{id}', name: 'delete_booking', methods: ['POST'])]
+    public function delete(Request $request, Booking $booking, BookingRepository $bookingRepository): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$booking->getId(), $request->request->get('_token'))) {
 
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $booking->setStatus(-1);
+            $stripe = new \Stripe\StripeClient(
+                'sk_test_51Kk6uiCJ5s87DbRlsu9UTG7t0PbKcXlXM7bxLdibROOksHgDXIg1gXtp0SFv7o0MZxTcCTOLmEzjK1AVvdCR9LXg00vHipH4ZP'
+            );
+            $stripe->refunds->create([
+                'payment_intent' => $booking->getPaymentIntent(),
+            ]);
+            $entityManager->persist($booking);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('mesVoyages', [], Response::HTTP_SEE_OTHER);
+    }
     #[Route('monVoyage/{id}', name: 'booking_facture', methods: ['GET'])]
     public function monVoyage(Booking $booking): Response
     {

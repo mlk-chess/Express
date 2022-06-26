@@ -16,6 +16,7 @@
                         <th>Arrivé</th>
                         <th>Nb voyageur</th>
                         <th>Prix</th>
+                        <th>Statut</th>
                         <th>actions</th>
                     </tr>
                 </thead>
@@ -28,6 +29,11 @@
                         <td class="center">{{ booking.lineTrain.line.nameStationArrival }}</td>
                         <td class="center">{{ booking.travelers | length }}</td>
                         <td class="center">{{ booking.price }} €</td>
+                        <td>{% if booking.status == -1%}
+                                Annulé
+                            {% else %}
+                                {{ include('Back/booking/_delete_form.html.twig') }}
+                            {% endif %}</td>
                         <td>
                             <a href="{{ path('booking_show', {'id': booking.id}) }}"><button type="button" class="btn btn-primary">Information</button></a>
                         </td>
