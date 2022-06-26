@@ -20,11 +20,12 @@
                 <td>{{ booking.idUser.email }}</td>
                 <td class="d-flex">
                     <a class="row me-4" style="text-decoration: none" href="{{ path('booking_facture', {'id': booking.id}) }}"><button type="button" class="btn btn-success me-4 mr-3">Facture</button></a>
+                    <a class="row me-4" style="text-decoration: none" href="{{ path('booking_ticket', {'id': booking.id}) }}"><button type="button" class="btn btn-success me-4 mr-3">E-billet</button></a>
                     <button type="button" class="btn btn-primary me-4" data-bs-toggle="modal" data-bs-target="#infoModal" onclick="getBooking({{ booking.id }})">Informations</button>
                     {% if booking.status == -1%}
                         <p>Annulé</p>
                     {% else %}
-                        {{ include('Back/booking/_delete_form.html.twig') }}
+                        {{ include('Front/trip/_delete_form.html.twig') }}
                     {% endif %}
                 </td>
             </tr>
@@ -47,8 +48,9 @@
                 <div class="modal-body">
                     <div id="containerModalInfo"></div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" id="infoModalFooter">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+
                 </div>
             </div>
         </div>
