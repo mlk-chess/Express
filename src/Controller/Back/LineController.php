@@ -30,6 +30,9 @@ class LineController extends AbstractController
         $form = $this->createForm(LineType::class, $line);
         $form->handleRequest($request);
 
+        $success = [];
+        $errors = [];
+
         if ($form->isSubmitted() && $form->isValid()) {
 
             if (Helper::checkStationJsonFile($line->getNameStationArrival()) &&
@@ -57,24 +60,26 @@ class LineController extends AbstractController
                             $entityManager->persist($line);
                             $entityManager->flush();
 
-                            $this->addFlash('green', "La ligne a été créée !");
+                            $success[] = "La ligne a été créée !";
+
                             return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
                         
                     }else{
-                        $message = "Cette ligne existe déjà !";
-                        $this->addFlash('red', $message);
+                        $errors[] = "Cette ligne existe déjà !";
+                     
                     }
 
                 }else{
-                    $message = "Gare de départ et gare d'arrivée identique !";
-                    $this->addFlash('red', $message);
+                    $errors[] = "Gare de départ et gare d'arrivée identique !";
+                
                 }
             }
         }
 
         return $this->renderForm('Back/line/new.html.twig', [
             'line' => $line,
-            'form' => $form
+            'form' => $form,
+            'errors' => $errors
         ]);
     }
 
@@ -87,15 +92,23 @@ class LineController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'line_edit', methods: ['GET','POST'])]
-    public function edit(int $id, Request $request, Line $line,LineRepository $lineRepository): Response
+    public function edit(int $id, Request $request, Line $line,LineRepository $lineRepository,LineTrainRepository $lineTrainRepository): Response
     {
         $form = $this->createForm(LineType::class, $line);
         $form->handleRequest($request);
+        $success = [];
+        $errors = [];
+
+
+        $travel = $lineTrainRepository->findBy(
+            ['line' => $line->getId()]
+        );
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            if (Helper::checkStationJsonFile($line->getNameStationArrival()) &&
-                Helper::checkStationJsonFile($line->getNameStationDeparture())) {
+            
+            if (empty($travel)){
+                if (Helper::checkStationJsonFile($line->getNameStationArrival()) &&
+                    Helper::checkStationJsonFile($line->getNameStationDeparture())) {
 
                     if($line->getNameStationArrival() !== $line->getNameStationDeparture() ){
                     
@@ -103,9 +116,6 @@ class LineController extends AbstractController
                                 'name_station_departure' => $line->getNameStationDeparture(),
                                 'name_station_arrival' => $line->getNameStationArrival()
                             ]);
-
-                         
-                            
 
                             $getLineDeparture = Helper::getLineByName('../public/stations.json',$line->getNameStationDeparture());
                             $getLineArrival = Helper::getLineByName('../public/stations.json',$line->getNameStationArrival());
@@ -119,17 +129,20 @@ class LineController extends AbstractController
             
                                     $this->getDoctrine()->getManager()->flush();
 
-                                    $this->addFlash('green', "La ligne a été modifiée !");
+                                    $success[] = "La ligne a été modifiée !";
                                     return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
                         
                             }else{
-                                $message = "Cette ligne existe déjà !";
-                                $this->addFlash('red', $message);
+                                $errors[] = "Cette ligne existe déjà !";
+                              
                             }
                     }else{
-                        $message = "Gare de départ et gare d'arrivée identique !";
-                        $this->addFlash('red', $message);
+                        $errors[] = "Gare de départ et gare d'arrivée identique !";
+                      
                     }
+                }
+            }else{
+                $errors[] = "Voyage existe déjà sur cette ligne !";
             }
 
         }
@@ -137,25 +150,50 @@ class LineController extends AbstractController
         return $this->renderForm('Back/line/edit.html.twig', [
             'line' => $line,
             'form' => $form,
+            'errors' => $errors,
+            'success' => $success
         ]);
     }
 
-    #[Route('/{id}', name: 'line_delete', methods: ['POST'])]
-    public function delete(Request $request, Line $line, LineTrainRepository $lineTrainRepository): Response
+
+    #[Route('/{id}/active', name: 'line_enable')]
+    public function enable(Request $request, Line $line, LineTrainRepository $lineTrainRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$line->getId(), $request->request->get('_token'))) {
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $line->setStatus(1);
+        $entityManager->persist($line);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/disable', name: 'line_disable')]
+    public function disable(Request $request, Line $line, LineTrainRepository $lineTrainRepository): Response
+    {
+      
+        $errors = [];
             
-            if(empty($lineTrainRepository->findLineByLineTrain($line->getNameStationDeparture(), $line->getNameStationArrival()))){
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->remove($line);
-                $entityManager->flush();
-                $this->addFlash('green', "La ligne a été supprimée");
-            }else{
-                $this->addFlash('red', "La ligne ne peut pas être supprimée");
-            }
-           
+        $travels = $lineTrainRepository->findBy(['line' => $line->getId()]);
+        foreach($travels as $travel){
+            if($travel->getDateArrival()->format('Y-m-d') > date('Y-m-d')){
+                $errors[] = "Le train associé a un voyage de prévu, vous ne pouvez pas désactiver cette ligne.";
+                break;
+            }   
+        }
+
+        if(empty($errors)){
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $line->setStatus(0);
+            $entityManager->persist($line);
+            $entityManager->flush();
+
         }
 
         return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+   
 }

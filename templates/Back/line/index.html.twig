@@ -28,6 +28,9 @@
                 <td>
                     <a class="btn btn-primary" href="{{ path('admin_line_show', {'id': line.id}) }}">Voir</a>
                     <a class="btn btn-warning" href="{{ path('admin_line_edit', {'id': line.id}) }}">Modifier</a>
+                    {% if line.status == 0 %}
+                    <a class="btn btn-success" href="{{ path('admin_line_enable', {'id': line.id}) }}">Activer</a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}

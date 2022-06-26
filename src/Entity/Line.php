@@ -50,6 +50,11 @@ class Line
     private $name_station_arrival;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $status = 1;
+
+    /**
      * @ORM\OneToMany(targetEntity=LineTrain::class, mappedBy="line")
      */
     private $lineTrains;
@@ -136,6 +141,16 @@ class Line
 
         return $this;
     }
+
+    public function getStatus(): ?int{
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self {
+        $this->status = $status;
+        return $this;
+    }
+
     public function __toString()
     {
         return $this->name_station_arrival;
