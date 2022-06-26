@@ -229,7 +229,7 @@ class HomeController extends AbstractController
             $booking->setStatus(1);
             $booking->setDateBooking(new DateTime());
             $booking->setTravelers($travelers);
-
+            $booking->setToken($this->generateToken());
             $booking->setIdUser($userConnected);
             $booking->setPaymentIntent($dataSession["payment_intent"]);
 
@@ -331,6 +331,9 @@ class HomeController extends AbstractController
 
         return $this->redirectToRoute('shopping', [], Response::HTTP_SEE_OTHER);
     }
-
+    public function generateToken()
+    {
+        return rtrim(strtr(base64_encode(random_bytes(50)), '+/', '-_'), '=');
+    }
 
 }

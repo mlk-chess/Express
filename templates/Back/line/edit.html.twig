@@ -10,6 +10,22 @@
         </div>
     </div>
 
+    {% if errors %}
+    <div class="alert alert-danger" role="alert">
+        {% for error in errors %}
+            <li>{{ error }}</li>
+        {%  endfor %}
+    </div>
+    {% endif %}
+
+    {% if success %}
+    <div class="alert alert-danger" role="alert">
+        {% for succ in success %}
+            <li>{{ succ }}</li>
+        {%  endfor %}
+    </div>
+    {% endif %}
+
     {{ include('Back/line/_form.html.twig', {'button_label': 'Modifier'}) }}
 
 

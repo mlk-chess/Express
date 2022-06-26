@@ -46,7 +46,7 @@
    
     <div class="d-flex">
         <a class="btn btn-warning mx-2"href="{{ path('admin_line_edit', {'id': line.id}) }}">Modifier</a>
-        {{ include('Back/line/_delete_form.html.twig') }}
+        <a class="btn btn-danger mx-2"href="{{ path('admin_line_disable', {'id': line.id}) }}">Désactiver cette ligne</a>
     </div>
 
 

@@ -10,6 +10,15 @@
             <a class="btn btn-primary" href="{{ path('admin_line_index') }}">Liste des lignes</a>
         </div> 
     </div>
+
+    {% if errors %}
+    <div class="alert alert-danger" role="alert">
+        {% for error in errors %}
+            <li>{{ error }}</li>
+        {%  endfor %}
+    </div>
+    {% endif %}
+    
     <div class="w-75">
         {{ include('Back/line/_form.html.twig') }}
     </div>
