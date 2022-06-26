@@ -156,7 +156,7 @@ class LineController extends AbstractController
     }
 
 
-    #[Route('/{id}/active', name: 'line_enable')]
+    #[Route('/{id}/enable', name: 'line_enable')]
     public function enable(Request $request, Line $line, LineTrainRepository $lineTrainRepository): Response
     {
 
