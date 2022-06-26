@@ -156,7 +156,6 @@ $html .= '
     #[Route('monTicket/{id}', name: 'booking_ticket', methods: ['GET'])]
     public function myTicket(Booking $booking): Response
     {
-        //dd($booking->getLineTrain()->getLine()->getNameStationArrival());
         $dompdf = new Dompdf();
 
         $html = '<!doctype html>
@@ -236,30 +235,7 @@ $html .= '
   <p>Vous trouverez ci-dessous un Qr code permettant de simplifier les contrôles des billets</p>
   </body>
   </html>';
-
-        $writer = new PngWriter();
-
-/*// Create QR code
-        $qrCode = QrCode::create('Data')
-            ->setEncoding(new Encoding('UTF-8'))
-            ->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
-            ->setSize(300)
-            ->setMargin(10)
-            ->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
-            ->setForegroundColor(new Color(0, 0, 0))
-            ->setBackgroundColor(new Color(255, 255, 255));
-
-// Create generic logo
-        $logo = Logo::create(__DIR__.'/assets/symfony.png')
-            ->setResizeToWidth(50);
-
-// Create generic label
-        $label = Label::create('Label')
-            ->setTextColor(new Color(255, 0, 0));
-
-        $result = $writer->write($qrCode, $logo, $label);
-
-        dd($result);*/
+dd($html);
         $dompdf->loadHtml($html);
 
         // (Optional) Setup the paper size and orientation

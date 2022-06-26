@@ -3,6 +3,8 @@
 {% block title %}Voyage{% endblock %}
 
 {% block body %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
     <div class="container">
         <div class="row">
 
@@ -33,10 +35,14 @@
                     </div>
                 {% endfor %}
             {% endfor %}
-            <a class="row" style="text-decoration: none" href="{{ path('booking_facture', {'id': booking.id}) }}"><button type="button" class="btn btn-outline-success mt-4">Facture</button></a>
-            <a class="row" style="text-decoration: none" href="{{ path('booking_ticket', {'id': booking.id}) }}"><button type="button" class="btn btn-outline-success mt-4">E-billet</button></a>
-            <button type="button" class="btn btn-outline-danger mt-4" data-bs-toggle="modal" data-bs-target="#annulerModal">Annuler le voyage</button>
+            <h3>Votre Qr-code</h3>
+            <div class="mt-3">
+                <div id="qr_code"></div>
+            </div>
 
+            <a class="row" style="text-decoration: none" href="{{ path('booking_facture', {'id': booking.id}) }}"><button type="button" class="btn btn-outline-success mt-4">Facture</button></a>
+            <a class="row" style="text-decoration: none" href="javascript:pdf()"><button type="button" class="btn btn-outline-success mt-4">E-billet</button></a>
+            <button type="button" class="btn btn-outline-danger mt-4" data-bs-toggle="modal" data-bs-target="#annulerModal">Annuler le voyage</button>
             <!-- Modal -->
             <div class="modal fade" id="annulerModal" tabindex="-1" aria-labelledby="annulerModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -55,6 +61,44 @@
                     </div>
                 </div>
             </div>
+            <script type="text/javascript">
+                var token = "{{ booking.token }}"
+                var qrcode = new QRCode("qr_code", {
+                    text: "http://"+window.location.hostname+ ":"+ window.location.port + "/URLAMODIFIER/"+ token,
+                    width: 128,
+                    height: 128,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+                function pdf() {
+                    var pdf = new jsPDF({
+                    });
+
+                    pdf.setFontSize(25);
+                    pdf.text('PA-Express', 10, 20);
+
+                    pdf.setFontSize(10);
+                    pdf.text('Pa Express - Votre billet', 160, 25);
+                    pdf.text('75 Rue jean bleuzen', 160, 30);
+                    pdf.text('Siret : 213215432156', 160, 35)
+                    pdf.text('Tel : 01 21 32 65 98', 160, 40)
+
+                    pdf.setFontSize(25)
+                    pdf.text('Votre E-billet', 10, 60);
+
+                    pdf.setFontSize(11);
+                    pdf.text('Ce document vous sera demandé comme justificatif de paiement auprès de nos contrôleurs présents ', 10, 70);
+                    pdf.text('à bord du train.', 10, 75);
+                    pdf.text('Toute falsification, non-présentation du billet entrainera une amende.', 10, 85)
+                    pdf.text('Vous trouverez ci-dessous un Qr code permettant de simplifier les contrôles des billets', 10, 95)
+                    let base64Image = $('#qr_code img').attr('src');
+
+
+                    pdf.addImage(base64Image, 'png', 75, 110, 40, 40);
+                    pdf.save('E-billet.pdf');
+                }
+            </script>
         </div>
     </div>
 {% endblock %}
