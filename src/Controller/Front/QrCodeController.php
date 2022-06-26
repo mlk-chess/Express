@@ -8,7 +8,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
-use function Doctrine\Common\Cache\Psr6\set;
+use App\Repository\BookingRepository;
+use App\Entity\Booking;
+
+
 
 #[Route('/qrcode')]
 class QrCodeController extends AbstractController
@@ -31,24 +34,35 @@ class QrCodeController extends AbstractController
     }
 
     #[Route('/search', name: 'qrcode-search', methods: ['GET', 'POST'])]
-    public function searchTicket(Request $request): JsonResponse
+    public function searchTicket(Request $request, BookingRepository $bookingRepository): JsonResponse
     {
         if ($request->isXmlHttpRequest()) {
             $entityManager = $this->getDoctrine()->getManager();
-            $repository = $entityManager->getRepository(LineTrain::class);
+            $repository = $entityManager->getRepository(Booking::class);
 
-            $query = $repository->createQueryBuilder('lt')
-                ->select('lt, line')
-                ->leftJoin('lt.line', 'line')
-                ->where('line.name_station_departure = :token')
+            $query = $repository->createQueryBuilder('booking')
+                ->select('booking, lineTrain')
+                ->leftJoin('booking.lineTrain', 'lineTrain')
+                ->where('booking.token = :token')
                 ->setParameters([
-                    'token' => $request->request->get('token'),
+                    'token' => $request->request->get('token')
                 ]);
-
 
             $q = $query->getQuery();
 
-            $travels = $q->execute();
+            $booking = $q->execute();
+
+            if (count($booking) === 0){
+                return new JsonResponse(false);
+            }
+
+            $result = [];
+
+            array_push($result, $booking[0]->getTravelers());
+            array_push($result, $booking[0]->getDateBooking());
+            array_push($result, $booking[0]->getLineTrain()->getTrain()->getName());
+
+            return new JsonResponse(json_encode($result));
         }
         return new JsonResponse(false);
     }
