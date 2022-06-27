@@ -3,14 +3,19 @@
 {% block title %}LineTrain index{% endblock %}
 
 {% block body %}
-<h1>Voyage</h1>
+<div class="d-flex justify-content-between mb-5">
+        <h1>Les voyages</h1>
+        <div>
+            <a class="btn btn-primary" href="{{ path('admin_line_train_new') }}">Créer un voyage</a>
+        </div>
+</div>
 
-<table class="table">
+<table id="table_lineTrain" class="display">
     <thead>
         <tr>
             <th>Train</th>
             <th>Ligne</th>
-            <th>Date départ</th>
+            <th>Date de départ</th>
             <th>Date d'arrivée</th>
             <th>€ classe 1</th>
             <th>€ classe 2</th>
@@ -29,18 +34,22 @@
             <td>{{ line_train.priceClass2 }} €</td>
 
             <td>
-                <a href="{{ path('admin_line_train_show', {'id': line_train.id}) }}">Voir</a>
-                <a href="{{ path('admin_line_train_edit', {'id': line_train.id}) }}">Modifier</a>
-                <a href="{{ path('admin_line_train_plan', {'id': line_train.id}) }}"><i class="fa-solid fa-train"></i></a>
+                <a class="btn btn-primary" href="{{ path('admin_line_train_show', {'id': line_train.id}) }}">Voir</a>
+                <a class="btn btn-primary" href="{{ path('admin_line_train_edit', {'id': line_train.id}) }}">Modifier</a>
+                <a class="btn btn-primary" href="{{ path('admin_line_train_plan', {'id': line_train.id}) }}"><i class=" fa-solid fa-train"></i></a>
             </td>
         </tr>
         {% else %}
         <tr>
-            <td colspan="4">Aucune données</td>
+            <td colspan="4">Aucun voyage</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+<script>
 
-<a href="{{ path('admin_line_train_new') }}">Créer un voyage</a>
+$(document).ready( function () {
+    $('#table_lineTrain').DataTable();
+} );
+</script>
 {% endblock %}

@@ -38,6 +38,11 @@ class Wagon
      */
     private $placeNb;
 
+     /**
+     * @ORM\Column(type="integer")
+     */
+     private $status = 1;
+
     /**
      * @ORM\ManyToOne(targetEntity=Train::class, inversedBy="wagons")
      */
@@ -103,6 +108,16 @@ class Wagon
     {
         $this->placeNb = $placeNb;
 
+        return $this;
+    }
+
+
+    public function getStatus(): ?int{
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self {
+        $this->status = $status;
         return $this;
     }
 

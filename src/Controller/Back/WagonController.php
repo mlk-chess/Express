@@ -193,16 +193,34 @@ class WagonController extends AbstractController
        
     }
 
-    #[Route('/{id}', name: 'wagon_delete', methods: ['POST'])]
-    public function delete(Request $request, Wagon $wagon): Response
+    #[Route('/{id}/disable', name: 'wagon_disable',)]
+    public function disable(Request $request, Wagon $wagon): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$wagon->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($wagon);
-            $entityManager->flush();
-            $this->addFlash('green', "Le Wagon à bien été supprimer.");
+        $errors = [];
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
+        if ($wagon->getOwner()->getId() == $userConnected->getId()){
+
+            $travels = $wagon->getTrain()->getLineTrains();
+            foreach($travels as $travel){
+                if($travel->getDateArrival()->format('Y-m-d') > date('Y-m-d')){
+                    $errors[] = "Le train associé a un voyage de prévu, vous ne pouvez pas désactiver ce wagon.";
+                    break;
+                }   
+            }
+
+            if(empty($errors)){
+    
+                $entityManager = $this->getDoctrine()->getManager();
+                $wagon->setStatus(0);
+                $entityManager->persist($wagon);
+                $entityManager->flush();
+    
+            }
+
         }
 
-        return $this->redirectToRoute('admin_wagon_index', [], Response::HTTP_SEE_OTHER);
+
+        return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
     }
 }

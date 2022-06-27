@@ -83,8 +83,8 @@ class LineTrainController extends AbstractController
                 $errors[] = "Ce train n'a pas de wagon !";
             } else {
                 foreach ($getWagonByTrain as $wagon) {
-
-                    if ($wagon['type'] == "Voyageur") {
+                  
+                    if ($wagon['type'] == "Voyageur" && $wagon['status'] == 1) {
                         if ($wagon['class'] == 1) {
                             $placeNbclass1 += $wagon['placeNb'];
                         } else {
@@ -284,12 +284,19 @@ class LineTrainController extends AbstractController
         $getTrain = $travel->getTrain();
         $getWagons = $getTrain->getWagons()->getValues();
         $seatAvailable = 0;
+        $wagons = [];
         foreach ($getWagons as $wagon) {
-            if ($wagon->getType() == "Voyageur") $seatAvailable += $wagon->getPlaceNb();
+
+            if ($wagon->getStatus() == 1 ){
+                $wagons[] = $wagon;
+            }
+            if ($wagon->getType() == "Voyageur" && $wagon->getStatus() == 1){
+                $seatAvailable += $wagon->getPlaceNb();
+            } 
         }
 
         return $this->render('Back/line_train/plan.html.twig', [
-            "getWagons" => $getWagons,
+            "getWagons" => $wagons,
             "id" => $id,
             "train" => $getTrain,
             "seatNotAvailable" => $seatNotAvailable,

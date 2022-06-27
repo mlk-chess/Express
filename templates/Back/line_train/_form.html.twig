@@ -1,4 +1,22 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+
+    {{ form_label(form.train, 'Train', { 'attr': {'class': 'foo'} }) }}
+    {{ form_widget(form.train, { 'attr': {'class': 'form-control'} }) }}
+
+    {{ form_label(form.line, 'Ligne', { 'attr': {'class': 'foo'} }) }}
+    {{ form_widget(form.line, { 'attr': {'class': 'form-control'} }) }}
+
+    {{ form_label(form.date_departure, 'Date de départ', { 'attr': {'class': 'foo'} }) }}
+    {{ form_widget(form.date_departure, { 'attr': {'class': 'form-control'} }) }}
+
+    {{ form_label(form.time_departure, 'Horaire de départ', { 'attr': {'class': 'foo'} }) }}
+    {{ form_widget(form.time_departure, { 'attr': {'class': 'form-control'} }) }}
+
+    {{ form_label(form.price_class_1, 'Prix classe 1', { 'attr': {'class': 'foo'} }) }}
+    {{ form_widget(form.price_class_1, { 'attr': {'class': 'form-control'} }) }}
+    
+    {{ form_label(form.price_class_2, 'Prix classe 2', { 'attr': {'class': 'foo'} }) }}
+    {{ form_widget(form.price_class_2, { 'attr': {'class': 'form-control'} }) }}
+   
+    <button class="btn btn-primary mt-2">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}

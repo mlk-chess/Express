@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\Line;
+use App\Entity\Train;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -20,11 +21,20 @@ class LineTrainType extends AbstractType
 
 
         $builder
-            ->add('train')
+            ->add(  'train', EntityType::class,[
+                    'class' => Train::class,
+                    'choice_label' => function ($train) {
+                        if ($train->getStatus() === 1) {
+                            return $train->getName();
+                        }
+                    },
+            ])
             ->add('line', EntityType::class, [
                 'class' => Line::class,
                 'choice_label' => function ($line) {
-                    return $line->getNameStationDeparture() . " - " .  $line->getNameStationArrival();
+                    if ($line->getStatus() === 1) {
+                        return $line->getNameStationDeparture() . " - " .  $line->getNameStationArrival();
+                    }
                 },
                 'label' => 'Ligne',
             ])
@@ -39,10 +49,13 @@ class LineTrainType extends AbstractType
 
             ->add('price_class_1',MoneyType::class,[
                 'label' => 'Prix classe 1',
+                
             ])
 
             ->add('price_class_2',MoneyType::class,[
                 'label' => 'Prix classe 2',
+              
+                
             ])
         ;
     }

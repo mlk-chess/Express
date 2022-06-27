@@ -31,8 +31,12 @@
             <button class="btn btn-primary">Editer</button>
         </form>
 
+
+
         <div class="mx-2">
-            {{ include('Back/wagon/_delete_form.html.twig') }}
+   
+            <a class="btn btn-danger mx-2"href="{{ path('admin_wagon_disable', {'id': wagon.id}) }}">Désactiver ce wagon</a>
+       
         </div>
     </div>
 

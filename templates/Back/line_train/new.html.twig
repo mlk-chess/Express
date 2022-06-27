@@ -7,8 +7,15 @@
 
 {% block body %}
 <div>
-    <h1>Créer un voyage</h1>
-    <a href="{{ path('admin_line_train_index') }}">Retour</a>
+
+
+    <div class='d-flex justify-content-between'>
+        <h1 class="f-12">Créer un voyage</h1>
+        <div>
+            <a class="btn btn-primary" href="{{ path('admin_line_train_index') }}">Liste des voyages</a>
+        </div> 
+    </div>
+
 
     <div>
         {{ include('Back/line_train/_form.html.twig') }}

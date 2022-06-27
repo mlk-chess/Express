@@ -4,6 +4,8 @@ namespace App\Controller\Back;
 
 use App\Entity\Train;
 use App\Form\TrainType;
+use App\Repository\LineTrainRepository;
+use App\Repository\WagonRepository;
 use App\Repository\TrainRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,11 +23,11 @@ class TrainController extends AbstractController
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
         if (in_array('COMPANY', $userConnected->getRoles())){
             return $this->render('Back/train/index.html.twig', [
-                'trains' => $trainRepository->findBy(array('owner' => $userConnected->getId()))
+                'trains' => $trainRepository->findBy(['owner' => $userConnected->getId(), 'status' => 1])
                 ]);
         }else{
             return $this->render('Back/train/index.html.twig', [
-                'trains' => $trainRepository->findAll(),
+                'trains' => $trainRepository->findBy(['status' => 1])
             ]);
         }
     }
@@ -59,10 +61,13 @@ class TrainController extends AbstractController
     }
 
     #[Route('/{id}', name: 'train_show', methods: ['GET'])]
-    public function show(Train $train): Response
+    public function show(Train $train, WagonRepository $wagonRepository): Response
     {
+
+        $wagons = $wagonRepository->findBy(["status" => 1]);
         return $this->render('Back/train/show.html.twig', [
             'train' => $train,
+            'wagons' => $wagons
         ]);
     }
 
@@ -85,19 +90,36 @@ class TrainController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'train_delete', methods: ['POST'])]
-    public function delete(Request $request, Train $train): Response
+    #[Route('/{id}/disable', name: 'train_disable')]
+    public function disable(Request $request, Train $train, LineTrainRepository $lineTrainRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$train->getId(), $request->request->get('_token'))) {
+       
+            $errors = [];
+            $userConnected = $this->get('security.token_storage')->getToken()->getUser();
 
-            //dd($train);
+            if ($train->getOwner()->getId() == $userConnected->getId()){
 
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($train);
-            $entityManager->flush();
-            $this->addFlash('green', "Le train a été supprimé !");
-        }
+                $travels = $lineTrainRepository->findBy(['train' => $train->getId()]);
+                foreach($travels as $travel){
+                    if($travel->getDateArrival()->format('Y-m-d') > date('Y-m-d')){
+                        $errors[] = "Le train associé a un voyage de prévu, vous ne pouvez pas désactiver cette ligne.";
+                        break;
+                    }   
+                }
+    
+                if(empty($errors)){
+    
+                    $entityManager = $this->getDoctrine()->getManager();
+                    $train->setStatus(0);
+                    $entityManager->persist($train);
+                    $entityManager->flush();
+        
+                }
+            }
+            
+        
 
-        return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+
+            return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
     }
 }
