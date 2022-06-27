@@ -25,7 +25,9 @@
                     {% if booking.status == -1%}
                         <p>Annulé</p>
                     {% else %}
-                        {{ include('Front/trip/_delete_form.html.twig') }}
+                        <button type="button" class="btn btn-danger me-4" data-bs-toggle="modal" data-bs-target="#annulerModal">Annuler</button>
+
+                        {{ include('Back/booking/_delete_form.html.twig') }}
                     {% endif %}
                 </td>
             </tr>

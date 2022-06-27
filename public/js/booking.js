@@ -48,7 +48,7 @@ function deleteBooking(id) {
     $("#inputDeleteBooking").attr('value', id)
 }
 
-function addContentRefund(){
+function addContentRefund(id){
     $('#infoModalFooter').empty()
     let html =  '<div class="mt-3">' +
                     '<p>Etes vous sûr de vouloir annuler le voyage ? </p>'
