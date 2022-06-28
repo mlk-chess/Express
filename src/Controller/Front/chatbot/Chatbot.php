@@ -30,23 +30,32 @@ class Chatbot extends AbstractController{
         $adapter = new FilesystemAdapter();
         $botman = BotManFactory::create($config, new SymfonyCache($adapter));
 
-        $storage = $botman->userStorage();
-
-        $botman->hears('help', function($bot) use ($doctrine, $storage) {
+        $botman->hears('help', function($bot) use ($doctrine) {
             $conv = new HelpConversationController;
             $bot->startConversation($conv);
-            $em = $doctrine->getManager();
-            $user = $em->getRepository(User::class)->findOneBy(["email"=> "mkajeiou3@myges.fr"]);
-            $user ? $bot->reply("OK") : $bot->reply("KO");
         });
 
-        $botman->hears('stop', function(BotMan $bot) use ($storage) {
-            $bot->reply('Discussion réinitialisée');
-            dd($storage);
+        $botman->hears('save', function(BotMan $bot) use ($doctrine) {
+            if(
+                isset($_SESSION["client_email"], $_SESSION["client_problem"], $_SESSION["client_description"])
+            ) {
+                $em = $doctrine->getManager();
+                $user = $em->getRepository(User::class)->findOneBy(["email" => $_SESSION["client_email"]]);
+                if ($user) {
+                    $bot->reply('Discussion enregistrée !');
+                    $bot->reply('Tapez "help" pour réaliser une autre demande');
+                } else {
+                    $bot->reply("Votre adresse mail n'a pas été reconnue... \n\r  Tapez \"help\" pour recommencer. ");
+                }
+            }else
+                $bot->reply('Un problème est survenu, tapez "help"...');
+
+            unset($_SESSION["client_email"], $_SESSION["client_problem"], $_SESSION["client_description"], $_SESSION["client_name"]);
+
         })->stopsConversation();
 
         $botman->fallback(function($bot) {
-            $bot->reply('Désolé, je ne comprends pas tout !');
+            $bot->reply('Tapez "help" ou "save" pour arrêter une conversation');
         });
 
         $botman->listen();

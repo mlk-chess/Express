@@ -26,9 +26,9 @@ class HelpConversationController extends Conversation
 
     public function askFirstname()
     {
-        $this->ask('Salut ! Quel est votre nom?', function(Answer $answer) {
+        $this->ask('Salut ! Quel est votre nom?', function (Answer $answer) {
             $this->firstname = $answer->getText();
-            $this->say('Bienvenue '.$this->firstname);
+            $this->say('Bienvenue ' . $this->firstname);
             $_SESSION["client_name"] = $this->firstname;
 
             $this->askEmail();
@@ -38,7 +38,7 @@ class HelpConversationController extends Conversation
 
     public function askEmail()
     {
-        $this->ask($this->firstname . ', quel est votre mail?', function(Answer $answer) {
+        $this->ask('Quelle est votre adresse mail?', function (Answer $answer) {
             $this->email = $answer->getText();
 
             $_SESSION['client_email'] = $this->email;
@@ -64,12 +64,27 @@ class HelpConversationController extends Conversation
             if ($answer->isInteractiveMessageReply()) {
                 $selectedValue = $answer->getValue();
                 $selectedText = $answer->getText();
-                $this->say('Votre demande a été enregistrée '. $this->firstname .  ', un technicien ne va pas tarder à vous recontacter au mail suivant : '. $this->email);
 
-                $_SESSION["client_problem"] = $selectedValue;
+                if ($answer->getValue() == '3') $this->askOther($answer->getValue());
+                else {
+                    $this->say($this->firstname . ', tapez "save" et un technicien ne tardera pas à vous recontacter à l\'adresse mail suivante : ' . $this->email);
+
+                    $_SESSION["client_problem"] = $selectedValue;
+                }
             }
         });
+        return true;
     }
+
+    public function askOther($problem)
+    {
+        $this->ask('Décrivez nous en quelques mots le problème que vous avez rencontré', function (Answer $answer) use($problem) {
+            $this->say('Très bien, tapez "save" et un technicien ne tardera pas à vous recontacter à l\'adresse mail suivante : ' . $this->email);
+            $_SESSION["client_description"] = $answer->getText();
+            $_SESSION["client_problem"] = $problem;
+        });
+    }
+
     public function run()
     {
         $this->askFirstname();
