@@ -101,19 +101,26 @@
         {% block body %}{% endblock %}
     </div>
 
+
     <script>
         var botmanWidget = {
             frameEndpoint: '{{ path("chatframe") }}',
             chatServer: '{{ path("message") }}',
-            introMessage: 'Salut, je suis Morphy enchanté',
+            introMessage: "Salut, je suis Morphy. Pour commencer, tapez \"help\" ! Si vous n'êtes pas inscrits, je ne pourrai rien faire pour vous. ",
             title: 'MorphyBot',
             mainColor: '#356393',
-            bubbleBackground: '#061c33',
+            bubbleBackground: '#ffffff',
+            bubbleAvatarUrl: "{{ asset('img/chatbot/IMG-0519.png') }}",
             aboutText: ''
         };
     </script>
     <script src='https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js'></script>
+
 </main>
+
+<script>
+    $(".desktop-closed-message-avatar").hide()
+</script>
 
 </body>
 </html>

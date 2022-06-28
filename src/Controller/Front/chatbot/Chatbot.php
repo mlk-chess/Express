@@ -30,7 +30,9 @@ class Chatbot extends AbstractController{
         $adapter = new FilesystemAdapter();
         $botman = BotManFactory::create($config, new SymfonyCache($adapter));
 
-        $botman->hears('help', function($bot) use ($doctrine) {
+        $storage = $botman->userStorage();
+
+        $botman->hears('help', function($bot) use ($doctrine, $storage) {
             $conv = new HelpConversationController;
             $bot->startConversation($conv);
             $em = $doctrine->getManager();
@@ -38,8 +40,9 @@ class Chatbot extends AbstractController{
             $user ? $bot->reply("OK") : $bot->reply("KO");
         });
 
-        $botman->hears('stop', function(BotMan $bot) {
+        $botman->hears('stop', function(BotMan $bot) use ($storage) {
             $bot->reply('Discussion réinitialisée');
+            dd($storage);
         })->stopsConversation();
 
         $botman->fallback(function($bot) {
