@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Controller;
 
 use App\Entity\User;
@@ -39,37 +40,37 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-                $user->setPlainPassword($user->getPassword());
-                $user->setStatus(0);
+            $user->setPlainPassword($user->getPassword());
+            $user->setStatus(0);
 
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($user);
-                $entityManager->flush();
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
 
-                $email = ApiMailerService::send_email(
-                    $user->getEmail(),
-                    "Validation de votre compte",
-                    "signup.html.twig",
-                    [
-                        'expiration_date' => new \DateTime('+7 days'),
-                        "username" => $user->getCompanyName() ?? $user->getEmail(),
-                        "userid" => $user->getId(),
-                        "token" => $token,
-                        "password" => null
-                    ]
-                );
+            $email = ApiMailerService::send_email(
+                $user->getEmail(),
+                "Validation de votre compte",
+                "signup.html.twig",
+                [
+                    'expiration_date' => new \DateTime('+7 days'),
+                    "username" => $user->getCompanyName() ?? $user->getEmail(),
+                    "userid" => $user->getId(),
+                    "token" => $token,
+                    "password" => null
+                ]
+            );
 
-                $mailer->send($email);
+            $mailer->send($email);
 
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($user);
-                $entityManager->flush();
-                return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('security/register.html.twig', [
-        'train' => $user,
-        'form' => $form,
+            'train' => $user,
+            'form' => $form,
         ]);
     }
 
@@ -88,29 +89,29 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-                $user->setPlainPassword($user->getPassword());
-                $user->setStatus(0);
+            $user->setPlainPassword($user->getPassword());
+            $user->setStatus(0);
 
-                $user->setRoles(["ROLE_CUSTOMER"]);
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($user);
-                $entityManager->flush();
+            $user->setRoles(["ROLE_CUSTOMER"]);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
 
-                $email = ApiMailerService::send_email(
-                    $user->getEmail(),
-                    "Validation de votre compte",
-                    "signup.html.twig",
-                    [
-                        'expiration_date' => new \DateTime('+7 days'),
-                        "username" => $user->getCompanyName() ?? $user->getEmail(),
-                        "userid" => $user->getId(),
-                        "token" => $token,
-                        "password" => null
-                    ]
-                );
+            $email = ApiMailerService::send_email(
+                $user->getEmail(),
+                "Validation de votre compte",
+                "signup.html.twig",
+                [
+                    'expiration_date' => new \DateTime('+7 days'),
+                    "username" => $user->getCompanyName() ?? $user->getEmail(),
+                    "userid" => $user->getId(),
+                    "token" => $token,
+                    "password" => null
+                ]
+            );
 
-                $mailer->send($email);
-            
+            $mailer->send($email);
+
 
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
@@ -121,10 +122,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-
-    /**
-     * @Route("/login", name="app_login")
-     */
+    #[Route('/login', name: 'app_login', methods: ['GET', 'POST'])]
     public function login(AuthenticationUtils $authenticationUtils, ManagerRegistry $doctrine): Response
     {
         if ($this->security->getUser()) {
@@ -144,9 +142,7 @@ class SecurityController extends AbstractController
         );
     }
 
-    /**
-     * @Route("/logout", name="app_logout")
-     */
+    #[Route('/logout', name: 'app_logout', methods: ['GET', 'POST'])]
     public function logout(): void
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');

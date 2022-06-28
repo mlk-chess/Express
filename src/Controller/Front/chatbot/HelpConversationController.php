@@ -26,6 +26,7 @@ class HelpConversationController extends Conversation
 
     public function askFirstname()
     {
+        $this->bot->typesAndWaits(1);
         $this->ask('Salut ! Quel est votre nom?', function (Answer $answer) {
             $this->firstname = $answer->getText();
             $this->say('Bienvenue ' . $this->firstname);
@@ -38,6 +39,7 @@ class HelpConversationController extends Conversation
 
     public function askEmail()
     {
+        $this->bot->typesAndWaits(1.2);
         $this->ask('Quelle est votre adresse mail?', function (Answer $answer) {
             $this->email = $answer->getText();
 
@@ -50,6 +52,7 @@ class HelpConversationController extends Conversation
 
     public function askProblem()
     {
+        $this->bot->typesAndWaits(1.5);
         $question = Question::create('Votre problème concerne...')
             ->fallback("Une erreur s'est produite, réessayez ultérieurement...")
             ->callbackId('create_database')
@@ -67,6 +70,7 @@ class HelpConversationController extends Conversation
 
                 if ($answer->getValue() == '3') $this->askOther($answer->getValue());
                 else {
+                    $this->bot->typesAndWaits(1.1);
                     $this->say($this->firstname . ', tapez "save" et un technicien ne tardera pas à vous recontacter à l\'adresse mail suivante : ' . $this->email);
 
                     $_SESSION["client_problem"] = $selectedValue;
@@ -78,7 +82,9 @@ class HelpConversationController extends Conversation
 
     public function askOther($problem)
     {
+        $this->bot->typesAndWaits(1.1);
         $this->ask('Décrivez nous en quelques mots le problème que vous avez rencontré', function (Answer $answer) use($problem) {
+            $this->bot->typesAndWaits(1.1);
             $this->say('Très bien, tapez "save" et un technicien ne tardera pas à vous recontacter à l\'adresse mail suivante : ' . $this->email);
             $_SESSION["client_description"] = $answer->getText();
             $_SESSION["client_problem"] = $problem;

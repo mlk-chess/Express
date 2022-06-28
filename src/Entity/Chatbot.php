@@ -33,9 +33,10 @@ class Chatbot
     private $description;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=255)
      */
-    private $User_id;
+    private $client_email;
+
 
     public function getId(): ?int
     {
@@ -78,15 +79,16 @@ class Chatbot
         return $this;
     }
 
-    public function getUserId(): ?int
+    public function getClientEmail(): ?string
     {
-        return $this->User_id;
+        return $this->client_email;
     }
 
-    public function setUserId(int $User_id): self
+    public function setClientEmail(string $client_email): self
     {
-        $this->User_id = $User_id;
+        $this->client_email = $client_email;
 
         return $this;
     }
+
 }

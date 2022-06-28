@@ -37,24 +37,38 @@ class Chatbot extends AbstractController{
 
         $botman->hears('save', function(BotMan $bot) use ($doctrine) {
             if(
-                isset($_SESSION["client_email"], $_SESSION["client_problem"], $_SESSION["client_description"])
+                isset($_SESSION["client_email"], $_SESSION["client_problem"])
             ) {
                 $em = $doctrine->getManager();
                 $user = $em->getRepository(User::class)->findOneBy(["email" => $_SESSION["client_email"]]);
                 if ($user) {
+                    $chatbot = new \App\Entity\Chatbot();
+                    $chatbot->setClientName($_SESSION["client_name"]);
+                    $chatbot->setClientProblem($_SESSION["client_problem"]);
+                    $chatbot->setDescription($_SESSION["client_description"] ?? "");
+                    $chatbot->setClientEmail($_SESSION["client_email"]);
+                    $em->persist($chatbot);
+                    $em->flush();
+                    $bot->typesAndWaits(0.8);
                     $bot->reply('Discussion enregistrée !');
+                    $bot->typesAndWaits(1.1);
                     $bot->reply('Tapez "help" pour réaliser une autre demande');
                 } else {
+                    $bot->typesAndWaits(0.5);
                     $bot->reply("Votre adresse mail n'a pas été reconnue... \n\r  Tapez \"help\" pour recommencer. ");
                 }
-            }else
+            }else{
+                $bot->typesAndWaits(0.9);
                 $bot->reply('Un problème est survenu, tapez "help"...');
+            }
+
 
             unset($_SESSION["client_email"], $_SESSION["client_problem"], $_SESSION["client_description"], $_SESSION["client_name"]);
 
         })->stopsConversation();
 
         $botman->fallback(function($bot) {
+            $bot->typesAndWaits(0.6);
             $bot->reply('Tapez "help" ou "save" pour arrêter une conversation');
         });
 
