@@ -80,23 +80,15 @@
     </nav>
 </header>
 
-
-<script>
-    {%  for label, messages in app.flashes() %}
-        {% for message in messages %}
-
-            M.toast({html: '{{ message }}', classes: '{{ label }}'})
-
-        {% endfor %}
-    {% endfor %}
-</script>
-
-
 <main>
     <div class="container">
         {% block body %}{% endblock %}
     </div>
 </main>
+
+<footer>
+    PA EXPRESS
+</footer>
 
 </body>
 </html>
