@@ -26,6 +26,12 @@
         .navbar-front {
             background-color: white;
         }
+
+        #footer {
+            background-color: #B1D0E0;
+            height: 100px;
+            width: 100%;
+        }
     </style>
 
     {% block stylesheets %}
@@ -81,23 +87,17 @@
     </nav>
 </header>
 
-
-<script>
-    {%  for label, messages in app.flashes() %}
-        {% for message in messages %}
-
-            M.toast({html: '{{ message }}', classes: '{{ label }}'})
-
-        {% endfor %}
-    {% endfor %}
-</script>
-
-
 <main>
     <div class="container">
         {% block body %}{% endblock %}
     </div>
 </main>
+
+<footer>
+    <div id="footer" class="d-flex justify-content-center align-items-center">
+        <p>© 2022 - PA EXPRESS </p>
+    </div>
+</footer>
 
 </body>
 </html>
