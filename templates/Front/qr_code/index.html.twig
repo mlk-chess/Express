@@ -8,6 +8,18 @@
             width: 100%;
             height: 100%;
         }
+
+        footer {
+            display: none;
+        }
+
+        #container-scanner, #container-result {
+            display: none;
+        }
+
+        #container-result {
+            width: 800px;
+        }
     </style>
 {% endblock %}
 
@@ -15,17 +27,30 @@
     <div class="container pt-4">
         <h1 class="text-center mb-3">Scanneur de billet</h1>
 
-        <div class="row border shadow-sm rounded p-3 mb-4 bg-white">
+        <div class="d-flex justify-content-center mb-4">
+            <button id="start-button" class="btn btn-primary">Lancer le scan</button>
+        </div>
+
+        <div class="row border shadow-sm rounded p-3 mb-4 bg-white" id="container-scanner">
             <div class="col-sm-12 d-flex flex-column justify-content-center">
-                <div class="d-flex justify-content-center">
-                    <button id="start-button" class="btn btn-primary">Lancer le scan</button>
-                </div>
-
-                <div id="container-ticket" class="d-flex flex-column align-items-center mt-5"></div>
-
                 <video id="qr-video"></video>
             </div>
         </div>
+
+        <div class="d-flex justify-content-center">
+            <div class="card" id="container-result">
+                <div class="card-body">
+                    <div id="container-ticket" class="mt-2"></div>
+                </div>
+            </div>
+        </div>
+
+
+{#        <div class="row border shadow-sm rounded p-3 mb-4 bg-white" id="container-result">#}
+{#            <div class="col-sm-12 d-flex flex-column justify-content-center">#}
+{#                <div id="container-ticket" class="d-flex flex-column align-items-center mt-5"></div>#}
+{#            </div>#}
+{#        </div>#}
     </div>
 
     <script src="{{ asset('js/qrCode/qr-scanner.umd.min.js') }}"></script>
