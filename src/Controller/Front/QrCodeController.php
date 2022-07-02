@@ -36,16 +36,18 @@ class QrCodeController extends AbstractController
     #[Route('/search', name: 'qrcode-search', methods: ['GET', 'POST'])]
     public function searchTicket(Request $request, BookingRepository $bookingRepository): JsonResponse
     {
-        if ($request->isXmlHttpRequest()) {
+//        if ($request->isXmlHttpRequest()) {
             $entityManager = $this->getDoctrine()->getManager();
             $repository = $entityManager->getRepository(Booking::class);
 
             $query = $repository->createQueryBuilder('booking')
-                ->select('booking, lineTrain')
+                ->select('booking, lineTrain, line')
                 ->leftJoin('booking.lineTrain', 'lineTrain')
+                ->leftJoin('lineTrain.line', 'line')
                 ->where('booking.token = :token')
                 ->setParameters([
                     'token' => $request->request->get('token')
+//                    'token' => '2w3NUh2mfSqoPmXeNWwXvuQSEPOST7rnn_2vtoLdMC0xw8NsZGloBjsdr0M1ESopP90'
                 ]);
 
             $q = $query->getQuery();
@@ -56,14 +58,20 @@ class QrCodeController extends AbstractController
                 return new JsonResponse(false);
             }
 
+//            dd($booking);
             $result = [];
 
             array_push($result, $booking[0]->getTravelers());
-            array_push($result, $booking[0]->getDateBooking());
+            array_push($result, $booking[0]->getLineTrain()->getDateDeparture());
             array_push($result, $booking[0]->getLineTrain()->getTrain()->getName());
+            array_push($result, $booking[0]->getLineTrain()->getLine()->getNameStationDeparture());
+            array_push($result, $booking[0]->getLineTrain()->getLine()->getNameStationArrival());
+            array_push($result, $booking[0]->getLineTrain()->getTimeDeparture());
+            array_push($result, $booking[0]->getLineTrain()->getTimeArrival());
 
-            return new JsonResponse(json_encode($result));
-        }
+
+        return new JsonResponse(json_encode($result));
+//        }
         return new JsonResponse(false);
     }
 }
