@@ -71,7 +71,8 @@ class LineTrainRepository extends ServiceEntityRepository
         $query = $entityManager->createQuery(
             "SELECT w.class, w.type, w.placeNb, w.status
             FROM App\Entity\Wagon w
-            WHERE w.train = :id"
+            WHERE w.train = :id
+            AND w.status = 1"
         )->setParameter('id', $trainId);
 
 

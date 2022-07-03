@@ -38,25 +38,30 @@ class TrainController extends AbstractController
         $train = new Train();
         $form = $this->createForm(TrainType::class, $train);
         $form->handleRequest($request);
+        $errors = [];
 
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {
 
             $train->setOwner($userConnected);
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($train);
-            $entityManager->flush();
-
-            $this->addFlash('green', "Le train {$train->getName()} à bien été créer.");
-
-            return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+            
+            if (empty($trainRepository->findBy(["name" => $train->getName(), "status" => 1]))){
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($train);
+                $entityManager->flush();
+    
+                return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+            }else{
+                $errors[] = "Ce train existe déjà !";
+            }
+          
 
         }
-
         return $this->renderForm('Back/train/new.html.twig', [
             'train' => $train,
             'form' => $form,
+            'errors' => $errors
         ]);
     }
 
