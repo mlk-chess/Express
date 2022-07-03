@@ -1,0 +1,12 @@
+{% extends 'base_back.html.twig' %}
+
+{% block title %}Edit Chatbot{% endblock %}
+
+{% block body %}
+    <h1>Edit Chatbot</h1>
+
+    {{ include('Back/chatbot/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+
+    <a href="{{ path('app_chatbot_admin') }}">Retourner à l'accueil</a>
+
+{% endblock %}

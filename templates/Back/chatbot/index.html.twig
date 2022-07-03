@@ -1,0 +1,51 @@
+{% extends 'base_back.html.twig' %}
+
+{% block title %}Chatbot{% endblock %}
+
+{% block body %}
+    <h1>Messages</h1>
+
+    <table id="table_chatbot" class="display">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Type de problème</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for message in messages %}
+            <tr>
+                <td>{{ message.id }}</td>
+                <td>{{ message.ClientName }}</td>
+                <td>{{ message.ClientEmail }}</td>
+                <td>{{ message.ClientProblem }}</td>
+                <td>{{ message.description }}</td>
+                <td>{{ message.status }}</td>
+                <td>
+                    <a href="{{ path('admin_chatbot_edit_status', {'id': message.id}) }}">Change Status</a>
+
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Aucun message enregistré</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <script>
+
+        $(document).ready( function () {
+            $('#table_chatbot').DataTable();
+        } );
+    </script>
+
+{% endblock %}

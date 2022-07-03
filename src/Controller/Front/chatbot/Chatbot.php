@@ -35,7 +35,7 @@ class Chatbot extends AbstractController{
             $bot->startConversation($conv);
         });
 
-        $botman->hears('save', function(BotMan $bot) use ($doctrine) {
+        $botman->hears('save', function(BotMan $bot) use ($doctrine, $request) {
             if(
                 isset($_SESSION["client_email"], $_SESSION["client_problem"])
             ) {
@@ -47,6 +47,7 @@ class Chatbot extends AbstractController{
                     $chatbot->setClientProblem($_SESSION["client_problem"]);
                     $chatbot->setDescription($_SESSION["client_description"] ?? "");
                     $chatbot->setClientEmail($_SESSION["client_email"]);
+                    $chatbot->setStatus(0);
                     $em->persist($chatbot);
                     $em->flush();
                     $bot->typesAndWaits(0.8);

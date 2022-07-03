@@ -37,6 +37,11 @@ class Chatbot
      */
     private $client_email;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $status;
+
 
     public function getId(): ?int
     {
@@ -87,6 +92,18 @@ class Chatbot
     public function setClientEmail(string $client_email): self
     {
         $this->client_email = $client_email;
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
