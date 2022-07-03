@@ -8,9 +8,5 @@
     {{ form_label(form.placeNb, 'Nombre de place', { 'attr': {'class': 'foo'} }) }}
     {{ form_widget(form.placeNb, { 'attr': {'class': 'form-control'} }) }}
 
-    {{ form_label(form.train, 'train', { 'attr': {'class': 'foo'} }) }}
-    {{ form_widget(form.train, { 'attr': {'class': 'form-control'} }) }}
-
-
     <button class="mt-3 btn btn-outline-success">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PA EXPRESS{% endblock %}</title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -25,11 +26,31 @@
     {% endblock %}
 
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
         .navbar-front {
             background-color: white;
         }
-        #userText{
+        #userText {
             display: none;
+        }
+
+        footer {
+            background-color: #B1D0E0;
+            position:absolute;
+            width:100%;
+            height:70px;
+        }
+
+        #container-footer {
+            height: 100%;
+        }
+
+        #container-footer p {
+            margin: 0;
         }
     </style>
 
@@ -62,6 +83,10 @@
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                 {% if is_granted('ROLE_CUSTOMER') %}
                                     <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                    <li><a class="dropdown-item" href="/mesVoyages">Mes voyages</a></li>
+                                {% endif %}
+                                {% if is_granted('ROLE_CONTROLLER') %}
+                                    <li><a class="dropdown-item" href="/qrcode">Scanneur</a></li>
                                 {% endif %}
                                 <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
                             </ul>
@@ -97,7 +122,7 @@
 
 
 <main>
-    <div class="container pt-4">
+    <div class="container">
         {% block body %}{% endblock %}
     </div>
 
@@ -121,6 +146,12 @@
 <script>
     $(".desktop-closed-message-avatar").hide()
 </script>
+
+<footer>
+    <div class="d-flex justify-content-center align-items-center" id="container-footer">
+        <p>© 2022 - PA EXPRESS </p>
+    </div>
+</footer>
 
 </body>
 </html>

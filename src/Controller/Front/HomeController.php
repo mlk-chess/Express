@@ -36,6 +36,14 @@ class HomeController extends AbstractController
         $form = $this->createForm(HomeType::class);
         $form->handleRequest($request);
 
+        $banner = 'png';
+
+        if (file_exists('./img/banner.png')) {
+            $banner = 'png';
+        }elseif (file_exists('./img/banner.jpg')) {
+            $banner = 'jpg';
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('departureStationInput')->getData() == null || $form->get('arrivalStationInput')->getData() == null) {
                 $this->addFlash('red', "La gare de départ et la gare d'arrivée doivent être remplis");
@@ -86,7 +94,8 @@ class HomeController extends AbstractController
                 'controller_name' => 'HomeController',
                 'form' => $form,
                 'travels' => $travels,
-                'noTravels' => $noTravels
+                'noTravels' => $noTravels,
+                'banner' => $banner
             ]);
 
         }
@@ -95,7 +104,8 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
             'form' => $form,
             'travels' => false,
-            'noTravels' => false
+            'noTravels' => false,
+            'banner' => $banner
         ]);
     }
 
@@ -219,7 +229,7 @@ class HomeController extends AbstractController
             $booking->setStatus(1);
             $booking->setDateBooking(new DateTime());
             $booking->setTravelers($travelers);
-
+            $booking->setToken($this->generateToken());
             $booking->setIdUser($userConnected);
             $booking->setPaymentIntent($dataSession["payment_intent"]);
 
@@ -321,6 +331,9 @@ class HomeController extends AbstractController
 
         return $this->redirectToRoute('shopping', [], Response::HTTP_SEE_OTHER);
     }
-
+    public function generateToken()
+    {
+        return rtrim(strtr(base64_encode(random_bytes(50)), '+/', '-_'), '=');
+    }
 
 }

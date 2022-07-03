@@ -1,0 +1,44 @@
+{% extends 'base_back.html.twig' %}
+
+{% block title %}Settings{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        #banner {
+            width: 500px;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        #container-upload {
+            width: 320px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+<div class="mx-2">
+    <h1>Settings</h1>
+
+    <img src="{{ asset('img/banner.'~banner) }}" alt="banner" id="banner">
+
+
+    <div class="mt-4" id="container-upload">
+        {{ form_start(form, { 'attr' : { 'class': 'd-flex flex-column justify-content-center' } }) }}
+            {{ form_label(form.imageFile) }}
+            {{ form_widget(form.imageFile) }}
+
+            <button type="submit" class="btn btn-lg btn-primary mt-3">Upload</button>
+        {{ form_end(form) }}
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger">
+            <p>L'image doit être un jpg ou un png</p>
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

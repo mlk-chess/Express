@@ -1,4 +1,21 @@
-<form method="post" action="{{ path('delete_booking', {'id': booking.id}) }}" onsubmit="return confirm('Voulez-vous supprimer cette ligne ?');">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ booking.id) }}">
-    <button class="btn btn-danger">Annuler</button>
-</form>
+<!-- Modal -->
+<div class="modal fade" id="annulerModal" tabindex="-1" aria-labelledby="annulerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="annulerModalLabel">Etes-vous sûr de vouloir annuler votre voyage ? </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                L'annulation entrainera le remboursement total du voyage.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                {{ include('Front/trip/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

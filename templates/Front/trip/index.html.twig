@@ -2,6 +2,14 @@
 
 {% block title %}Mes voyages{% endblock %}
 
+{% block stylesheets %}
+    <style>
+        footer {
+            bottom: 0;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <div class="container">
         <div class="row">
@@ -16,6 +24,7 @@
                         <th>Arrivé</th>
                         <th>Nb voyageur</th>
                         <th>Prix</th>
+                        <th>Statut</th>
                         <th>actions</th>
                     </tr>
                 </thead>
@@ -28,6 +37,11 @@
                         <td class="center">{{ booking.lineTrain.line.nameStationArrival }}</td>
                         <td class="center">{{ booking.travelers | length }}</td>
                         <td class="center">{{ booking.price }} €</td>
+                        <td>{% if booking.status == -1%}
+                                <i class="fa-solid fa-xmark-large" style="color: red"></i> Annulé
+                            {% else %}
+                                <i class="fa-solid fa-check" style="color: green"></i> A l'heure
+                            {% endif %}</td>
                         <td>
                             <a href="{{ path('booking_show', {'id': booking.id}) }}"><button type="button" class="btn btn-primary">Information</button></a>
                         </td>

@@ -1,41 +1,11 @@
 {% extends 'base_back.html.twig' %}
 
-{% block title %}Edit Train{% endblock %}
+{% block title %}Train{% endblock %}
 
 {% block body %}
-    <h1>Edit Train</h1>
+
+    <h1>{{ train }}</h1>
 
     {{ include('Back/train/_form.html.twig', {'button_label': 'Modifier'}) }}
-
-    <hr>
-    <h3>Liste des wagons </h3>
-    <table>
-        <thead>
-        <tr>
-            <th>Id</th>
-            <th>Classe</th>
-            <th>Type</th>
-            <th>Nb places</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for wagon in train.wagons %}
-            <tr>
-                <td>{{ wagon.id }}</td>
-                <td>{{ wagon.class }}</td>
-                <td>{{ wagon.type }}</td>
-                <td>{{ wagon.placeNb }}</td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">Aucun train existant</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('admin_train_index') }}">Retour à la liste</a>
-
 
 {% endblock %}

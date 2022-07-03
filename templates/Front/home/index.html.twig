@@ -3,62 +3,22 @@
 {% block title %}PA EXPRESS{% endblock %}
 
 {% block body %}
-    <div class="container">
+
+    <img src="{{ asset("img/banner."~banner) }}" alt="banner" id="banner">
+
+    <div class="container pt-4">
         <h1 class="text-center mb-3">Bienvenue chez PA EXPRESS</h1>
-        <div class="row border shadow-sm rounded p-3 mb-4 bg-white">
-            <div class="col-sm-6 d-flex flex-column pe-3">
-
-                <div class="mb-3">
-                    <label for="departureStationSearch">Gare de départ : </label>
-                    <input class="form-control mt-3" type="text" id="departureStationSearch"
-                           placeholder="Paris-Montparnasse">
-                    <ul class="list-group" id="listStationsDeparture"></ul>
-                </div>
-
-                <div class="d-flex flex-row align-items-center">
-                    <div id="departureStation"></div>
-                    <i class="fa-solid fa-pencil mb-3 ms-3" id="updateDepartureStation"></i>
-                </div>
-
-                <div class="mb-3">
-                    <label for="arrivalStationSearch">Gare d'arrivée : </label>
-                    <input class="form-control mt-3" type="text" id="arrivalStationSearch" placeholder="Poitiers">
-                    <ul class="list-group" id="listStationsArrival"></ul>
-                </div>
-
-                <div class="d-flex flex-row align-items-center">
-                    <div id="arrivalStation"></div>
-                    <i class="fa-solid fa-pencil mb-3 ms-3" id="updateArrivalStation"></i>
-                </div>
-
-            </div>
-
-            <div class="col-sm-6 flex ps-5">
-                {{ include('Front/home/_form.html.twig') }}
-            </div>
-        </div>
 
         {% if noTravels %}
-            <p>Aucun résultat pour la recherche</p>
-        {% endif %}
-
-        <div class="accordion mb-5" id="accordionMap">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Sélectionnez une gare sur la carte
-                    </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionMap">
-                    <div class="accordion-body">
-                        <div id="map" style="height: 500px; width: 100%"></div>
-                    </div>
-                </div>
+            <div class="alert alert-info" role="alert">
+                <p>Aucun résultat pour la recherche</p>
             </div>
-        </div>
-
-        {% if travels %}
+        {% else %}
             {% for travel in travels %}
+                <div class="alert alert-primary" role="alert">
+                    <p>{{travels|length}} résultat(s)</p>
+                </div>
+
                 <div class="row mb-5" id="resultSearch">
                     <div class="col-sm-8">
                         <div>
@@ -131,6 +91,54 @@
                 </div>
             {% endfor %}
         {% endif %}
+
+        <div class="row border shadow-sm rounded p-3 mb-4 bg-white">
+            <div class="col-sm-6 d-flex flex-column pe-3">
+
+                <div class="mb-3">
+                    <label for="departureStationSearch">Gare de départ (<a href="#collapseOne">voir la carte</a>) : </label>
+                    <input class="form-control mt-3" type="text" id="departureStationSearch"
+                           placeholder="Paris-Montparnasse">
+                    <ul class="list-group" id="listStationsDeparture"></ul>
+                </div>
+
+                <div class="d-flex flex-row align-items-center">
+                    <div id="departureStation"></div>
+                    <i class="fa-solid fa-pencil mb-3 ms-3" id="updateDepartureStation"></i>
+                </div>
+
+                <div class="mb-3">
+                    <label for="arrivalStationSearch">Gare d'arrivée (<a href="#collapseOne">voir la carte</a>) : </label>
+                    <input class="form-control mt-3" type="text" id="arrivalStationSearch" placeholder="Poitiers">
+                    <ul class="list-group" id="listStationsArrival"></ul>
+                </div>
+
+                <div class="d-flex flex-row align-items-center">
+                    <div id="arrivalStation"></div>
+                    <i class="fa-solid fa-pencil mb-3 ms-3" id="updateArrivalStation"></i>
+                </div>
+
+            </div>
+
+            <div class="col-sm-6 flex ps-5">
+                {{ include('Front/home/_form.html.twig') }}
+            </div>
+        </div>
+
+        <div class="accordion mb-5" id="accordionMap">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Sélectionnez une gare sur la carte
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionMap">
+                    <div class="accordion-body">
+                        <div id="map" style="height: 500px; width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
