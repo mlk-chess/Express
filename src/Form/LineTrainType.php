@@ -21,10 +21,10 @@ class LineTrainType extends AbstractType
 
 
         $builder
-            ->add(  'train', EntityType::class,[
+            ->add('train', EntityType::class,[
                     'class' => Train::class,
                     'choice_label' => function ($train) {
-                        if ($train->getStatus() === 1) {
+                        if ($train->getStatus() == 1) {
                             return $train->getName();
                         }
                     },

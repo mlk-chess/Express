@@ -77,21 +77,32 @@ class TrainController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'train_edit', methods: ['GET','POST'])]
-    public function edit(Request $request, int $id, Train $train, TrainRepository $trainRepository): Response
+    public function edit(Request $request, int $id, Train $train, LineTrainRepository $lineTrainRepository): Response
     {
         $form = $this->createForm(TrainType::class, $train);
         $form->handleRequest($request);
+        $errors = [];
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->getDoctrine()->getManager()->flush();
-            return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
-          
+            $travels = $lineTrainRepository->findBy(['train' => $train->getId()]);
+            foreach($travels as $travel){
+                if($travel->getDateArrival()->format('Y-m-d') > date('Y-m-d')){
+                    $errors[] = "Le train associé a un voyage de prévu, vous ne pouvez pas modifier ce train.";
+                    break;
+                }   
+            }
+
+            if (empty($errors)){
+                $this->getDoctrine()->getManager()->flush();
+                return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+            }
         }
 
         return $this->renderForm('Back/train/edit.html.twig', [
             'train' => $train,
             'form' => $form,
+            'errors' => $errors
         ]);
     }
 
@@ -107,7 +118,7 @@ class TrainController extends AbstractController
                 $travels = $lineTrainRepository->findBy(['train' => $train->getId()]);
                 foreach($travels as $travel){
                     if($travel->getDateArrival()->format('Y-m-d') > date('Y-m-d')){
-                        $errors[] = "Le train associé a un voyage de prévu, vous ne pouvez pas désactiver cette ligne.";
+                        $errors[] = "Le train associé a un voyage de prévu, vous ne pouvez pas désactiver ce train.";
                         break;
                     }   
                 }

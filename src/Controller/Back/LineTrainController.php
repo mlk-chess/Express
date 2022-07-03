@@ -153,6 +153,7 @@ class LineTrainController extends AbstractController
                 $this->addFlash('green', "Voyage crée !");
                 return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
             } else {
+                
                 $this->addFlash('red', $errors[0]);
                 return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
             }
