@@ -25,9 +25,18 @@ class LineTrainController extends AbstractController
     public function index(LineTrainRepository $lineTrainRepository): Response
     {
 
-        return $this->render('Back/line_train/index.html.twig', [
-            'line_trains' => $lineTrainRepository->findAll(),
-        ]);
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+        if (in_array('ROLE_COMPANY', $userConnected->getRoles())){
+            return $this->render('Back/line_train/index.html.twig', [
+                'line_trains' => $lineTrainRepository->findLineTrainCompany($userConnected->getId()),
+                ]);
+        }else{
+            return $this->render('Back/line_train/index.html.twig', [
+                'line_trains' => $lineTrainRepository->findAll(),
+            ]);
+        }
+
+        
     }
 
     #[Route('/planning', name: 'line_train_planning', methods: ['GET'])]

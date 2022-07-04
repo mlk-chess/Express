@@ -37,7 +37,6 @@ class LineTrainRepository extends ServiceEntityRepository
     {
         $entityManager = $this->getEntityManager();
 
-
         if ($id) {
             $query = $entityManager->createQuery(
                 "SELECT concat(lt.date_departure, ' ', lt.time_departure) AS timestampdeparture,
@@ -75,6 +74,22 @@ class LineTrainRepository extends ServiceEntityRepository
             AND w.status = 1"
         )->setParameter('id', $trainId);
 
+
+        return $query->getResult();
+    }
+
+    public function findLineTrainCompany($id){
+
+        $entityManager = $this->getEntityManager();
+        
+        $query = $entityManager->createQuery(
+        "SELECT t.name, lt.id, l.name_station_departure, l.name_station_arrival, lt.date_departure, lt.date_arrival, lt.time_departure, lt.time_arrival, lt.price_class_1, lt.price_class_2
+            FROM App\Entity\LineTrain lt , App\Entity\Train t, App\Entity\Line l
+                WHERE lt.train = t.id
+                AND lt.line = l.id
+                AND t.owner = :id
+        "
+        )->setParameter('id', $id);
 
         return $query->getResult();
     }
