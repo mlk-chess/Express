@@ -35,7 +35,7 @@ class UserController extends AbstractController
     public function new_train_company(Request $request, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
     {
         $user = new User();
-        $user->setRoles(['COMPANY']);
+        $user->setRoles(['ROLE_COMPANY']);
         $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
         $user->setToken($token);
         $form = $this->createForm(TrainCompanyAdminType::class, $user);
@@ -75,13 +75,57 @@ class UserController extends AbstractController
         ]);
     }
 
+    /* Create controller */
+    #[Route('/new-controller', name: 'admin_user_controller_new', methods: ['GET', 'POST'])]
+    public function new_train_controller(Request $request, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
+    {
+        $user = new User();
+        $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
+        $user->setToken($token);
+        $user->setRoles(['ROLE_CONTROLLER']);
+        $form = $this->createForm(UserAdminType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $password = rtrim(strtr(base64_encode(random_bytes(16)), '+/', '-_'), '=');
+            $user->setPlainPassword($password);
+            $user->setStatus(0);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $email = ApiMailerService::send_email(
+                $user->getEmail(),
+                "Validation de votre compte",
+                "signup.html.twig",
+                [
+                    'expiration_date' => new \DateTime('+7 days'),
+                    "username" => $user->getCompanyName() ?? $user->getEmail(),
+                    "userid" => $user->getId(),
+                    "password" => $password,
+                    "token" => $token,
+                ]
+            );
+
+            $mailer->send($email);
+
+            return $this->redirectToRoute('admin_user_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('Back/user/new.html.twig', [
+            'user' => $user,
+            'form' => $form,
+        ]);
+    }
+
     #[Route('/new-user', name: 'admin_user_new', methods: ['GET', 'POST'])]
     public function new(Request $request, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
     {
         $user = new User();
         $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
         $user->setToken($token);
-        $user->setRoles(['USER']);
+        $user->setRoles(['ROLE_CUSTOMER']);
         $form = $this->createForm(UserAdminType::class, $user);
         $form->handleRequest($request);
 

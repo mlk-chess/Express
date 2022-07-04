@@ -1,9 +1,9 @@
 {% extends 'base_back.html.twig' %}
 
-{% block title %}User index{% endblock %}
+{% block title %}PA EXPRESS{% endblock %}
 
 {% block body %}
-    <h1>User index</h1>
+    <h1>Utilisateurs</h1>
 
     <table class="table">
         <thead>
@@ -25,9 +25,9 @@
                 <td>{{ user.companyName ?? "Standard User" }}</td>
                 <td>{{ user.status }}</td>
                 <td>
-                    <a href="{{ path('admin_user_show', {'id': user.id}) }}">show</a>
-                    <a href="{{ user.companyName is empty ? path('admin_user_edit', {'id': user.id}) : path('admin_user_edit_company', {'id': user.id}) }}">edit</a>
-                    <a href="{{ path('admin_user_edit_status', {'id': user.id}) }}">Change Status</a>
+                    <a href="{{ path('admin_user_show', {'id': user.id}) }}" class="btn btn-primary">Voir</a>
+                    <a href="{{ user.companyName is empty ? path('admin_user_edit', {'id': user.id}) : path('admin_user_edit_company', {'id': user.id}) }}" class="btn btn-primary">Editer</a>
+                    <a href="{{ path('admin_user_edit_status', {'id': user.id}) }}" class="btn btn-warning">Changer le statut</a>
 
                 </td>
             </tr>
@@ -39,6 +39,7 @@
         </tbody>
     </table>
 
-    <a href="{{ path('admin_user_new') }}">Create new User</a>
-    <a href="{{ path('admin_user_company_new') }}">Create new Company</a>
+    <a href="{{ path('admin_user_new') }}" class="btn btn-primary">Nouvel utilisateur</a>
+    <a href="{{ path('admin_user_company_new') }}" class="btn btn-primary">Nouvelle société</a>
+    <a href="{{ path('admin_user_controller_new') }}" class="btn btn-primary">Nouveau controlleur</a>
 {% endblock %}
