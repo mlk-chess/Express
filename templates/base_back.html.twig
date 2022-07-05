@@ -90,113 +90,116 @@
 </head>
 <body>
 <header>
-  <!-- Sidebar -->
-  <nav
-       id="sidebarMenu"
-       class="collapse d-lg-block sidebar collapse bg-white"
-       >
-    <div class="position-sticky">
-      <div class="list-group list-group-flush mx-3 mt-4">
-        <a href="/" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
-          <i class="fas fa-tachometer-alt fa-fw me-3"></i>
-          <span>Dashboard</span>
-        </a>
-        <a href="/admin/line" class="list-group-item list-group-item-action py-2 ripple">
-            <span>Ligne</span>
-        </a>
-        <a href="/admin/train" class="list-group-item list-group-item-action py-2 ripple">
-            <span>Train</span>
-        </a>
+    <!-- Sidebar -->
+    <nav
+            id="sidebarMenu"
+            class="collapse d-lg-block sidebar collapse bg-white"
+    >
+        <div class="position-sticky">
+            <div class="list-group list-group-flush mx-3 mt-4">
+                <a href="/" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
+                    <i class="fas fa-tachometer-alt fa-fw me-3"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/admin/user" class="list-group-item list-group-item-action py-2 ripple">
+                    <span>Utilisateur</span>
+                </a>
+                <a href="/admin/line" class="list-group-item list-group-item-action py-2 ripple">
+                    <span>Ligne</span>
+                </a>
+                <a href="/admin/train" class="list-group-item list-group-item-action py-2 ripple">
+                    <span>Train</span>
+                </a>
 
-        <a href="/admin/line-train" class="list-group-item list-group-item-action py-2 ripple">
-         <span>Voyage</span>
-        </a>
-
-
-        <a href="/admin/line-train/planning" class="list-group-item list-group-item-action py-2 ripple">
-         <span>Planning</span>
-        </a>
-        
-
-        <a href="/admin/booking" class="list-group-item list-group-item-action py-2 ripple">
-            <span>Réservations</span>
-        </a>
-
-        <a href="/admin/chatbot" class="list-group-item list-group-item-action py-2 ripple">
-            <span>Messages</span>
-        </a>
-
-        <a href="/admin/settings" class="list-group-item list-group-item-action py-2 ripple">
-            <span>Paramètres</span>
-        </a>
-
-      </div>
-    </div>
-  </nav>
-  <!-- Sidebar -->
-
-  <!-- Navbar -->
-  <nav
-       id="main-navbar"
-       class="navbar navbar-expand-lg navbar-light bg-white fixed-top"
-       >
-    <!-- Container wrapper -->
-    <div class="container-fluid">
-      <!-- Toggle button -->
-      <button
-              class="navbar-toggler mx-2"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#sidebarMenu"
-              aria-controls="sidebarMenu"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-              >
-              <i class="fas fa-bars"></i>
-      </button>
+                <a href="/admin/line-train" class="list-group-item list-group-item-action py-2 ripple">
+                    <span>Voyage</span>
+                </a>
 
 
-      <!-- Brand -->
-      <a class="navbar-brand" href="#">
-        PA EXPRESS 
-      </a>
+                <a href="/admin/line-train/planning" class="list-group-item list-group-item-action py-2 ripple">
+                    <span>Planning</span>
+                </a>
 
-      
-      <!-- Right links -->
-      <ul class="navbar-nav ms-auto d-flex flex-row">
-       
 
-        <!-- Avatar -->
-        <li class="nav-item dropdown">
-          <a
-             class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center"
-             href="#"
-             id="navbarDropdownMenuLink"
-             role="button"
-             data-bs-toggle="dropdown"
-             aria-expanded="false"
-             >
-            <img
-                 src="https://picsum.photos/200 "
-                 class="rounded-circle"
-                 height="22"
-                 alt=""
-                 loading="lazy"
-                 />
-          </a>
-          <ul
-              class="dropdown-menu dropdown-menu-end"
-              aria-labelledby="navbarDropdownMenuLink"
-              >
-            <li><a class="dropdown-item" href="#">Profil</a></li>
-            <li><a class="dropdown-item" href="/logout">Déconnexion</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-    <!-- Container wrapper -->
-  </nav>
-  <!-- Navbar -->
+                <a href="/admin/booking" class="list-group-item list-group-item-action py-2 ripple">
+                    <span>Réservations</span>
+                </a>
+
+                <a href="/admin/chatbot" class="list-group-item list-group-item-action py-2 ripple">
+                    <span>Messages</span>
+                </a>
+
+                <a href="/admin/settings" class="list-group-item list-group-item-action py-2 ripple">
+                    <span>Paramètres</span>
+                </a>
+
+            </div>
+        </div>
+    </nav>
+    <!-- Sidebar -->
+
+    <!-- Navbar -->
+    <nav
+            id="main-navbar"
+            class="navbar navbar-expand-lg navbar-light bg-white fixed-top"
+    >
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Toggle button -->
+            <button
+                    class="navbar-toggler mx-2"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#sidebarMenu"
+                    aria-controls="sidebarMenu"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+            >
+                <i class="fas fa-bars"></i>
+            </button>
+
+
+            <!-- Brand -->
+            <a class="navbar-brand" href="#">
+                PA EXPRESS
+            </a>
+
+
+            <!-- Right links -->
+            <ul class="navbar-nav ms-auto d-flex flex-row">
+
+
+                <!-- Avatar -->
+                <li class="nav-item dropdown">
+                    <a
+                            class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center"
+                            href="#"
+                            id="navbarDropdownMenuLink"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        <img
+                                src="https://picsum.photos/200 "
+                                class="rounded-circle"
+                                height="22"
+                                alt=""
+                                loading="lazy"
+                        />
+                    </a>
+                    <ul
+                            class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="navbarDropdownMenuLink"
+                    >
+                        <li><a class="dropdown-item" href="#">Profil</a></li>
+                        <li><a class="dropdown-item" href="/logout">Déconnexion</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar -->
 </header>
 <!--Main Navigation-->
 

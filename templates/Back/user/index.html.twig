@@ -23,11 +23,13 @@
                     <td>Admin</td>
                 {% elseif user.roles[0] == 'ROLE_CONTROLLER' %}
                     <td>Contrôleur</td>
-                {% else %}
+                {% elseif user.roles[0] == 'ROLE_CUSTOMER' %}
                     <td>Utilisateur</td>
+                {% else %}
+                    <td>Société</td>
                 {% endif %}
                 <td>{{ user.companyName ?? "-" }}</td>
-                {% if user.status == 1 %}
+                {% if ((user.status == 1 or user.status == 2) and user.roles[0] == 'ROLE_CUSTOMER') or (user.status == 2 and user.roles[0] == 'COMPANY')   %}
                     <td>Activé</td>
                 {% else %}
                     <td>Désactivé</td>
@@ -40,7 +42,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">Aucun utilisateur trouvé</td>
             </tr>
         {% endfor %}
         </tbody>
