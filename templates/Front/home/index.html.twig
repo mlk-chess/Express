@@ -20,91 +20,90 @@
     <img src="{{ asset("img/banner."~banner) }}" alt="banner" id="banner">
 
     <div class="container pt-4">
-        <div class="row d-flex">
-            <div class="col-md-12 col-lg-6">
+        {% if noTravels %}
+            <div class="alert alert-info" role="alert">
+                <p>Aucun résultat pour la recherche</p>
+            </div>
+        {% else %}
+            {% for travel in travels %}
+                <div class="alert alert-primary" role="alert">
+                    <p>{{travels|length}} résultat(s)</p>
+                </div>
 
-                {% if noTravels %}
-                    <div class="alert alert-info" role="alert">
-                        <p>Aucun résultat pour la recherche</p>
-                    </div>
-                {% else %}
-                    {% for travel in travels %}
-                        <div class="alert alert-primary" role="alert">
-                            <p>{{travels|length}} résultat(s)</p>
-                        </div>
-
-                        <div class="row mb-5" id="resultSearch">
-                            <div class="col-sm-8">
-                                <div>
-                                    <div class=" d-flex border shadow-sm rounded px-3 me-4 bg-white pt-3">
-                                        <div class="d-flex flex-column">
-                                            <div class="d-flex flex-row">
-                                                <p class="fw-bold">{{ travel.getTimeDeparture()|date('H') }}</p>
-                                                <p class="fw-bold">h</p>
-                                                <p class="fw-bold">{{ travel.getTimeDeparture()|date('i') }}</p>
-                                            </div>
-                                            <div class="d-flex flex-row">
-                                                <p class="fw-bold">{{ travel.getTimeArrival()|date('H') }}</p>
-                                                <p class="fw-bold">h</p>
-                                                <p class="fw-bold">{{ travel.getTimeArrival()|date('i') }}</p>
-                                            </div>
-                                        </div>
-
-                                        <div class="d-flex flex-column mx-4">
-                                            <p>{{ travel.getLine().getNameStationDeparture() }}</p>
-                                            <p>{{ travel.getLine().getNameStationArrival() }}</p>
-                                        </div>
+                <div class="row mb-5" id="resultSearch">
+                    <div class="col-sm-8">
+                        <div>
+                            <div class=" d-flex border shadow-sm rounded px-3 me-4 bg-white pt-3">
+                                <div class="d-flex flex-column">
+                                    <div class="d-flex flex-row">
+                                        <p class="fw-bold">{{ travel.getTimeDeparture()|date('H') }}</p>
+                                        <p class="fw-bold">h</p>
+                                        <p class="fw-bold">{{ travel.getTimeDeparture()|date('i') }}</p>
+                                    </div>
+                                    <div class="d-flex flex-row">
+                                        <p class="fw-bold">{{ travel.getTimeArrival()|date('H') }}</p>
+                                        <p class="fw-bold">h</p>
+                                        <p class="fw-bold">{{ travel.getTimeArrival()|date('i') }}</p>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="col-sm-2">
-                                {% if travel.getPlaceNbClass1 == 0 %}
-                                    <div class="border shadow-sm rounded px-3 bg-white button-price">
-                                        <p class="text-center pt-3">Classe 1</p>
-                                        <p class="text-center">Aucune place</p>
-                                    </div>
-                                {% else %}
-                                    <div onclick="selectOption(
-                                    {{ travel.id }},
-                                            1,
-                                    {{ travel.getPriceClass1 }},
-                                    {{ travel.getTimeDeparture()|date('H') }} +'h'+{{ travel.getTimeDeparture()|date('i') }},
-                                    {{ travel.getTimeArrival()|date('H') }} +'h'+{{ travel.getTimeArrival()|date('i') }},
-                                            '{{ travel.getLine().getNameStationDeparture() }}',
-                                            '{{ travel.getLine().getNameStationArrival() }}'
-                                            )" class="border shadow-sm rounded px-3 bg-white button-price"
-                                         data-bs-toggle="modal" data-bs-target="#modalOptions">
-                                        <p class="text-center pt-3">Classe 1</p>
-                                        <p class="text-center">{{ travel.getPriceClass1 }} €</p>
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="col-sm-2">
-                                {% if travel.getPlaceNbClass2 == 0 %}
-                                    <div class="border shadow-sm rounded px-3 bg-white button-price">
-                                        <p class="text-center pt-3">Classe 2</p>
-                                        <p class="text-center">Aucune place</p>
-                                    </div>
-                                {% else %}
-                                    <div onclick="selectOption(
-                                    {{ travel.id }},
-                                            2,
-                                    {{ travel.getPriceClass2 }},
-                                            '{{ travel.getDateDeparture()|date('d-m-Y') }}',
-                                    {{ travel.getTimeDeparture()|date('H') }} +'h'+{{ travel.getTimeDeparture()|date('i') }},
-                                            '{{ travel.getLine().getNameStationDeparture() }}',
-                                            '{{ travel.getLine().getNameStationArrival() }}'
-                                            )" class="border shadow-sm rounded px-3 ms-3 bg-white button-price"
-                                         data-bs-toggle="modal" data-bs-target="#modalOptions">
-                                        <p class="text-center pt-3">Classe 2</p>
-                                        <p class="text-center">{{ travel.getPriceClass2 }} €</p>
-                                    </div>
-                                {% endif %}
+                                <div class="d-flex flex-column mx-4">
+                                    <p>{{ travel.getLine().getNameStationDeparture() }}</p>
+                                    <p>{{ travel.getLine().getNameStationArrival() }}</p>
+                                </div>
                             </div>
                         </div>
-                    {% endfor %}
-                {% endif %}
+                    </div>
+
+                    <div class="col-sm-2">
+                        {% if travel.getPlaceNbClass1 == 0 %}
+                            <div class="border shadow-sm rounded px-3 bg-white button-price">
+                                <p class="text-center pt-3">Classe 1</p>
+                                <p class="text-center">Aucune place</p>
+                            </div>
+                        {% else %}
+                            <div onclick="selectOption(
+                            {{ travel.id }},
+                                    1,
+                            {{ travel.getPriceClass1 }},
+                            {{ travel.getTimeDeparture()|date('H') }} +'h'+{{ travel.getTimeDeparture()|date('i') }},
+                            {{ travel.getTimeArrival()|date('H') }} +'h'+{{ travel.getTimeArrival()|date('i') }},
+                                    '{{ travel.getLine().getNameStationDeparture() }}',
+                                    '{{ travel.getLine().getNameStationArrival() }}'
+                                    )" class="border shadow-sm rounded px-3 bg-white button-price"
+                                 data-bs-toggle="modal" data-bs-target="#modalOptions">
+                                <p class="text-center pt-3">Classe 1</p>
+                                <p class="text-center">{{ travel.getPriceClass1 }} €</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-2">
+                        {% if travel.getPlaceNbClass2 == 0 %}
+                            <div class="border shadow-sm rounded px-3 bg-white button-price">
+                                <p class="text-center pt-3">Classe 2</p>
+                                <p class="text-center">Aucune place</p>
+                            </div>
+                        {% else %}
+                            <div onclick="selectOption(
+                            {{ travel.id }},
+                                    2,
+                            {{ travel.getPriceClass2 }},
+                                    '{{ travel.getDateDeparture()|date('d-m-Y') }}',
+                            {{ travel.getTimeDeparture()|date('H') }} +'h'+{{ travel.getTimeDeparture()|date('i') }},
+                                    '{{ travel.getLine().getNameStationDeparture() }}',
+                                    '{{ travel.getLine().getNameStationArrival() }}'
+                                    )" class="border shadow-sm rounded px-3 ms-3 bg-white button-price"
+                                 data-bs-toggle="modal" data-bs-target="#modalOptions">
+                                <p class="text-center pt-3">Classe 2</p>
+                                <p class="text-center">{{ travel.getPriceClass2 }} €</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="row d-flex">
+            <div class="col-md-12 col-lg-6">
 
                 <div class="row border shadow-sm rounded p-3 bg-white" id="container-search">
                     <div class="d-flex flex-column pe-3">
