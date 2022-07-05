@@ -46,7 +46,14 @@ class LineTrainController extends AbstractController
     public function planning(LineTrainRepository $lineTrainRepository): Response
     {
 
-        $getTravels = $lineTrainRepository->findLineTrainByDate();
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
+        if (in_array('ROLE_COMPANY', $userConnected->getRoles())){
+            $getTravels = $lineTrainRepository->findLineTrainByDate($userConnected->getId());
+        }else{
+            $getTravels = $lineTrainRepository->findLineTrainByDate();
+        }
+
         $travels = [];
 
         foreach ($getTravels as $travel) {
@@ -186,7 +193,14 @@ class LineTrainController extends AbstractController
 
     #[Route('/{id}', name: 'line_train_show', methods: ['GET'])]
     public function show(LineTrain $lineTrain, LineTrainRepository $lineTrainRepository, int $id): Response
-    {
+    {   
+        $travel = $lineTrainRepository->find($id);
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
+        if ( $userConnected->getId() != $travel->getTrain()->getOwner()->getId() ){
+            return $this->redirectToRoute('admin_line_train_index', [], Response::HTTP_SEE_OTHER);
+        }
+       
 
         return $this->render('Back/line_train/show.html.twig', [
             'line_train' => $lineTrain,
@@ -194,9 +208,20 @@ class LineTrainController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'line_train_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, LineTrain $lineTrain, LineTrainRepository $lineTrainRepository, BookingRepository $bookingRepository): Response
+    public function edit(Request $request, int $id, LineTrain $lineTrain, LineTrainRepository $lineTrainRepository, BookingRepository $bookingRepository, TrainRepository $trainRepository, LineRepository $lineRepository): Response
     {
-        $form = $this->createForm(LineTrainType::class, $lineTrain);
+
+        $travel = $lineTrainRepository->find($id);
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
+        if ( $userConnected->getId() != $travel->getTrain()->getOwner()->getId() ){
+            return $this->redirectToRoute('admin_line_train_index', [], Response::HTTP_SEE_OTHER);
+        }
+       
+       
+        $train = $trainRepository->findBy(["status" => 1,"owner"=> $userConnected->getId()]);
+        $line = $lineRepository->findBy(["status" => 1]);
+        $form = $this->createForm(LineTrainType::class, $lineTrain, ["train" => $train, "line" => $line]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

@@ -21,7 +21,7 @@ class TrainController extends AbstractController
     public function index(TrainRepository $trainRepository): Response
     {
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
-        if (in_array('COMPANY', $userConnected->getRoles())){
+        if (in_array('ROLE_COMPANY', $userConnected->getRoles())){
             return $this->render('Back/train/index.html.twig', [
                 'trains' => $trainRepository->findBy(['owner' => $userConnected->getId(), 'status' => 1])
                 ]);
@@ -66,10 +66,17 @@ class TrainController extends AbstractController
     }
 
     #[Route('/{id}', name: 'train_show', methods: ['GET'])]
-    public function show(Train $train, WagonRepository $wagonRepository): Response
+    public function show(Train $train, WagonRepository $wagonRepository, int $id, TrainRepository $trainRepository): Response
     {
 
-        $wagons = $wagonRepository->findBy(["status" => 1]);
+        $travel = $trainRepository->find($id);
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
+        if ($travel->getOwner()->getId() != $userConnected->getId()){
+            return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        $wagons = $wagonRepository->findBy(["status" => 1, "train" => $id]);
         return $this->render('Back/train/show.html.twig', [
             'train' => $train,
             'wagons' => $wagons

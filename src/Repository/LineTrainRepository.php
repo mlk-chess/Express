@@ -20,14 +20,25 @@ class LineTrainRepository extends ServiceEntityRepository
     }
 
 
-    public function findLineTrainByDate()
+    public function findLineTrainByDate($id = null)
     {
+        if ($id){
+            $qb = $this->createQueryBuilder('lt')
+            ->select('COUNT(lt) as nb, lt.date_departure')
+            ->innerJoin('lt.train','train')
+            ->where('train.owner = :id')
+            ->groupBy('lt.date_departure')
+            ->setParameters(['id' => $id]);
 
-        $qb = $this->createQueryBuilder('lt')
+            $query = $qb->getQuery();
+        }else{
+            $qb = $this->createQueryBuilder('lt')
             ->select('COUNT(lt) as nb, lt.date_departure')
             ->groupBy('lt.date_departure');
 
-        $query = $qb->getQuery();
+            $query = $qb->getQuery();
+        }
+     
 
         return $query->execute();
     }
@@ -79,19 +90,17 @@ class LineTrainRepository extends ServiceEntityRepository
     }
 
     public function findLineTrainCompany($id){
-
-        $entityManager = $this->getEntityManager();
         
-        $query = $entityManager->createQuery(
-        "SELECT t.name, lt.id, l.name_station_departure, l.name_station_arrival, lt.date_departure, lt.date_arrival, lt.time_departure, lt.time_arrival, lt.price_class_1, lt.price_class_2
-            FROM App\Entity\LineTrain lt , App\Entity\Train t, App\Entity\Line l
-                WHERE lt.train = t.id
-                AND lt.line = l.id
-                AND t.owner = :id
-        "
-        )->setParameter('id', $id);
 
-        return $query->getResult();
+        $qb = $this->createQueryBuilder('lt')
+        ->select('lt, line, train')
+        ->leftJoin('lt.train','train')
+        ->leftJoin('lt.line','line')
+        ->where('train.owner = :id')
+        ->setParameters(['id' => $id]);
+
+        $query = $qb->getQuery();
+        return $query->execute();
     }
 
 

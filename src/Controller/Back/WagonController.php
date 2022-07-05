@@ -17,21 +17,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/wagon')]
 class WagonController extends AbstractController
 {
-    //  #[Route('/', name: 'wagon_index', methods: ['GET'])]
-    //  public function index(WagonRepository $wagonRepository): Response
-    //  {
-    //      $userConnected = $this->get('security.token_storage')->getToken()->getUser();
-
-    //      if (in_array('COMPANY', $userConnected->getRoles())){
-    //         return $this->render('Back/wagon/index.html.twig', [
-    //             'wagons' => $wagonRepository->findBy(array('owner' => $userConnected->getId()))
-    //         ]);
-    //     }else{
-    //          return $this->render('Back/wagon/index.html.twig', [
-    //             'wagons' => $wagonRepository->findAll(),
-    //         ]);
-    //     }
-    //  }
 
     #[Route('/new/{id}', name: 'wagon_new', methods: ['GET','POST'])]
     public function new(Request $request, int $id,  Train $train, TrainRepository $trainRepository, SeatRepository $seatRepository): Response

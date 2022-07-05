@@ -15,14 +15,12 @@ class WagonType extends AbstractType
         $builder
             ->add('class', ChoiceType::class, [
                 'choices'  => [
-                    ' ' => null,
                     '1' => '1',
                     '2' => '2',
                 ]]
             )
             ->add('type',ChoiceType::class, [
                 'choices'  => [
-                    ' ' => null,
                     'Voyageur' => 'Voyageur',
                     'Bar' => 'Bar',
                 ]]
