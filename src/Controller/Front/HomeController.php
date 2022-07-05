@@ -264,6 +264,7 @@ class HomeController extends AbstractController
                 $seat = New BookingSeat();
                 $seat->setBooking($booking);
                 $seat->setSeat($seatRepository->findOneBy(array("wagon" => $wagon[$wagonIdx]->getId(),"number" => sizeof($allBooking)+1)));
+                dd($travelers);
                 $seat->setFirstname("aa");
                 $seat->setLastname('dds');
 
@@ -272,7 +273,7 @@ class HomeController extends AbstractController
                 $entityManager->persist($seat);
                 $entityManager->flush();
             }else{
-
+                return $this->render('Front/home/error.html.twig');
             }
 
         }
