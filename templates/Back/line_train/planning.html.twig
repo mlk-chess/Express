@@ -88,7 +88,8 @@
                 let now = document.getElementById('now');
                 btn.click();
                 let date = e.date.toLocaleString('fr').split(',');
-                now.innerHTML =  `<h3><i class="me-3 fa-solid fa-calendar"></i>${date[0]}</h3>`;
+               
+                now.innerHTML =  `<h3><i class="me-3 fa-solid fa-calendar"></i>${date[0].split(' ')[0]}</h3>`;
                
                 $.ajax({
                     type: 'GET',

@@ -100,13 +100,21 @@ class LineController extends AbstractController
         $errors = [];
 
 
-        $travel = $lineTrainRepository->findBy(
+        $travels = $lineTrainRepository->findBy(
             ['line' => $line->getId()]
         );
 
+
         if ($form->isSubmitted() && $form->isValid()) {
+
+            foreach($travels as $travel){
+                if($travel->getDateArrival()->format('Y-m-d') > date('Y-m-d')){
+                    $errors[] = "Le train associé a un voyage de prévu, vous ne pouvez pas modifier cette ligne.";
+                    break;
+                }   
+            }
             
-            if (empty($travel)){
+            if (empty($errors)){
                 if (Helper::checkStationJsonFile($line->getNameStationArrival()) &&
                     Helper::checkStationJsonFile($line->getNameStationDeparture())) {
 
@@ -141,8 +149,6 @@ class LineController extends AbstractController
                       
                     }
                 }
-            }else{
-                $errors[] = "Voyage existe déjà sur cette ligne !";
             }
 
         }

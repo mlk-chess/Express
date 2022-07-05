@@ -20,14 +20,25 @@ class LineTrainRepository extends ServiceEntityRepository
     }
 
 
-    public function findLineTrainByDate()
+    public function findLineTrainByDate($id = null)
     {
+        if ($id){
+            $qb = $this->createQueryBuilder('lt')
+            ->select('COUNT(lt) as nb, lt.date_departure')
+            ->innerJoin('lt.train','train')
+            ->where('train.owner = :id')
+            ->groupBy('lt.date_departure')
+            ->setParameters(['id' => $id]);
 
-        $qb = $this->createQueryBuilder('lt')
+            $query = $qb->getQuery();
+        }else{
+            $qb = $this->createQueryBuilder('lt')
             ->select('COUNT(lt) as nb, lt.date_departure')
             ->groupBy('lt.date_departure');
 
-        $query = $qb->getQuery();
+            $query = $qb->getQuery();
+        }
+     
 
         return $query->execute();
     }
@@ -36,7 +47,6 @@ class LineTrainRepository extends ServiceEntityRepository
     public function findTrainByDate($trainId, $id = null): array
     {
         $entityManager = $this->getEntityManager();
-
 
         if ($id) {
             $query = $entityManager->createQuery(
@@ -69,13 +79,28 @@ class LineTrainRepository extends ServiceEntityRepository
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
-            "SELECT w.class, w.type, w.placeNb
+            "SELECT w.class, w.type, w.placeNb, w.status
             FROM App\Entity\Wagon w
-            WHERE w.train = :id"
+            WHERE w.train = :id
+            AND w.status = 1"
         )->setParameter('id', $trainId);
 
 
         return $query->getResult();
+    }
+
+    public function findLineTrainCompany($id){
+        
+
+        $qb = $this->createQueryBuilder('lt')
+        ->select('lt, line, train')
+        ->leftJoin('lt.train','train')
+        ->leftJoin('lt.line','line')
+        ->where('train.owner = :id')
+        ->setParameters(['id' => $id]);
+
+        $query = $qb->getQuery();
+        return $query->execute();
     }
 
 

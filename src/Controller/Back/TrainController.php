@@ -4,6 +4,8 @@ namespace App\Controller\Back;
 
 use App\Entity\Train;
 use App\Form\TrainType;
+use App\Repository\LineTrainRepository;
+use App\Repository\WagonRepository;
 use App\Repository\TrainRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +21,13 @@ class TrainController extends AbstractController
     public function index(TrainRepository $trainRepository): Response
     {
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
-        if (in_array('COMPANY', $userConnected->getRoles())){
+        if (in_array('ROLE_COMPANY', $userConnected->getRoles())){
             return $this->render('Back/train/index.html.twig', [
-                'trains' => $trainRepository->findBy(array('owner' => $userConnected->getId()))
+                'trains' => $trainRepository->findBy(['owner' => $userConnected->getId(), 'status' => 1])
                 ]);
         }else{
             return $this->render('Back/train/index.html.twig', [
-                'trains' => $trainRepository->findAll(),
+                'trains' => $trainRepository->findBy(['status' => 1])
             ]);
         }
     }
@@ -36,68 +38,111 @@ class TrainController extends AbstractController
         $train = new Train();
         $form = $this->createForm(TrainType::class, $train);
         $form->handleRequest($request);
+        $errors = [];
 
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {
 
             $train->setOwner($userConnected);
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($train);
-            $entityManager->flush();
-
-            $this->addFlash('green', "Le train {$train->getName()} à bien été créer.");
-
-            return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+            
+            if (empty($trainRepository->findBy(["name" => $train->getName(), "status" => 1]))){
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($train);
+                $entityManager->flush();
+    
+                return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+            }else{
+                $errors[] = "Ce train existe déjà !";
+            }
+          
 
         }
-
         return $this->renderForm('Back/train/new.html.twig', [
             'train' => $train,
             'form' => $form,
+            'errors' => $errors
         ]);
     }
 
     #[Route('/{id}', name: 'train_show', methods: ['GET'])]
-    public function show(Train $train): Response
+    public function show(Train $train, WagonRepository $wagonRepository, int $id, TrainRepository $trainRepository): Response
     {
+
+        $travel = $trainRepository->find($id);
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
+        if ($travel->getOwner()->getId() != $userConnected->getId()){
+            return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        $wagons = $wagonRepository->findBy(["status" => 1, "train" => $id]);
         return $this->render('Back/train/show.html.twig', [
             'train' => $train,
+            'wagons' => $wagons
         ]);
     }
 
     #[Route('/{id}/edit', name: 'train_edit', methods: ['GET','POST'])]
-    public function edit(Request $request, int $id, Train $train, TrainRepository $trainRepository): Response
+    public function edit(Request $request, int $id, Train $train, LineTrainRepository $lineTrainRepository): Response
     {
         $form = $this->createForm(TrainType::class, $train);
         $form->handleRequest($request);
+        $errors = [];
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->getDoctrine()->getManager()->flush();
-            return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
-          
+            $travels = $lineTrainRepository->findBy(['train' => $train->getId()]);
+            foreach($travels as $travel){
+                if($travel->getDateArrival()->format('Y-m-d') > date('Y-m-d')){
+                    $errors[] = "Le train associé a un voyage de prévu, vous ne pouvez pas modifier ce train.";
+                    break;
+                }   
+            }
+
+            if (empty($errors)){
+                $this->getDoctrine()->getManager()->flush();
+                return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+            }
         }
 
         return $this->renderForm('Back/train/edit.html.twig', [
             'train' => $train,
             'form' => $form,
+            'errors' => $errors
         ]);
     }
 
-    #[Route('/{id}', name: 'train_delete', methods: ['POST'])]
-    public function delete(Request $request, Train $train): Response
+    #[Route('/{id}/disable', name: 'train_disable')]
+    public function disable(Request $request, Train $train, LineTrainRepository $lineTrainRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$train->getId(), $request->request->get('_token'))) {
+       
+            $errors = [];
+            $userConnected = $this->get('security.token_storage')->getToken()->getUser();
 
-            //dd($train);
+            if ($train->getOwner()->getId() == $userConnected->getId()){
 
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($train);
-            $entityManager->flush();
-            $this->addFlash('green', "Le train a été supprimé !");
-        }
+                $travels = $lineTrainRepository->findBy(['train' => $train->getId()]);
+                foreach($travels as $travel){
+                    if($travel->getDateArrival()->format('Y-m-d') > date('Y-m-d')){
+                        $errors[] = "Le train associé a un voyage de prévu, vous ne pouvez pas désactiver ce train.";
+                        break;
+                    }   
+                }
+    
+                if(empty($errors)){
+    
+                    $entityManager = $this->getDoctrine()->getManager();
+                    $train->setStatus(0);
+                    $entityManager->persist($train);
+                    $entityManager->flush();
+        
+                }
+            }
+            
+        
 
-        return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+
+            return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
     }
 }

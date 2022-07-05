@@ -51,11 +51,9 @@ class HomeController extends AbstractController
             ->select('lt, line')
             ->leftJoin('lt.line', 'line')
             ->where('lt.date_departure > :date_departure')
-            ->andWhere('lt.time_departure >= :time_departure')
             ->setMaxResults(3)
             ->setParameters([
-                'date_departure' => date("Y-m-d"),
-                'time_departure' => date('H:i:s')
+                'date_departure' => date("Y-m-d")
             ]);
 
         $q = $query->getQuery();
@@ -271,6 +269,8 @@ class HomeController extends AbstractController
             // authenticated REMEMBERED, FULLY will imply REMEMBERED (NON anonymous)
             return $this->redirect("/login");
         }
+
+
         // This is your test secret API key.
         \Stripe\Stripe::setApiKey('sk_test_51Kk6uiCJ5s87DbRlsu9UTG7t0PbKcXlXM7bxLdibROOksHgDXIg1gXtp0SFv7o0MZxTcCTOLmEzjK1AVvdCR9LXg00vHipH4ZP');
 

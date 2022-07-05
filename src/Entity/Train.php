@@ -36,6 +36,10 @@ class Train
     private $name;
 
 
+     /**
+     * @ORM\Column(type="integer")
+     */
+    private $status = 1;
 
     /**
      * @ORM\Column(type="text",nullable=true)
@@ -88,6 +92,16 @@ class Train
     public function setName($name): void
     {
         $this->name = $name;
+    }
+
+
+    public function getStatus(): ?int{
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self {
+        $this->status = $status;
+        return $this;
     }
 
 
