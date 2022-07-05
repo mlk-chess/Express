@@ -162,14 +162,6 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'admin_user_show', methods: ['GET'])]
-    public function show(User $user): Response
-    {
-        return $this->render('Back/user/show.html.twig', [
-            'user' => $user,
-        ]);
-    }
-
     #[Route('/{id}/edit-train-company', name: 'admin_user_edit_company', methods: ['GET', 'POST'])]
     public function edit_train_company(Request $request, User $user): Response
     {

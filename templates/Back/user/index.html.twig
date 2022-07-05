@@ -8,7 +8,6 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Email</th>
                 <th>Roles</th>
                 <th>Company Name</th>
@@ -19,13 +18,21 @@
         <tbody>
         {% for user in users %}
             <tr>
-                <td>{{ user.id }}</td>
                 <td>{{ user.email }}</td>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-                <td>{{ user.companyName ?? "Standard User" }}</td>
-                <td>{{ user.status }}</td>
+                {% if user.roles[0] == 'ROLE_ADMIN' %}
+                    <td>Admin</td>
+                {% elseif user.roles[0] == 'ROLE_CONTROLLER' %}
+                    <td>Contrôleur</td>
+                {% else %}
+                    <td>Utilisateur</td>
+                {% endif %}
+                <td>{{ user.companyName ?? "-" }}</td>
+                {% if user.status == 1 %}
+                    <td>Activé</td>
+                {% else %}
+                    <td>Désactivé</td>
+                {% endif %}
                 <td>
-                    <a href="{{ path('admin_user_show', {'id': user.id}) }}" class="btn btn-primary">Voir</a>
                     <a href="{{ user.companyName is empty ? path('admin_user_edit', {'id': user.id}) : path('admin_user_edit_company', {'id': user.id}) }}" class="btn btn-primary">Editer</a>
                     <a href="{{ path('admin_user_edit_status', {'id': user.id}) }}" class="btn btn-warning">Changer le statut</a>
 
