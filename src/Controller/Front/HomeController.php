@@ -3,11 +3,17 @@
 namespace App\Controller\Front;
 
 use App\Entity\Booking;
+use App\Entity\BookingSeat;
 use App\Entity\LineTrain;
 use App\Entity\Option;
+use App\Entity\Seat;
+use App\Entity\Wagon;
 use App\Form\HomeType;
 use App\Repository\BookingRepository;
+use App\Repository\BookingSeatRepository;
 use App\Repository\LineTrainRepository;
+use App\Repository\SeatRepository;
+use App\Repository\WagonRepository;
 use DateTime;
 use Error;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,6 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
 use function Doctrine\Common\Cache\Psr6\set;
+use function React\Promise\all;
 
 #[Route('/')]
 class HomeController extends AbstractController
@@ -201,7 +208,7 @@ class HomeController extends AbstractController
         return new JsonResponse(false);
     }
     #[Route('/success', name: 'success', methods: ['GET','POST'])]
-    public function success(Request $request, LineTrainRepository $lineTrainRepository): Response
+    public function success(Request $request, LineTrainRepository $lineTrainRepository,BookingRepository $bookingRepository, BookingSeatRepository $bookingSeatRepository, SeatRepository $seatRepository, WagonRepository $wagonRepository): Response
     {
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
         $session = $this->requestStack->getSession();
@@ -223,6 +230,9 @@ class HomeController extends AbstractController
             $entityManager->persist($voyage[0]);
             $entityManager->flush();
 
+
+
+
             $booking = new Booking();
             $booking->setLineTrain($voyage[0]);
             $booking->setPrice($price);
@@ -233,9 +243,38 @@ class HomeController extends AbstractController
             $booking->setIdUser($userConnected);
             $booking->setPaymentIntent($dataSession["payment_intent"]);
 
+
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($booking);
             $entityManager->flush();
+
+            //Get all Booking
+            $allBooking = new Booking();
+            $allBooking = $bookingRepository->findBy(array("lineTrain" => $voyage[0]->getId()));
+
+            $wagon = New Wagon();
+            $wagon = $wagonRepository->findBy(array('train' => $voyage[0]->getTrain()->getId(), 'type' => 'Voyageur'));
+            $wagonIdx = null;
+            for ($i = 0; $i < sizeof($wagon); $i++){
+                $wagonIdx = $i;
+
+            }
+            if (sizeof($allBooking) < $wagon[$wagonIdx]->getPlaceNb()){
+                $seat = New BookingSeat();
+                $seat->setBooking($booking);
+                $seat->setSeat($seatRepository->findOneBy(array("wagon" => $wagon[$wagonIdx]->getId(),"number" => sizeof($allBooking)+1)));
+                $seat->setFirstname("aa");
+                $seat->setLastname('dds');
+
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($seat);
+                $entityManager->flush();
+            }else{
+
+            }
+
         }
 
         $session->remove('shopping');
