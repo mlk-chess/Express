@@ -180,8 +180,8 @@ class HomeController extends AbstractController
             $json = file_get_contents("../templates/Front/home/stations.json");
             return new JsonResponse($json);
         }
-        return new JsonResponse(false);
-    } 
+        throw $this->createNotFoundException('Not exist');
+    }
 
     #[Route('/add-option', name: 'addOption', methods: 'POST')]
     public function addOption(Request $request, LineTrainRepository $lineTrainRepository): JsonResponse
@@ -217,7 +217,7 @@ class HomeController extends AbstractController
 
             return new JsonResponse(true);
         }
-        return new JsonResponse(false);
+        throw $this->createNotFoundException('Not exist');
     }
     #[Route('/success', name: 'success', methods: ['GET','POST'])]
     public function success(Request $request, LineTrainRepository $lineTrainRepository): Response
