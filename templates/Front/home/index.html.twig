@@ -30,9 +30,11 @@
                 <p>Aucun résultat pour la recherche</p>
             </div>
         {% else %}
+        {% if travels %}
                 <div class="alert alert-primary" role="alert">
                     <p>{{travels|length}} résultat(s)</p>
                 </div>
+        {% endif%}
             {% for travel in travels %}
             
 
