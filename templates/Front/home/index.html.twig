@@ -30,10 +30,11 @@
                 <p>Aucun résultat pour la recherche</p>
             </div>
         {% else %}
-            {% for travel in travels %}
                 <div class="alert alert-primary" role="alert">
                     <p>{{travels|length}} résultat(s)</p>
                 </div>
+            {% for travel in travels %}
+            
 
                 <div class="row mb-5" id="resultSearch">
                     <div class="col-sm-8">
