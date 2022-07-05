@@ -141,7 +141,27 @@
         </div>
     </div>
 
+    <h4>Nos prochains départ !</h4>
 
+    {% if nextTravels %}
+        <div class="row">
+            {% for nextTravel in nextTravels %}
+                <div class="col col-lg-4 d-flex justify-content-center">
+                    <div class="card" style="width: 18rem;">
+                        <img src="{{ asset('./img/travel.jpg') }}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <p class="card-text">En partance de <b>{{ nextTravel.getLine().getNameStationDeparture() }}</b> direction <b>{{ nextTravel.getLine().getNameStationArrival() }}</b></p>
+                            <br>
+                            <p>Le {{ nextTravel.getDateDeparture()|date('d-m-Y') }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
+    <!-- MODAL -->
     <div class="modal fade" id="modalOptions" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">

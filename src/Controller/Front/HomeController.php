@@ -44,6 +44,24 @@ class HomeController extends AbstractController
             $banner = 'jpg';
         }
 
+        $entityManager = $this->getDoctrine()->getManager();
+        $repository = $entityManager->getRepository(LineTrain::class);
+
+        $query = $repository->createQueryBuilder('lt')
+            ->select('lt, line')
+            ->leftJoin('lt.line', 'line')
+            ->where('lt.date_departure > :date_departure')
+            ->andWhere('lt.time_departure >= :time_departure')
+            ->setMaxResults(3)
+            ->setParameters([
+                'date_departure' => date("Y-m-d"),
+                'time_departure' => date('H:i:s')
+            ]);
+
+        $q = $query->getQuery();
+
+        $nextTravels = $q->execute();
+
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('departureStationInput')->getData() == null || $form->get('arrivalStationInput')->getData() == null) {
                 $this->addFlash('red', "La gare de départ et la gare d'arrivée doivent être remplis");
@@ -61,7 +79,6 @@ class HomeController extends AbstractController
                 return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
             }
 
-            $entityManager = $this->getDoctrine()->getManager();
             $repository = $entityManager->getRepository(LineTrain::class);
 
 
@@ -95,7 +112,8 @@ class HomeController extends AbstractController
                 'form' => $form,
                 'travels' => $travels,
                 'noTravels' => $noTravels,
-                'banner' => $banner
+                'banner' => $banner,
+                'nextTravels' => $nextTravels
             ]);
 
         }
@@ -105,7 +123,8 @@ class HomeController extends AbstractController
             'form' => $form,
             'travels' => false,
             'noTravels' => false,
-            'banner' => $banner
+            'banner' => $banner,
+            'nextTravels' => $nextTravels
         ]);
     }
 
