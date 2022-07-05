@@ -36,6 +36,32 @@ class HomeController extends AbstractController
         $form = $this->createForm(HomeType::class);
         $form->handleRequest($request);
 
+        $banner = 'png';
+
+        if (file_exists('./img/banner.png')) {
+            $banner = 'png';
+        }elseif (file_exists('./img/banner.jpg')) {
+            $banner = 'jpg';
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $repository = $entityManager->getRepository(LineTrain::class);
+
+        $query = $repository->createQueryBuilder('lt')
+            ->select('lt, line')
+            ->leftJoin('lt.line', 'line')
+            ->where('lt.date_departure > :date_departure')
+            ->andWhere('lt.time_departure >= :time_departure')
+            ->setMaxResults(3)
+            ->setParameters([
+                'date_departure' => date("Y-m-d"),
+                'time_departure' => date('H:i:s')
+            ]);
+
+        $q = $query->getQuery();
+
+        $nextTravels = $q->execute();
+
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('departureStationInput')->getData() == null || $form->get('arrivalStationInput')->getData() == null) {
                 $this->addFlash('red', "La gare de départ et la gare d'arrivée doivent être remplis");
@@ -53,7 +79,6 @@ class HomeController extends AbstractController
                 return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
             }
 
-            $entityManager = $this->getDoctrine()->getManager();
             $repository = $entityManager->getRepository(LineTrain::class);
 
 
@@ -86,7 +111,9 @@ class HomeController extends AbstractController
                 'controller_name' => 'HomeController',
                 'form' => $form,
                 'travels' => $travels,
-                'noTravels' => $noTravels
+                'noTravels' => $noTravels,
+                'banner' => $banner,
+                'nextTravels' => $nextTravels
             ]);
 
         }
@@ -95,7 +122,9 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
             'form' => $form,
             'travels' => false,
-            'noTravels' => false
+            'noTravels' => false,
+            'banner' => $banner,
+            'nextTravels' => $nextTravels
         ]);
     }
 
@@ -151,8 +180,8 @@ class HomeController extends AbstractController
             $json = file_get_contents("../templates/Front/home/stations.json");
             return new JsonResponse($json);
         }
-        return new JsonResponse(false);
-    } 
+        throw $this->createNotFoundException('Not exist');
+    }
 
     #[Route('/add-option', name: 'addOption', methods: 'POST')]
     public function addOption(Request $request, LineTrainRepository $lineTrainRepository): JsonResponse
@@ -188,7 +217,7 @@ class HomeController extends AbstractController
 
             return new JsonResponse(true);
         }
-        return new JsonResponse(false);
+        throw $this->createNotFoundException('Not exist');
     }
     #[Route('/success', name: 'success', methods: ['GET','POST'])]
     public function success(Request $request, LineTrainRepository $lineTrainRepository): Response
@@ -290,7 +319,7 @@ class HomeController extends AbstractController
                     'unit_amount' => $price*100,
                     'product_data' => [
                         'name' => 'Paiement de votre billet de train',
-                        'images' => ["https://i.imgur.com/EHyR2nP.png"],
+                        'images' => [],
                     ],
                 ],
                 'quantity' => 1,

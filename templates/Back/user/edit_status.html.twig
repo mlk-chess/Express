@@ -1,12 +1,10 @@
 {% extends 'base_back.html.twig' %}
 
-{% block title %}User - status{% endblock %}
+{% block title %}PA EXPRESS{% endblock %}
 
 {% block body %}
-    <h1>Change status</h1>
+    <h1>Changement du statut</h1>
 
-    {{ include('Back/user/edit_status.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('admin_user_index') }}">back to list</a>
+    {{ include('Back/user/edit_status_chatbot.html.twig', {'button_label': 'Mettre à jour'}) }}
 
 {% endblock %}

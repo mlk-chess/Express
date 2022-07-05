@@ -2,13 +2,16 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PA EXPRESS{% endblock %}</title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
              integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
              crossorigin=""/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
 
     {% block javascripts %}
@@ -19,11 +22,37 @@
                 crossorigin=""></script>
         <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+        <script id="botmanWidget" src='https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/chat.js'></script>
     {% endblock %}
 
     <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            padding-bottom: 5em;
+        }
+
         .navbar-front {
             background-color: white;
+        }
+        #userText {
+            display: none;
+        }
+
+        footer {
+            background-color: #B1D0E0;
+            position:absolute;
+            width:100%;
+            height:70px;
+        }
+
+
+        #container-footer {
+            height: 100%;
+        }
+
+        #container-footer p {
+            margin: 0;
         }
     </style>
 
@@ -56,6 +85,10 @@
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                 {% if is_granted('ROLE_CUSTOMER') %}
                                     <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                                    <li><a class="dropdown-item" href="/mesVoyages">Mes voyages</a></li>
+                                {% endif %}
+                                {% if is_granted('ROLE_CONTROLLER') %}
+                                    <li><a class="dropdown-item" href="/qrcode">Scanneur</a></li>
                                 {% endif %}
                                 <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
                             </ul>
@@ -80,22 +113,37 @@
 </header>
 
 
-<script>
-    {%  for label, messages in app.flashes() %}
-        {% for message in messages %}
-
-            M.toast({html: '{{ message }}', classes: '{{ label }}'})
-
-        {% endfor %}
-    {% endfor %}
-</script>
-
-
 <main>
-    <div class="container pt-4">
+    <div class="container">
         {% block body %}{% endblock %}
     </div>
+
+
+    <script>
+        var botmanWidget = {
+            frameEndpoint: '{{ path("chatframe") }}',
+            chatServer: '{{ path("message") }}',
+            introMessage: "Salut, je suis Morphy. Pour commencer, tapez \"help\" ! Si vous n'êtes pas inscrits, je ne pourrai rien faire pour vous. ",
+            title: 'MorphyBot',
+            mainColor: '#356393',
+            bubbleBackground: '#ffffff',
+            bubbleAvatarUrl: "{{ asset('img/chatbot/IMG-0519.png') }}",
+            aboutText: ''
+        };
+    </script>
+    <script src='https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js'></script>
+
 </main>
+
+<script>
+    $(".desktop-closed-message-avatar").hide()
+</script>
+
+<footer>
+    <div class="d-flex justify-content-center align-items-center" id="container-footer">
+        <p>© 2022 - PA EXPRESS </p>
+    </div>
+</footer>
 
 </body>
 </html>

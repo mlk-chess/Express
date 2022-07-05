@@ -1,0 +1,13 @@
+{% extends 'base_back.html.twig' %}
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{% block title %}Edit Status - message{% endblock %}
+
+{% block body %}
+    <h1>Change status</h1>
+
+    {{ include('Back/chatbot/edit_status_chatbot.html.twig', {'button_label': 'Mettre à jour'}) }}
+
+    <a href="{{ path('app_chatbot_admin') }}">Retourner à l'accueil</a>
+
+{% endblock %}

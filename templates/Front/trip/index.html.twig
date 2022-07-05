@@ -2,6 +2,14 @@
 
 {% block title %}Mes voyages{% endblock %}
 
+{% block stylesheets %}
+    <style>
+        footer {
+            bottom: 0;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <div class="container">
         <div class="row">
@@ -30,9 +38,9 @@
                         <td class="center">{{ booking.travelers | length }}</td>
                         <td class="center">{{ booking.price }} €</td>
                         <td>{% if booking.status == -1%}
-                                Annulé
+                                <i class="fa-solid fa-xmark-large" style="color: red"></i> Annulé
                             {% else %}
-                                {{ include('Front/trip/_delete_form.html.twig') }}
+                                <i class="fa-solid fa-check" style="color: green"></i> A l'heure
                             {% endif %}</td>
                         <td>
                             <a href="{{ path('booking_show', {'id': booking.id}) }}"><button type="button" class="btn btn-primary">Information</button></a>
