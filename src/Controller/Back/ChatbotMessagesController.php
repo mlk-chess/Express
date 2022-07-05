@@ -68,27 +68,10 @@ class ChatbotMessagesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_chatbot_messages_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, ChatbotMessages $chatbotMessage, ChatbotMessagesRepository $chatbotMessagesRepository): Response
-    {
-        $form = $this->createForm(ChatbotMessagesType::class, $chatbotMessage);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $chatbotMessagesRepository->add($chatbotMessage);
-            return $this->redirectToRoute('app_chatbot_messages_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('Back/chatbot_messages/edit.html.twig', [
-            'chatbot_message' => $chatbotMessage,
-            'form' => $form,
-        ]);
-    }
-
     #[Route('/{id}', name: 'app_chatbot_messages_delete', methods: ['POST'])]
     public function delete(Request $request, ChatbotMessages $chatbotMessage, ChatbotMessagesRepository $chatbotMessagesRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$chatbotMessage->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $chatbotMessage->getId(), $request->request->get('_token'))) {
             $chatbotMessagesRepository->remove($chatbotMessage);
         }
 

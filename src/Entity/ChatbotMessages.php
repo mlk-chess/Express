@@ -23,7 +23,7 @@ class ChatbotMessages
     private $message;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Chatbot::class, inversedBy="chatbotMessages")
+     * @ORM\ManyToOne(targetEntity=Chatbot::class, inversedBy="chatbotMessages",  fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private $chatbot_id;

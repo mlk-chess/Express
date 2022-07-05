@@ -19,10 +19,9 @@
             <tr>
                 <td>{{ chatbot_message.id }}</td>
                 <td>{{ chatbot_message.message }}</td>
-                <td>{{ chatbot_message.message }}</td>
+                <td>{{ chatbot_message.chatbotId.clientEmail }}</td>
                 <td>
                     <a class="btn btn-info" href="{{ path('app_chatbot_messages_show', {'id': chatbot_message.id}) }}">Info</a>
-                    <a class="btn btn-warning" href="{{ path('app_chatbot_messages_edit', {'id': chatbot_message.id}) }}">Mettre à jour</a>
                 </td>
             </tr>
         {% else %}
