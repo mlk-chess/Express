@@ -1,0 +1,44 @@
+{% extends 'base_back.html.twig' %}
+
+{% block title %}Chatbot - Admin{% endblock %}
+
+{% block body %}
+
+<h1>Chatbot</h1>
+
+<table class="table">
+    <tbody>
+    <tr>
+        <th>Id</th>
+        <td>{{ chatbot.id }}</td>
+    </tr>
+    <tr>
+        <th>Nom du client</th>
+        <td>{{ chatbot.clientName }}</td>
+    </tr>
+    <tr>
+        <th>Problème</th>
+        <td>{{ chatbot.clientProblem }}</td>
+    </tr>
+    <tr>
+        <th>Description du problème</th>
+        <td>{{ chatbot.description }}</td>
+    </tr>
+    <tr>
+        <th>Email du client</th>
+        <td>{{ chatbot.clientEmail }}</td>
+    </tr>
+    <tr>
+        <th>Status</th>
+        <td>{{ chatbot.status }}</td>
+    </tr>
+    </tbody>
+</table>
+
+<a class="btn" href="{{ path('app_chatbot_index') }}">Retourner à la liste</a>
+
+<a class="btn btn-warning" href="{{ path('app_chatbot_edit', {'id': chatbot.id}) }}">Modifier</a>
+
+{{ include('Back/chatbot/_delete_form.html.twig') }}
+
+{% endblock %}

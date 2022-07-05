@@ -1,51 +1,43 @@
 {% extends 'base_back.html.twig' %}
 
-{% block title %}Chatbot{% endblock %}
+{% block title %}Chatbot - Admin{% endblock %}
 
 {% block body %}
     <h1>Messages</h1>
 
-    <table id="table_chatbot" class="display">
+    <table class="table">
         <thead>
-        <tr>
-            <th>Id</th>
-            <th>Nom</th>
-            <th>Email</th>
-            <th>Type de problème</th>
-            <th>Description</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
+            <tr>
+                <th>Id</th>
+                <th>Client_name</th>
+                <th>Client_problem</th>
+                <th>Description</th>
+                <th>Client_email</th>
+                <th>Status</th>
+                <th>actions</th>
+            </tr>
         </thead>
         <tbody>
-        {% for message in messages %}
+        {% for chatbot in chatbots %}
             <tr>
-                <td>{{ message.id }}</td>
-                <td>{{ message.ClientName }}</td>
-                <td>{{ message.ClientEmail }}</td>
-                <td>{{ message.ClientProblem }}</td>
-                <td>{{ message.description }}</td>
-                <td>{{ message.status }}</td>
+                <td>{{ chatbot.id }}</td>
+                <td>{{ chatbot.clientName }}</td>
+                <td>{{ chatbot.clientProblem }}</td>
+                <td>{{ chatbot.description }}</td>
+                <td>{{ chatbot.clientEmail }}</td>
+                <td>{{ chatbot.status }}</td>
                 <td>
-                    <a href="{{ path('admin_chatbot_edit_status', {'id': message.id}) }}">Change Status</a>
-
+                    <a type="button" class="btn btn-info" href="{{ path('app_chatbot_show', {'id': chatbot.id}) }}">Info</a>
+                    <a type="button" class="btn btn-warning" href="{{ path('app_chatbot_edit', {'id': chatbot.id}) }}">Changer le status</a>
+                    <a type="button" class="btn btn-dark" href="{{ path('app_chatbot_messages_new', {'id': chatbot.id}) }}">Envoyer un mail</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">Aucun message enregistré</td>
+                <td colspan="7">Aucune données disponible</td>
             </tr>
         {% endfor %}
-
         </tbody>
-
     </table>
-
-    <script>
-
-        $(document).ready( function () {
-            $('#table_chatbot').DataTable();
-        } );
-    </script>
 
 {% endblock %}

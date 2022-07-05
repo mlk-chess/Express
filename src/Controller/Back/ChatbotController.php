@@ -3,57 +3,60 @@
 namespace App\Controller\Back;
 
 use App\Entity\Chatbot;
-use App\Entity\User;
+use App\Form\Chatbot1Type;
 use App\Form\ChatbotStatusType;
-use App\Service\ApiMailerService;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\ChatbotMessagesRepository;
+use App\Repository\ChatbotRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/admin')]
+#[Route('/admin/chatbot')]
 class ChatbotController extends AbstractController
 {
-
-    #[Route('/chatbot', name: 'app_chatbot_admin')]
-    public function index(ManagerRegistry $doctrine): Response
+    #[Route('/', name: 'app_chatbot_index', methods: ['GET'])]
+    public function index(ChatbotRepository $chatbotRepository): Response
     {
-        $em = $doctrine->getManager();
-        $messages = $em->getRepository(Chatbot::class)->findAll();
         return $this->render('Back/chatbot/index.html.twig', [
-            'messages' => $messages,
+            'chatbots' => $chatbotRepository->findAll(),
         ]);
     }
 
-    #[Route('/{id}/edit-status-chatbot', name: 'admin_chatbot_edit_status', methods: ['GET', 'POST'])]
-    public function editStatus(Request $request, Chatbot $chatbot, MailerInterface $mailer): Response
+
+
+    #[Route('/{id}', name: 'app_chatbot_show', methods: ['GET'])]
+    public function show(Chatbot $chatbot): Response
+    {
+        return $this->render('Back/chatbot/show.html.twig', [
+            'chatbot' => $chatbot,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_chatbot_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Chatbot $chatbot, ChatbotRepository $chatbotRepository): Response
     {
         $form = $this->createForm(ChatbotStatusType::class, $chatbot);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->getDoctrine()->getManager()->getRepository(User::class)->findOneBy(["email" => $chatbot->getClientEmail()]);
-            $this->getDoctrine()->getManager()->flush();
-
-            $email = ApiMailerService::send_email(
-                $user->getEmail(),
-                "MorphyBot - Mise à jour de votre demande",
-                "admin-change-status-chatbot.html.twig",
-                [
-                    'expiration_date' => new \DateTime('+7 days'),
-                    "username" => $chatbot->getClientName(),
-                ]
-            );
-
-            $mailer->send($email);
-
-            return $this->redirectToRoute('app_chatbot_admin', [], Response::HTTP_SEE_OTHER);
+            $chatbotRepository->add($chatbot);
+            return $this->redirectToRoute('app_chatbot_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('Back/chatbot/edit-chatbot.html.twig', [
+        return $this->renderForm('Back/chatbot/edit.html.twig', [
+            'chatbot' => $chatbot,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/{id}', name: 'app_chatbot_delete', methods: ['POST'])]
+    public function delete(Request $request, Chatbot $chatbot, ChatbotRepository $chatbotRepository): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$chatbot->getId(), $request->request->get('_token'))) {
+            $chatbotRepository->remove($chatbot);
+        }
+
+        return $this->redirectToRoute('app_chatbot_index', [], Response::HTTP_SEE_OTHER);
     }
 }
