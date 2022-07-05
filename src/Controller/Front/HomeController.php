@@ -317,7 +317,7 @@ class HomeController extends AbstractController
                     'unit_amount' => $price*100,
                     'product_data' => [
                         'name' => 'Paiement de votre billet de train',
-                        'images' => ["https://i.imgur.com/EHyR2nP.png"],
+                        'images' => [],
                     ],
                 ],
                 'quantity' => 1,
