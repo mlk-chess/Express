@@ -12,6 +12,11 @@
         #container-search {
             height: 535px;
         }
+
+        .list-stations {
+            position: absolute;
+            z-index: 5;
+        }
     </style>
 {% endblock %}
 
@@ -112,7 +117,7 @@
                             <label for="departureStationSearch">Gare de départ : </label>
                             <input class="form-control mt-3" type="text" id="departureStationSearch"
                                    placeholder="Paris-Montparnasse">
-                            <ul class="list-group" id="listStationsDeparture"></ul>
+                            <ul class="list-group list-stations" id="listStationsDeparture"></ul>
                         </div>
 
                         <div class="d-flex flex-row align-items-center">
@@ -123,7 +128,7 @@
                         <div class="mb-3">
                             <label for="arrivalStationSearch">Gare d'arrivée : </label>
                             <input class="form-control mt-3" type="text" id="arrivalStationSearch" placeholder="Poitiers">
-                            <ul class="list-group" id="listStationsArrival"></ul>
+                            <ul class="list-group list-stations" id="listStationsArrival"></ul>
                         </div>
 
                         <div class="d-flex flex-row align-items-center">
