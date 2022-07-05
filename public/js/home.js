@@ -71,14 +71,6 @@ function loadMarkers(){
         markersCluster.addLayer(marker);
     }
     map.addLayer(markersCluster);
-
-    if ($("#resultSearch").val() !== undefined) {
-        $("#headingOne").children().attr({
-            'aria-expanded': false,
-            'class': 'accordion-button collapsed'
-        });
-        $("#collapseOne").attr('class', 'accordion-collapse collapse');
-    }
 }
 
 

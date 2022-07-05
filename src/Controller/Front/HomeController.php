@@ -44,6 +44,22 @@ class HomeController extends AbstractController
             $banner = 'jpg';
         }
 
+        $entityManager = $this->getDoctrine()->getManager();
+        $repository = $entityManager->getRepository(LineTrain::class);
+
+        $query = $repository->createQueryBuilder('lt')
+            ->select('lt, line')
+            ->leftJoin('lt.line', 'line')
+            ->where('lt.date_departure > :date_departure')
+            ->setMaxResults(3)
+            ->setParameters([
+                'date_departure' => date("Y-m-d")
+            ]);
+
+        $q = $query->getQuery();
+
+        $nextTravels = $q->execute();
+
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('departureStationInput')->getData() == null || $form->get('arrivalStationInput')->getData() == null) {
                 $this->addFlash('red', "La gare de départ et la gare d'arrivée doivent être remplis");
@@ -61,7 +77,6 @@ class HomeController extends AbstractController
                 return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
             }
 
-            $entityManager = $this->getDoctrine()->getManager();
             $repository = $entityManager->getRepository(LineTrain::class);
 
 
@@ -95,7 +110,8 @@ class HomeController extends AbstractController
                 'form' => $form,
                 'travels' => $travels,
                 'noTravels' => $noTravels,
-                'banner' => $banner
+                'banner' => $banner,
+                'nextTravels' => $nextTravels
             ]);
 
         }
@@ -105,7 +121,8 @@ class HomeController extends AbstractController
             'form' => $form,
             'travels' => false,
             'noTravels' => false,
-            'banner' => $banner
+            'banner' => $banner,
+            'nextTravels' => $nextTravels
         ]);
     }
 
@@ -161,8 +178,8 @@ class HomeController extends AbstractController
             $json = file_get_contents("../templates/Front/home/stations.json");
             return new JsonResponse($json);
         }
-        return new JsonResponse(false);
-    } 
+        throw $this->createNotFoundException('Not exist');
+    }
 
     #[Route('/add-option', name: 'addOption', methods: 'POST')]
     public function addOption(Request $request, LineTrainRepository $lineTrainRepository): JsonResponse
@@ -198,7 +215,7 @@ class HomeController extends AbstractController
 
             return new JsonResponse(true);
         }
-        return new JsonResponse(false);
+        throw $this->createNotFoundException('Not exist');
     }
     #[Route('/success', name: 'success', methods: ['GET','POST'])]
     public function success(Request $request, LineTrainRepository $lineTrainRepository): Response
@@ -252,6 +269,8 @@ class HomeController extends AbstractController
             // authenticated REMEMBERED, FULLY will imply REMEMBERED (NON anonymous)
             return $this->redirect("/login");
         }
+
+
         // This is your test secret API key.
         \Stripe\Stripe::setApiKey('sk_test_51Kk6uiCJ5s87DbRlsu9UTG7t0PbKcXlXM7bxLdibROOksHgDXIg1gXtp0SFv7o0MZxTcCTOLmEzjK1AVvdCR9LXg00vHipH4ZP');
 
@@ -298,7 +317,7 @@ class HomeController extends AbstractController
                     'unit_amount' => $price*100,
                     'product_data' => [
                         'name' => 'Paiement de votre billet de train',
-                        'images' => ["https://i.imgur.com/EHyR2nP.png"],
+                        'images' => [],
                     ],
                 ],
                 'quantity' => 1,

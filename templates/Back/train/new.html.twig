@@ -11,6 +11,15 @@
         </div> 
     </div>
 
+    {% if errors %}
+    <div class="alert alert-danger" role="alert">
+        {% for error in errors %}
+            <li>{{ error }}</li>
+        {%  endfor %}
+    </div>
+    {% endif %}
+    
+
     {{ include('Back/train/_form.html.twig') }}
 
 

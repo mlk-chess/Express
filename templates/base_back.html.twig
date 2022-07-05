@@ -110,9 +110,6 @@
                 <a href="/admin/train" class="list-group-item list-group-item-action py-2 ripple">
                     <span>Train</span>
                 </a>
-                <a href="/admin/wagon" class="list-group-item list-group-item-action py-2 ripple">
-                    <span>Wagon</span>
-                </a>
 
                 <a href="/admin/line-train" class="list-group-item list-group-item-action py-2 ripple">
                     <span>Voyage</span>
@@ -130,6 +127,10 @@
 
                 <a href="/admin/chatbot" class="list-group-item list-group-item-action py-2 ripple">
                     <span>Messages</span>
+                </a>
+
+                <a href="/admin/settings" class="list-group-item list-group-item-action py-2 ripple">
+                    <span>Paramètres</span>
                 </a>
 
             </div>
@@ -191,7 +192,7 @@
                             aria-labelledby="navbarDropdownMenuLink"
                     >
                         <li><a class="dropdown-item" href="#">Profil</a></li>
-                        <li><a class="dropdown-item" href="#">Déconnexion</a></li>
+                        <li><a class="dropdown-item" href="/logout">Déconnexion</a></li>
                     </ul>
                 </li>
             </ul>
@@ -211,15 +212,7 @@
 {% block javascripts %}
     {# {{ encore_entry_script_tags('app') }} #}
 {% endblock %}
-<script>
-    {% for label, messages in app.flashes() %}
-    {% for message in messages %}
 
-    M.toast({html: '{{ message }}', classes: '{{ label }}'})
-
-    {% endfor %}
-    {% endfor %}
-</script>
 <script>
     $(document).ready(function () {
         $('select').formSelect();

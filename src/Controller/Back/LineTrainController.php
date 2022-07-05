@@ -4,12 +4,14 @@ namespace App\Controller\Back;
 
 use App\Entity\BookingSeat;
 use App\Entity\LineTrain;
+use App\Entity\Train;
 use App\Form\LineTrainType;
 use App\Repository\BookingRepository;
 use App\Repository\BookingSeatRepository;
 use App\Repository\LineRepository;
 use App\Repository\LineTrainRepository;
 use App\Repository\SeatRepository;
+use App\Repository\TrainRepository;
 use App\Service\Helper;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+
 #[Route('/line-train')]
 class LineTrainController extends AbstractController
 {
@@ -25,16 +28,32 @@ class LineTrainController extends AbstractController
     public function index(LineTrainRepository $lineTrainRepository): Response
     {
 
-        return $this->render('Back/line_train/index.html.twig', [
-            'line_trains' => $lineTrainRepository->findAll(),
-        ]);
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+        if (in_array('ROLE_COMPANY', $userConnected->getRoles())){
+            return $this->render('Back/line_train/index.html.twig', [
+                'line_trains' => $lineTrainRepository->findLineTrainCompany($userConnected->getId()),
+                ]);
+        }else{
+            return $this->render('Back/line_train/index.html.twig', [
+                'line_trains' => $lineTrainRepository->findAll(),
+            ]);
+        }
+
+        
     }
 
     #[Route('/planning', name: 'line_train_planning', methods: ['GET'])]
     public function planning(LineTrainRepository $lineTrainRepository): Response
     {
 
-        $getTravels = $lineTrainRepository->findLineTrainByDate();
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
+        if (in_array('ROLE_COMPANY', $userConnected->getRoles())){
+            $getTravels = $lineTrainRepository->findLineTrainByDate($userConnected->getId());
+        }else{
+            $getTravels = $lineTrainRepository->findLineTrainByDate();
+        }
+
         $travels = [];
 
         foreach ($getTravels as $travel) {
@@ -58,12 +77,15 @@ class LineTrainController extends AbstractController
 
 
     #[Route('/new', name: 'line_train_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, LineTrainRepository $lineTrainRepository): Response
+    public function new(Request $request, LineTrainRepository $lineTrainRepository, TrainRepository $trainRepository, LineRepository $lineRepository): Response
     {
 
         $errors = [];
         $lineTrain = new LineTrain();
-        $form = $this->createForm(LineTrainType::class, $lineTrain);
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+        $train = $trainRepository->findBy(["status" => 1,"owner"=> $userConnected->getId()]);
+        $line = $lineRepository->findBy(["status" => 1]);
+        $form = $this->createForm(LineTrainType::class, $lineTrain, ["train" => $train, "line" => $line]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -83,8 +105,8 @@ class LineTrainController extends AbstractController
                 $errors[] = "Ce train n'a pas de wagon !";
             } else {
                 foreach ($getWagonByTrain as $wagon) {
-
-                    if ($wagon['type'] == "Voyageur") {
+                  
+                    if ($wagon['type'] == "Voyageur" && $wagon['status'] == 1) {
                         if ($wagon['class'] == 1) {
                             $placeNbclass1 += $wagon['placeNb'];
                         } else {
@@ -150,32 +172,56 @@ class LineTrainController extends AbstractController
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($lineTrain);
                 $entityManager->flush();
-                $this->addFlash('green', "Voyage crée !");
+              
                 return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
             } else {
-                $this->addFlash('red', $errors[0]);
-                return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
+                
+                return $this->renderForm('Back/line_train/new.html.twig', [
+                    'line_train' => $lineTrain,
+                    'form' => $form,
+                    'errors' => $errors
+                ]);
             }
         }
 
         return $this->renderForm('Back/line_train/new.html.twig', [
             'line_train' => $lineTrain,
             'form' => $form,
+            'errors' => $errors
         ]);
     }
 
     #[Route('/{id}', name: 'line_train_show', methods: ['GET'])]
-    public function show(LineTrain $lineTrain): Response
-    {
+    public function show(LineTrain $lineTrain, LineTrainRepository $lineTrainRepository, int $id): Response
+    {   
+        $travel = $lineTrainRepository->find($id);
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
+        if ( $userConnected->getId() != $travel->getTrain()->getOwner()->getId() ){
+            return $this->redirectToRoute('admin_line_train_index', [], Response::HTTP_SEE_OTHER);
+        }
+       
+
         return $this->render('Back/line_train/show.html.twig', [
             'line_train' => $lineTrain,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'line_train_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, LineTrain $lineTrain, LineTrainRepository $lineTrainRepository, BookingRepository $bookingRepository): Response
+    public function edit(Request $request, int $id, LineTrain $lineTrain, LineTrainRepository $lineTrainRepository, BookingRepository $bookingRepository, TrainRepository $trainRepository, LineRepository $lineRepository): Response
     {
-        $form = $this->createForm(LineTrainType::class, $lineTrain);
+
+        $travel = $lineTrainRepository->find($id);
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
+        if ( $userConnected->getId() != $travel->getTrain()->getOwner()->getId() ){
+            return $this->redirectToRoute('admin_line_train_index', [], Response::HTTP_SEE_OTHER);
+        }
+       
+       
+        $train = $trainRepository->findBy(["status" => 1,"owner"=> $userConnected->getId()]);
+        $line = $lineRepository->findBy(["status" => 1]);
+        $form = $this->createForm(LineTrainType::class, $lineTrain, ["train" => $train, "line" => $line]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -243,6 +289,8 @@ class LineTrainController extends AbstractController
                 $this->addFlash('green', "Voyage modifié !");
                 return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
             } else {
+
+            
                 $this->addFlash('red', $errors[0]);
                 return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
             }
@@ -278,18 +326,33 @@ class LineTrainController extends AbstractController
     public function plan(Request $request, int $id, BookingSeatRepository $bookingSeatRepository, LineTrainRepository $lineTrainRepository): Response
     {
 
+        $travel = $lineTrainRepository->find($id);
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
+        if ( $userConnected->getId() != $travel->getTrain()->getOwner()->getId() ){
+            return $this->redirectToRoute('admin_line_train_index', [], Response::HTTP_SEE_OTHER);
+        }
+       
+
         $seatNotAvailable = count($bookingSeatRepository->findSeatTravel($id));
 
-        $travel = $lineTrainRepository->find($id);
+    
         $getTrain = $travel->getTrain();
         $getWagons = $getTrain->getWagons()->getValues();
         $seatAvailable = 0;
+        $wagons = [];
         foreach ($getWagons as $wagon) {
-            if ($wagon->getType() == "Voyageur") $seatAvailable += $wagon->getPlaceNb();
+
+            if ($wagon->getStatus() == 1 ){
+                $wagons[] = $wagon;
+            }
+            if ($wagon->getType() == "Voyageur" && $wagon->getStatus() == 1){
+                $seatAvailable += $wagon->getPlaceNb();
+            } 
         }
 
         return $this->render('Back/line_train/plan.html.twig', [
-            "getWagons" => $getWagons,
+            "getWagons" => $wagons,
             "id" => $id,
             "train" => $getTrain,
             "seatNotAvailable" => $seatNotAvailable,
