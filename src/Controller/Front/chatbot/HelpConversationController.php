@@ -3,13 +3,12 @@
 namespace App\Controller\Front\chatbot;
 
 use App\Entity\User;
-use App\Service\HelperChatbot;
+use App\Service\Helper;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 class HelpConversationController extends Conversation
@@ -22,6 +21,11 @@ class HelpConversationController extends Conversation
 
         if ($message->getText() == 'stop') return true;
         return false;
+    }
+
+    public function run()
+    {
+        $this->askFirstname();
     }
 
     public function askFirstname()
@@ -40,7 +44,7 @@ class HelpConversationController extends Conversation
     public function askEmail()
     {
         $this->bot->typesAndWaits(1.2);
-        $this->ask('Quelle est votre adresse mail?', function (Answer $answer) {
+        $this->ask('Quelle est votre adresse mail? (Assurez-vous qu\'elle soit bien enregistrée sur notre site)', function (Answer $answer) {
             $this->email = $answer->getText();
 
             $_SESSION['client_email'] = $this->email;
@@ -55,7 +59,6 @@ class HelpConversationController extends Conversation
         $this->bot->typesAndWaits(1.5);
         $question = Question::create('Votre problème concerne...')
             ->fallback("Une erreur s'est produite, réessayez ultérieurement...")
-            ->callbackId('create_database')
             ->addButtons([
                 Button::create('une réservation')->value('0'),
                 Button::create('un paiement...')->value('1'),
@@ -68,31 +71,26 @@ class HelpConversationController extends Conversation
                 $selectedValue = $answer->getValue();
                 $selectedText = $answer->getText();
 
-                if ($answer->getValue() == '3') $this->askOther($answer->getValue());
-                else {
-                    $this->bot->typesAndWaits(1.1);
-                    $this->say($this->firstname . ', tapez "save" et un technicien ne tardera pas à vous recontacter à l\'adresse mail suivante : ' . $this->email);
-
-                    $_SESSION["client_problem"] = $selectedValue;
-                }
+                $this->askDescription($answer->getValue());
+                $_SESSION["client_problem"] = $selectedValue;
             }
         });
         return true;
     }
 
-    public function askOther($problem)
+    public function askDescription($problem)
     {
         $this->bot->typesAndWaits(1.1);
-        $this->ask('Décrivez nous en quelques mots le problème que vous avez rencontré', function (Answer $answer) use($problem) {
+        $this->ask('Décrivez nous en quelques mots le problème que vous avez rencontré', function (Answer $answer) use ($problem) {
             $this->bot->typesAndWaits(1.1);
-            $this->say('Très bien, tapez "save" et un technicien ne tardera pas à vous recontacter à l\'adresse mail suivante : ' . $this->email);
-            $_SESSION["client_description"] = $answer->getText();
+            if (strlen($answer->getText()) < 250) {
+                $_SESSION["client_description"] = $answer->getText();
+                $this->say('Très bien, tapez "save" et un technicien ne tardera pas à vous recontacter à l\'adresse mail suivante : ' . $this->email);
+            } else {
+                $this->say("Description trop longue, vous ne devez pas dépasser 250 caractères.");
+                $this->askDescription($problem);
+            }
             $_SESSION["client_problem"] = $problem;
         });
-    }
-
-    public function run()
-    {
-        $this->askFirstname();
     }
 }

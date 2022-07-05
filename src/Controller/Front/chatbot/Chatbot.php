@@ -7,6 +7,7 @@ use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Cache\SymfonyCache;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,7 +21,7 @@ class Chatbot extends AbstractController{
     /**
      * @Route("/message", name="message")
      */
-    function messageAction(Request $request, ManagerRegistry $doctrine)
+    function messageAction(ManagerRegistry $doctrine)
     {
         DriverManager::loadDriver(\BotMan\Drivers\Web\WebDriver::class);
 
@@ -35,7 +36,7 @@ class Chatbot extends AbstractController{
             $bot->startConversation($conv);
         });
 
-        $botman->hears('save', function(BotMan $bot) use ($doctrine, $request) {
+        $botman->hears('save', function(BotMan $bot) use ($doctrine) {
             if(
                 isset($_SESSION["client_email"], $_SESSION["client_problem"])
             ) {
@@ -60,7 +61,7 @@ class Chatbot extends AbstractController{
                 }
             }else{
                 $bot->typesAndWaits(0.9);
-                $bot->reply('Un problème est survenu, tapez "help"...');
+                $bot->reply("Vous n'avez pas renseigné toutes les informations, tapez \"help\" pour continuer.");
             }
 
 
