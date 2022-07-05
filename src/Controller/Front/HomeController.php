@@ -51,11 +51,9 @@ class HomeController extends AbstractController
             ->select('lt, line')
             ->leftJoin('lt.line', 'line')
             ->where('lt.date_departure > :date_departure')
-            ->andWhere('lt.time_departure >= :time_departure')
             ->setMaxResults(3)
             ->setParameters([
-                'date_departure' => date("Y-m-d"),
-                'time_departure' => date('H:i:s')
+                'date_departure' => date("Y-m-d")
             ]);
 
         $q = $query->getQuery();
