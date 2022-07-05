@@ -13,28 +13,24 @@ use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Security\Core\Security;
 
 class LineTrainType extends AbstractType
 {
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
+    
 
         $builder
             ->add('train', EntityType::class,[
                     'class' => Train::class,
-                    'choice_label' => function ($train) {
-                        if ($train->getStatus() == 1) {
-                            return $train->getName();
-                        }
-                    },
+                    'choices' => $options['train']
             ])
             ->add('line', EntityType::class, [
                 'class' => Line::class,
-                'choice_label' => function ($line) {
-                    if ($line->getStatus() === 1) {
-                        return $line->getNameStationDeparture() . " - " .  $line->getNameStationArrival();
-                    }
+                'choice_label' => function ($options) {
+                    return $options->getNameStationDeparture() . " - " .  $options->getNameStationArrival();
                 },
                 'label' => 'Ligne',
             ])
@@ -62,8 +58,11 @@ class LineTrainType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
+        
         $resolver->setDefaults([
             'data_class' => LineTrain::class,
+            'train' => [],
+            'line' => []
         ]);
     }
 }
