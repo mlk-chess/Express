@@ -17,11 +17,10 @@
         </thead>
         <tbody>
         {% for user in users %}
+            {% if user.roles[0] != 'ROLE_ADMIN' %}
             <tr>
                 <td>{{ user.email }}</td>
-                {% if user.roles[0] == 'ROLE_ADMIN' %}
-                    <td>Admin</td>
-                {% elseif user.roles[0] == 'ROLE_CONTROLLER' %}
+                {% if user.roles[0] == 'ROLE_CONTROLLER' %}
                     <td>Contrôleur</td>
                 {% elseif user.roles[0] == 'ROLE_CUSTOMER' %}
                     <td>Utilisateur</td>
@@ -40,11 +39,13 @@
 
                 </td>
             </tr>
+            {% endif %}
         {% else %}
             <tr>
                 <td colspan="5">Aucun utilisateur trouvé</td>
             </tr>
         {% endfor %}
+
         </tbody>
     </table>
 
