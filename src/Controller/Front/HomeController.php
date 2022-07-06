@@ -367,7 +367,6 @@ class HomeController extends AbstractController
         ]);
         unset($dataSession["payment_intent"]);
         $dataSession["payment_intent"] = $checkout_session["payment_intent"];
-        dd($dataSession);
         $session->set('shopping', $dataSession);
         header("HTTP/1.1 303 See Other");
 
