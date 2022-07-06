@@ -7,9 +7,17 @@
   <div class='d-flex justify-content-between'>    
         <h1 class="f-12">Modification</h1>
         <div>
-            <a class="btn btn-primary" href="{{ path('admin_train_index') }}">Retour</a>
+            <a class="btn btn-primary-express" href="{{ path('admin_train_index') }}">Retour</a>
         </div> 
     </div>
+
+    {% if errors %}
+    <div class="alert alert-danger" role="alert">
+        {% for error in errors %}
+            <li>{{ error }}</li>
+        {%  endfor %}
+    </div>
+    {% endif %}
 
     {{ include('Back/wagon/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
 

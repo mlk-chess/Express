@@ -13,32 +13,32 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 #[Route('/wagon')]
 class WagonController extends AbstractController
 {
-
+    #[IsGranted('ROLE_COMPANY')]
     #[Route('/new/{id}', name: 'wagon_new', methods: ['GET','POST'])]
     public function new(Request $request, int $id,  Train $train, TrainRepository $trainRepository, SeatRepository $seatRepository): Response
     {
 
-       
         $wagon = new Wagon();
         $form = $this->createForm(WagonType::class, $wagon);
         $form->handleRequest($request);
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
-        $error = [];
+        $errors = [];
 
         if($trainRepository->findBy(["id" => $train->getId(),"owner" => $userConnected->getId()])){
 
            if ($form->isSubmitted() && $form->isValid()) {
                 
                 if($wagon->getPlaceNb() > 24){
-                    $error[] = "Nombre de place est limité à 24 !";
+                    $errors[] = "Nombre de place est limité à 24 !";
                 }
 
                 if($wagon->getType() == 'Bar' && $wagon->getPlaceNb() > 0){
-                    $error[] = "Un bar ne peut pas contenir de place !";
+                    $errors[] = "Un bar ne peut pas contenir de place !";
                 }
 
                 $wagon->setOwner($userConnected);
@@ -46,17 +46,17 @@ class WagonController extends AbstractController
                 $travels = $wagon->getTrain()->getLineTrains();
                 foreach($travels as $travel){
                     if($travel->getDateArrival()->format('Y-m-d') > date('Y-m-d')){
-                        $error[] = "Le train associé a un voyage de prévu, vous ne pouvez pas ajouter de wagon.";
+                        $errors[] = "Le train associé a un voyage de prévu, vous ne pouvez pas ajouter de wagon.";
                         break;
                     }   
                 } 
 
-                if( !empty($error) ){
+                if( !empty($errors) ){
                   
                     return $this->renderForm('Back/wagon/new.html.twig', [
                         'wagon' => $wagon,
                         'form' => $form,
-                        'errors' => $error
+                        'errors' => $errors
                     ]);
 
                 }else{
@@ -83,7 +83,7 @@ class WagonController extends AbstractController
             return $this->renderForm('Back/wagon/new.html.twig', [
                 'wagon' => $wagon,
                 'form' => $form,
-                'errors' => $error
+                'errors' => $errors
             ]);
         }else{
             return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
@@ -92,14 +92,21 @@ class WagonController extends AbstractController
     }
 
     #[Route('/{id}', name: 'wagon_show', methods: ['GET'])]
-    public function show(Wagon $wagon): Response
+    public function show(Wagon $wagon, WagonRepository $wagonRepository, int $id): Response
     {
+
+        $wagon = $wagonRepository->find($id);
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
+        if ($wagon->getOwner()->getId() != $userConnected->getId() && in_array('ROLE_COMPANY', $userConnected->getRoles()) ){
+            return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+        }
         return $this->render('Back/wagon/show.html.twig', [
             'wagon' => $wagon,
         ]);
     }
 
-
+    #[IsGranted('ROLE_COMPANY')]
     #[Route('/{id}/edit', name: 'wagon_edit', methods: ['GET','POST'])]
     public function edit(Request $request, Wagon $wagon, WagonRepository $wagonRepository, SeatRepository $seatRepository): Response
     {
@@ -114,11 +121,11 @@ class WagonController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
                 
                 if($wagon->getPlaceNb() > 24){
-                    $error[] = "Nombre de place est limité à 24 !";
+                    $errors[] = "Nombre de place est limité à 24 !";
                 }
 
                 if($wagon->getType() == 'Bar' && $wagon->getPlaceNb() > 0){
-                    $error[] = "Un bar ne peut pas contenir de place !";
+                    $errors[] = "Un bar ne peut pas contenir de place !";
                 }
 
                 $travels = $wagon->getTrain()->getLineTrains();
@@ -134,6 +141,7 @@ class WagonController extends AbstractController
                     return $this->renderForm('Back/wagon/edit.html.twig', [
                         'wagon' => $wagon,
                         'form' => $form,
+                        'errors' => $errors
                     ]);
 
                 }else{
@@ -171,13 +179,14 @@ class WagonController extends AbstractController
             return $this->renderForm('Back/wagon/edit.html.twig', [
                 'wagon' => $wagon,
                 'form' => $form,
+                'errors' => $errors
             ]);
         }else{
             return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
         }
        
     }
-
+    #[IsGranted('ROLE_COMPANY')]
     #[Route('/{id}/disable', name: 'wagon_disable',)]
     public function disable(Request $request, Wagon $wagon): Response
     {
