@@ -6,13 +6,13 @@
 <div class="d-flex justify-content-between mb-5">
         <h1>Les voyages</h1>
         <div>
-            <a class="btn btn-primary" href="{{ path('admin_line_train_new') }}">Créer un voyage</a>
+            <a class="btn btn-primary-express" href="{{ path('admin_line_train_new') }}">Créer un voyage</a>
         </div>
 </div>
 
 
 
-<table id="table_lineTrain" class="display">
+<table id="table_lineTrain" class="row-border hover">
     <thead>
         <tr>
             <th>Train</th>
@@ -36,9 +36,9 @@
             <td>{{ line_train.getPriceClass2() }} €</td> 
 
             <td>
-                <a class="btn btn-primary" href="{{ path('admin_line_train_show', {'id': line_train.id}) }}">Voir</a>
-                <a class="btn btn-primary" href="{{ path('admin_line_train_edit', {'id': line_train.id}) }}">Modifier</a>
-                <a class="btn btn-primary" href="{{ path('admin_line_train_plan', {'id': line_train.id}) }}"><i class=" fa-solid fa-train"></i></a>
+                <a class="btn btn-primary-express" href="{{ path('admin_line_train_show', {'id': line_train.id}) }}">Voir</a>
+                <a class="btn btn-primary-express" href="{{ path('admin_line_train_edit', {'id': line_train.id}) }}">Modifier</a>
+                <a class="btn btn-primary-express" href="{{ path('admin_line_train_plan', {'id': line_train.id}) }}"><i class=" fa-solid fa-train"></i></a>
             </td>
         </tr>
         {% else %}

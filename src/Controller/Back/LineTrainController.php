@@ -14,6 +14,7 @@ use App\Repository\SeatRepository;
 use App\Repository\TrainRepository;
 use App\Service\Helper;
 use DateTime;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,12 +62,8 @@ class LineTrainController extends AbstractController
                 'title' => $travel["nb"] . " départ(s) prévu(s)",
                 'start' => $travel["date_departure"]->format('Y-m-d'),
                 'display' => "background",
-
-
-
             ];
         }
-
 
         $data = json_encode($travels);
 
@@ -75,12 +72,13 @@ class LineTrainController extends AbstractController
         ]);
     }
 
-
+    #[IsGranted('ROLE_COMPANY')]
     #[Route('/new', name: 'line_train_new', methods: ['GET', 'POST'])]
     public function new(Request $request, LineTrainRepository $lineTrainRepository, TrainRepository $trainRepository, LineRepository $lineRepository): Response
     {
 
         $errors = [];
+        $success = [];
         $lineTrain = new LineTrain();
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
         $train = $trainRepository->findBy(["status" => 1,"owner"=> $userConnected->getId()]);
@@ -172,14 +170,17 @@ class LineTrainController extends AbstractController
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($lineTrain);
                 $entityManager->flush();
+
+                $success[] = "Le voyage a bien été créé !";
               
-                return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
+                //return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
             } else {
                 
                 return $this->renderForm('Back/line_train/new.html.twig', [
                     'line_train' => $lineTrain,
                     'form' => $form,
-                    'errors' => $errors
+                    'errors' => $errors,
+                    'success' => $success
                 ]);
             }
         }
@@ -187,7 +188,8 @@ class LineTrainController extends AbstractController
         return $this->renderForm('Back/line_train/new.html.twig', [
             'line_train' => $lineTrain,
             'form' => $form,
-            'errors' => $errors
+            'errors' => $errors,
+            'success' => $success
         ]);
     }
 
@@ -197,16 +199,16 @@ class LineTrainController extends AbstractController
         $travel = $lineTrainRepository->find($id);
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
 
-        if ( $userConnected->getId() != $travel->getTrain()->getOwner()->getId() ){
+        if ( $userConnected->getId() != $travel->getTrain()->getOwner()->getId() && in_array('ROLE_COMPANY', $userConnected->getRoles()) ){
             return $this->redirectToRoute('admin_line_train_index', [], Response::HTTP_SEE_OTHER);
         }
-       
-
+    
         return $this->render('Back/line_train/show.html.twig', [
             'line_train' => $lineTrain,
         ]);
     }
 
+    #[IsGranted('ROLE_COMPANY')]
     #[Route('/{id}/edit', name: 'line_train_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, int $id, LineTrain $lineTrain, LineTrainRepository $lineTrainRepository, BookingRepository $bookingRepository, TrainRepository $trainRepository, LineRepository $lineRepository): Response
     {
@@ -217,7 +219,9 @@ class LineTrainController extends AbstractController
         if ( $userConnected->getId() != $travel->getTrain()->getOwner()->getId() ){
             return $this->redirectToRoute('admin_line_train_index', [], Response::HTTP_SEE_OTHER);
         }
-       
+        
+        $errors = [];
+        $success = [];
        
         $train = $trainRepository->findBy(["status" => 1,"owner"=> $userConnected->getId()]);
         $line = $lineRepository->findBy(["status" => 1]);
@@ -286,41 +290,47 @@ class LineTrainController extends AbstractController
             if (empty($errors)) {
 
                 $this->getDoctrine()->getManager()->flush();
-                $this->addFlash('green', "Voyage modifié !");
-                return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
+                $success[] = "Le voyage a bien été modifié !";
+              
+                //return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
             } else {
 
-            
-                $this->addFlash('red', $errors[0]);
-                return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
+                return $this->renderForm('Back/line_train/edit.html.twig', [
+                    'line_train' => $lineTrain,
+                    'form' => $form,
+                    'errors' => $errors,
+                    'success' => $success
+                ]);
             }
         }
 
         return $this->renderForm('Back/line_train/edit.html.twig', [
             'line_train' => $lineTrain,
             'form' => $form,
+            'errors' => $errors,
+            'success' => $success
         ]);
     }
 
-    #[Route('/{id}', name: 'line_train_delete', methods: ['POST'])]
-    public function delete(Request $request, LineTrain $lineTrain, BookingRepository $bookingRepository): Response
-    {
-        if ($this->isCsrfTokenValid('delete' . $lineTrain->getId(), $request->request->get('_token'))) {
+    // #[Route('/{id}', name: 'line_train_delete', methods: ['POST'])]
+    // public function delete(Request $request, LineTrain $lineTrain, BookingRepository $bookingRepository): Response
+    // {
+    //     if ($this->isCsrfTokenValid('delete' . $lineTrain->getId(), $request->request->get('_token'))) {
 
-            $booking = $bookingRepository->findBy(['lineTrain' => $lineTrain->getId()]);
+    //         $booking = $bookingRepository->findBy(['lineTrain' => $lineTrain->getId()]);
 
-            if (empty($booking)) {
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->remove($lineTrain);
-                $entityManager->flush();
-                $this->addFlash('green', "Voyage supprimé !");
-            } else {
-                $this->addFlash('red', "Impossible de supprimer ce voyage !");
-            }
-        }
+    //         if (empty($booking)) {
+    //             $entityManager = $this->getDoctrine()->getManager();
+    //             $entityManager->remove($lineTrain);
+    //             $entityManager->flush();
+    //             $this->addFlash('green', "Voyage supprimé !");
+    //         } else {
+    //             $this->addFlash('red', "Impossible de supprimer ce voyage !");
+    //         }
+    //     }
 
-        return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
-    }
+    //     return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
+    // }
 
     #[Route('/plan/{id}', name: 'line_train_plan', methods: ['GET'])]
     public function plan(Request $request, int $id, BookingSeatRepository $bookingSeatRepository, LineTrainRepository $lineTrainRepository): Response
@@ -329,7 +339,7 @@ class LineTrainController extends AbstractController
         $travel = $lineTrainRepository->find($id);
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
 
-        if ( $userConnected->getId() != $travel->getTrain()->getOwner()->getId() ){
+        if ( $userConnected->getId() != $travel->getTrain()->getOwner()->getId()  && in_array('ROLE_COMPANY', $userConnected->getRoles()) ){
             return $this->redirectToRoute('admin_line_train_index', [], Response::HTTP_SEE_OTHER);
         }
        
