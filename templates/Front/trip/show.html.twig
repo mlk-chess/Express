@@ -101,9 +101,15 @@
                     pdf.text('Toute falsification, non-présentation du billet entrainera une amende.', 10, 85)
                     pdf.text('Vous trouverez ci-dessous un Qr code permettant de simplifier les contrôles des billets', 10, 95)
                     let base64Image = $('#qr_code img').attr('src');
-
-
-                    pdf.addImage(base64Image, 'png', 75, 110, 40, 40);
+                    pdf.setFontSize(20);
+                    pdf.text("Place attitrée : ", 10, 105);
+                    var a = 115;
+                    pdf.setFontSize(12)
+                    {% for seat in booking.bookingSeats %}
+                    pdf.text("- {{ seat.firstname}} {{ seat.lastname}} Place #{{ seat.seat.number}} Wagon #{{ seat.seat.wagon.id }}", 10, a);
+                    a += 10;
+                    {% endfor %}
+                    pdf.addImage(base64Image, 'png', 75, 130, 40, 40);
                     pdf.save('E-billet.pdf');
                 }
             </script>

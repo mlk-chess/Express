@@ -230,6 +230,9 @@ class HomeController extends AbstractController
 
         $session = $this->requestStack->getSession();
         $dataSession = $session->get('shopping');
+        if ($dataSession== null){
+            return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
+        }
 
         $stripe = new \Stripe\StripeClient(
             'sk_test_51Kk6uiCJ5s87DbRlsu9UTG7t0PbKcXlXM7bxLdibROOksHgDXIg1gXtp0SFv7o0MZxTcCTOLmEzjK1AVvdCR9LXg00vHipH4ZP'
