@@ -231,8 +231,6 @@ class HomeController extends AbstractController
             $entityManager->flush();
 
 
-
-
             $booking = new Booking();
             $booking->setLineTrain($voyage[0]);
             $booking->setPrice($price);
@@ -258,7 +256,6 @@ class HomeController extends AbstractController
             $wagonIdx = null;
             for ($i = 0; $i < sizeof($wagon); $i++){
                 $wagonIdx = $i;
-
             }
             if (sizeof($allBooking) < $wagon[$wagonIdx]->getPlaceNb()){
                 for( $i = 0; $i < sizeof($travelers); $i++){
@@ -351,6 +348,7 @@ class HomeController extends AbstractController
         ]);
         unset($dataSession["payment_intent"]);
         $dataSession["payment_intent"] = $checkout_session["payment_intent"];
+        dd($dataSession);
         $session->set('shopping', $dataSession);
         header("HTTP/1.1 303 See Other");
 

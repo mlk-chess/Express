@@ -33,7 +33,7 @@ class BookingController extends AbstractController
 
 
         return $this->render('Front/trip/index.html.twig', [
-            'bookings' => $bookingRepository->findBy(array('idUser' => $userConnected->getId())),
+            'bookings' => $bookingRepository->findBy(array('idUser' => $userConnected->getId()), array('id' =>'DESC')),
         ]);
     }
 
