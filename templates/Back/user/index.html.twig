@@ -28,7 +28,7 @@
                     <td>Société</td>
                 {% endif %}
                 <td>{{ user.companyName ?? "-" }}</td>
-                {% if ((user.status == 1 or user.status == 2) and user.roles[0] == 'ROLE_CUSTOMER' or user.roles[0] == 'ROLE_CONTROLLER') or (user.status == 2 and user.roles[0] == 'ROLE_COMPANY')   %}
+                {% if ((user.status == 1 or user.status == 2) and (user.roles[0] == 'ROLE_CUSTOMER' or user.roles[0] == 'ROLE_CONTROLLER')) or (user.status == 2 and user.roles[0] == 'ROLE_COMPANY')   %}
                     <td>Activé</td>
                 {% else %}
                     <td>Désactivé</td>
