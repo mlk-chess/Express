@@ -18,8 +18,10 @@ class LineController extends AbstractController
     #[Route('/', name: 'line_index', methods: ['GET'])]
     public function index(LineRepository $lineRepository): Response
     {
+        
         return $this->render('Back/line/index.html.twig', [
             'lines' => $lineRepository->findAll(),
+
         ]);
     }
 
@@ -61,12 +63,10 @@ class LineController extends AbstractController
                             $entityManager->flush();
 
                             $success[] = "La ligne a été créée !";
-
-                            return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
+                            //return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
                         
                     }else{
                         $errors[] = "Cette ligne existe déjà !";
-                     
                     }
 
                 }else{
@@ -75,11 +75,11 @@ class LineController extends AbstractController
                 }
             }
         }
-
         return $this->renderForm('Back/line/new.html.twig', [
             'line' => $line,
             'form' => $form,
-            'errors' => $errors
+            'errors' => $errors,
+            'success' => $success
         ]);
     }
 
@@ -138,7 +138,7 @@ class LineController extends AbstractController
                                     $this->getDoctrine()->getManager()->flush();
 
                                     $success[] = "La ligne a été modifiée !";
-                                    return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
+                                    //return $this->redirectToRoute('line_index', [], Response::HTTP_SEE_OTHER);
                         
                             }else{
                                 $errors[] = "Cette ligne existe déjà !";

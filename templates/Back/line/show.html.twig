@@ -1,6 +1,6 @@
 {% extends 'base_back.html.twig' %}
 
-{% block title %}Line{% endblock %}
+{% block title %}Ligne{% endblock %}
 
 {% block body %}
     <div class="d-flex justify-content-between">
@@ -45,8 +45,8 @@
 
    
     <div class="d-flex">
-        <a class="btn btn-warning mx-2"href="{{ path('admin_line_edit', {'id': line.id}) }}">Modifier</a>
-        <a class="btn btn-danger mx-2"href="{{ path('admin_line_disable', {'id': line.id}) }}">Désactiver cette ligne</a>
+        <a class="btn btn-primary-express mx-2"href="{{ path('admin_line_edit', {'id': line.id}) }}">Modifier</a>
+        <a class="btn btn-primary-express mx-2"href="{{ path('admin_line_disable', {'id': line.id}) }}">Désactiver cette ligne</a>
     </div>
 
 

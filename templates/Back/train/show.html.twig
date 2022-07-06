@@ -25,11 +25,11 @@
 
         <form method="post" action="{{ path('admin_train_edit', {'id': train.id}) }}">
             <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ train.id) }}">
-            <button class="btn btn-primary">Modifier</button>
+            <button class="btn btn-primary-express">Modifier</button>
         </form>
       
         <div>
-            <a class="btn btn-danger mx-2"href="{{ path('admin_train_disable', {'id': train.id}) }}">Désactiver ce train</a>
+            <a class="btn btn-primary-express mx-2"href="{{ path('admin_train_disable', {'id': train.id}) }}">Désactiver ce train</a>
         </div>
 
 
@@ -41,12 +41,12 @@
            
             <form method="post" action="{{ path('admin_wagon_new', {'id': train.id}) }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('new' ~ train.id) }}">
-                <button class="btn btn-outline-primary">Ajouter un wagon</button>
+                <button class="btn btn-primary-express">Ajouter un wagon</button>
             </form>
         </div>
     </div>
 
-    <table class="display" id="table_wagon">
+    <table class="hover row-border" id="table_wagon">
         <thead>
         <tr>
             <th>Classe</th>
@@ -63,10 +63,10 @@
                 <td>{{ wagon.type }}</td>
                 <td>{{ wagon.placeNb }}</td>
                 <td class="d-flex">
-                    <a class="btn btn-primary mx-2" href="{{ path('admin_wagon_show', {'id': wagon.id}) }}">Voir</a>
+                    <a class="btn btn-primary-express mx-2" href="{{ path('admin_wagon_show', {'id': wagon.id}) }}">Voir</a>
                     <form method="post" action="{{ path('admin_wagon_edit', {'id': wagon.id}) }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ wagon.id) }}">
-                        <button class="btn btn-primary">Editer</button>
+                        <button class="btn btn-primary-express">Modifier</button>
                     </form>
 
                    

@@ -32,6 +32,7 @@ class TrainController extends AbstractController
         }
     }
 
+    #[IsGranted('ROLE_COMPANY')]
     #[Route('/new', name: 'train_new', methods: ['GET','POST'])]
     public function new(Request $request, TrainRepository $trainRepository): Response
     {
@@ -39,6 +40,7 @@ class TrainController extends AbstractController
         $form = $this->createForm(TrainType::class, $train);
         $form->handleRequest($request);
         $errors = [];
+        $success = [];
 
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
 
@@ -50,8 +52,8 @@ class TrainController extends AbstractController
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($train);
                 $entityManager->flush();
-    
-                return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+                $success[] = "Train créé !";
+                //return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
             }else{
                 $errors[] = "Ce train existe déjà !";
             }
@@ -61,7 +63,8 @@ class TrainController extends AbstractController
         return $this->renderForm('Back/train/new.html.twig', [
             'train' => $train,
             'form' => $form,
-            'errors' => $errors
+            'errors' => $errors,
+            'success' => $success
         ]);
     }
 
@@ -72,9 +75,10 @@ class TrainController extends AbstractController
         $travel = $trainRepository->find($id);
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();
 
-        if ($travel->getOwner()->getId() != $userConnected->getId()){
+        if ($travel->getOwner()->getId() != $userConnected->getId() && in_array('ROLE_COMPANY', $userConnected->getRoles()) ){
             return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
         }
+        
 
         $wagons = $wagonRepository->findBy(["status" => 1, "train" => $id]);
         return $this->render('Back/train/show.html.twig', [
@@ -83,12 +87,21 @@ class TrainController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_COMPANY')]
     #[Route('/{id}/edit', name: 'train_edit', methods: ['GET','POST'])]
-    public function edit(Request $request, int $id, Train $train, LineTrainRepository $lineTrainRepository): Response
+    public function edit(Request $request, int $id, Train $train, TrainRepository $trainRepository, LineTrainRepository $lineTrainRepository): Response
     {
         $form = $this->createForm(TrainType::class, $train);
         $form->handleRequest($request);
         $errors = [];
+        $success = [];
+
+        $travel = $trainRepository->find($id);
+
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+        if ($travel->getOwner()->getId() != $userConnected->getId()){
+            return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -102,22 +115,26 @@ class TrainController extends AbstractController
 
             if (empty($errors)){
                 $this->getDoctrine()->getManager()->flush();
-                return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
+                $success[] = "Le train a bien été modifié !";
+                //return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
             }
         }
 
         return $this->renderForm('Back/train/edit.html.twig', [
             'train' => $train,
             'form' => $form,
-            'errors' => $errors
+            'errors' => $errors,
+            'success' => $success
         ]);
     }
 
+    #[IsGranted('ROLE_COMPANY')]
     #[Route('/{id}/disable', name: 'train_disable')]
     public function disable(Request $request, Train $train, LineTrainRepository $lineTrainRepository): Response
     {
        
             $errors = [];
+           
             $userConnected = $this->get('security.token_storage')->getToken()->getUser();
 
             if ($train->getOwner()->getId() == $userConnected->getId()){
@@ -139,9 +156,6 @@ class TrainController extends AbstractController
         
                 }
             }
-            
-        
-
 
             return $this->redirectToRoute('admin_train_index', [], Response::HTTP_SEE_OTHER);
     }

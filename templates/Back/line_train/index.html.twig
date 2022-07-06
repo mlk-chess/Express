@@ -1,18 +1,18 @@
 {% extends 'base_back.html.twig' %}
 
-{% block title %}LineTrain index{% endblock %}
+{% block title %}Voyages{% endblock %}
 
 {% block body %}
 <div class="d-flex justify-content-between mb-5">
         <h1>Les voyages</h1>
         <div>
-            <a class="btn btn-primary" href="{{ path('admin_line_train_new') }}">Créer un voyage</a>
+            <a class="btn btn-primary-express" href="{{ path('admin_line_train_new') }}">Créer un voyage</a>
         </div>
 </div>
 
 
 
-<table id="table_lineTrain" class="display">
+<table id="table_lineTrain" class="row-border hover">
     <thead>
         <tr>
             <th>Train</th>
@@ -29,16 +29,16 @@
         <tr>
            
             <td>{{ line_train.getTrain().getName() ?? "" }}</td>
-            <td>{{ line_train.getLine().getNameStationDeparture()}} - {{ line_train.getLine().getNameStationArrival() }}</td>
-            <td>{{ line_train.getDateDeparture()| date('d/m/Y')}} {{line_train.getTimeDeparture|date('H:i:s') }} </td>
-            <td>{{ line_train.getDateArrival()|date('d/m/Y')}} {{line_train.getTimeArrival()|date('H:i:s') }} </td>
+            <td>{{ line_train.getLine().getNameStationDeparture()}} <br> {{ line_train.getLine().getNameStationArrival() }}</td>
+            <td>{{ line_train.getDateDeparture()| date('d/m/Y')}} <br> {{line_train.getTimeDeparture|date('H:i:s') }} </td>
+            <td>{{ line_train.getDateArrival()|date('d/m/Y')}} <br> {{line_train.getTimeArrival()|date('H:i:s') }} </td>
             <td>{{ line_train.getPriceClass1() }} €</td>
             <td>{{ line_train.getPriceClass2() }} €</td> 
 
             <td>
-                <a class="btn btn-primary" href="{{ path('admin_line_train_show', {'id': line_train.id}) }}">Voir</a>
-                <a class="btn btn-primary" href="{{ path('admin_line_train_edit', {'id': line_train.id}) }}">Modifier</a>
-                <a class="btn btn-primary" href="{{ path('admin_line_train_plan', {'id': line_train.id}) }}"><i class=" fa-solid fa-train"></i></a>
+                <a class="btn btn-primary-express" href="{{ path('admin_line_train_show', {'id': line_train.id}) }}">Voir</a>
+                <a class="btn btn-primary-express" href="{{ path('admin_line_train_edit', {'id': line_train.id}) }}">Modifier</a>
+                <a class="btn btn-primary-express" href="{{ path('admin_line_train_plan', {'id': line_train.id}) }}"><i class=" fa-solid fa-train"></i></a>
             </td>
         </tr>
         {% else %}
