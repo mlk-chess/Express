@@ -71,6 +71,7 @@ class CreateUserCommand extends Command
         }
 
         $user->setStatus(2);
+        $user->setNewsletter(1);
 
         if ($input->getOption('admin-user')) {
             $user->setRoles(['ROLE_ADMIN']);
