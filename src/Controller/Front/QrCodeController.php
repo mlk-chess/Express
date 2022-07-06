@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
 use App\Repository\BookingRepository;
 use App\Entity\Booking;
+use App\Entity\BookingSeat;
 
 
 
@@ -57,6 +58,25 @@ class QrCodeController extends AbstractController
                 return new JsonResponse(false);
             }
 
+            $repository = $entityManager->getRepository(BookingSeat::class);
+
+            $query = $repository->createQueryBuilder('bookingSeat')
+                ->select('bookingSeat, booking')
+                ->leftJoin('bookingSeat.booking', 'booking')
+                ->where('booking.id = :id')
+                ->setParameters([
+                    'id' => $booking[0]->getId()
+                ]);
+
+            $q = $query->getQuery();
+
+            $bookingSeat = $q->execute();
+
+            $arrayPlaces = [];
+            foreach ($bookingSeat as $value) {
+                array_push($arrayPlaces, $value->getSeat()->getNumber());
+            }
+
             $result = [];
 
             array_push($result, $booking[0]->getTravelers());
@@ -66,6 +86,7 @@ class QrCodeController extends AbstractController
             array_push($result, $booking[0]->getLineTrain()->getLine()->getNameStationArrival());
             array_push($result, $booking[0]->getLineTrain()->getTimeDeparture());
             array_push($result, $booking[0]->getLineTrain()->getTimeArrival());
+            array_push($result, $arrayPlaces);
 
 
             return new JsonResponse(json_encode($result));

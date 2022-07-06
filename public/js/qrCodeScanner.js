@@ -28,8 +28,11 @@ function setResult(result) {
                     '<p><b>'+ timeArrival +'</b> '+ data[4] +'</p>' +
                     '<div class="d-flex flex-column">';
 
-                data[0].forEach(function (traveler){
-                    html += '<p class="mb-2"><i class="fa-solid fa-user"></i> x '+ traveler[0] +' '+ traveler[1] +'</p>';
+                data[0].forEach(function (traveler, index){
+                    html += '<div class="d-flex justify-content-between">' +
+                            '<p class="mb-2"><i class="fa-solid fa-user"></i> x '+ traveler[0] +' '+ traveler[1] +'</p>' +
+                            '<p>Place : '+ data[7][index] +'</p>' +
+                        '</div>';
                 });
 
                 html += '</div>';
