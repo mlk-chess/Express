@@ -208,6 +208,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $bookings;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $newsletter;
+
     public function __construct()
     {
         $this->trains = new ArrayCollection();
@@ -485,6 +490,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $booking->setIdUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNewsletter(): ?int
+    {
+        return $this->newsletter;
+    }
+
+    public function setNewsletter(?int $newsletter): self
+    {
+        $this->newsletter = $newsletter;
 
         return $this;
     }

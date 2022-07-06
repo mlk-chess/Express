@@ -91,3 +91,7 @@
 #btn-result {
     display: none;
 }
+
+.nav-item li .orange-color {
+    background-color: white;
+}

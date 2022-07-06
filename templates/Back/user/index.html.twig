@@ -17,11 +17,10 @@
         </thead>
         <tbody>
         {% for user in users %}
+            {% if user.roles[0] != 'ROLE_ADMIN' %}
             <tr>
                 <td>{{ user.email }}</td>
-                {% if user.roles[0] == 'ROLE_ADMIN' %}
-                    <td>Admin</td>
-                {% elseif user.roles[0] == 'ROLE_CONTROLLER' %}
+                {% if user.roles[0] == 'ROLE_CONTROLLER' %}
                     <td>Contrôleur</td>
                 {% elseif user.roles[0] == 'ROLE_CUSTOMER' %}
                     <td>Utilisateur</td>
@@ -29,7 +28,7 @@
                     <td>Société</td>
                 {% endif %}
                 <td>{{ user.companyName ?? "-" }}</td>
-                {% if ((user.status == 1 or user.status == 2) and user.roles[0] == 'ROLE_CUSTOMER') or (user.status == 2 and user.roles[0] == 'COMPANY')   %}
+                {% if ((user.status == 1 or user.status == 2) and (user.roles[0] == 'ROLE_CUSTOMER' or user.roles[0] == 'ROLE_CONTROLLER')) or (user.status == 2 and user.roles[0] == 'ROLE_COMPANY')   %}
                     <td>Activé</td>
                 {% else %}
                     <td>Désactivé</td>
@@ -40,11 +39,13 @@
 
                 </td>
             </tr>
+            {% endif %}
         {% else %}
             <tr>
                 <td colspan="5">Aucun utilisateur trouvé</td>
             </tr>
         {% endfor %}
+
         </tbody>
     </table>
 

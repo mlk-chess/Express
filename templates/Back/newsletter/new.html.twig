@@ -1,0 +1,11 @@
+{% extends 'base_back.html.twig' %}
+
+{% block title %}Admin - Newsletter{% endblock %}
+
+{% block body %}
+    <h1>Créer une newsletter</h1>
+
+    {{ include('back/newsletter/_form.html.twig') }}
+
+    <a href="{{ path('app_newsletter_index') }}">Retourner à la liste</a>
+{% endblock %}

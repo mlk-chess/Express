@@ -15,7 +15,7 @@ class TrainFixtures extends Fixture
 
         $this->faker = \Faker\Factory::create();
 
-        for ($i = 0; $i < 10; $i++){
+        for ($i = 0; $i < 1000; $i++){
             $train = new Train();
             $train->setDescription($this->faker->realText($maxNbChars = 20, $indexSize = 2));
             $train->setName($this->faker->name);

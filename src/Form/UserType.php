@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -60,6 +61,9 @@ class UserType extends AbstractType
                 'attr' => ['class' => 'form-control mb-3'],
                 'help' => 'Le numéro doit être égal à 10 caractères'
             ])
+            ->add('newsletter', CheckboxType::class, [
+                'label'    => "S'abonner à la Newsletter",
+            ]);
         ;
     }
 
