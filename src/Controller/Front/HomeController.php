@@ -227,75 +227,98 @@ class HomeController extends AbstractController
     #[Route('/success', name: 'success', methods: ['GET','POST'])]
     public function success(Request $request, LineTrainRepository $lineTrainRepository,BookingRepository $bookingRepository, BookingSeatRepository $bookingSeatRepository, SeatRepository $seatRepository, WagonRepository $wagonRepository): Response
     {
-        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+
         $session = $this->requestStack->getSession();
         $dataSession = $session->get('shopping');
-        for ($i = 0; $i < sizeof($dataSession)-1; $i++) {
-            $idVoyage = $dataSession[$i][0];
-            $class = $dataSession[$i][1];
-            $travelers = $dataSession[$i][2];
-            $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
-            $price = null;
-            if ($class == '1') {
-                $voyage[0]->setPlaceNbClass1($voyage[0]->getPlaceNbClass1()-1);
-                $price = $voyage[0]->getPriceClass1();
-            } else if ($class == '2') {
-                $voyage[0]->setPlaceNbClass2($voyage[0]->getPlaceNbClass2()-1);
-                $price = $voyage[0]->getPriceClass2();
-            }
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($voyage[0]);
-            $entityManager->flush();
+
+        $stripe = new \Stripe\StripeClient(
+            'sk_test_51Kk6uiCJ5s87DbRlsu9UTG7t0PbKcXlXM7bxLdibROOksHgDXIg1gXtp0SFv7o0MZxTcCTOLmEzjK1AVvdCR9LXg00vHipH4ZP'
+        );
+
+        $payment_intent = $stripe->paymentIntents->retrieve(
+            $dataSession['payment_intent'],
+            []
+        );
+
+        if ($payment_intent->status == "succeeded"){
+            $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+            $session = $this->requestStack->getSession();
+            $dataSession = $session->get('shopping');
+            for ($i = 0; $i < sizeof($dataSession)-1; $i++) {
+                $idVoyage = $dataSession[$i][0];
+                $class = $dataSession[$i][1];
+                $travelers = $dataSession[$i][2];
+                $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
+                $price = null;
+                if ($class == '1') {
+                    $voyage[0]->setPlaceNbClass1($voyage[0]->getPlaceNbClass1()-1);
+                    $price = $voyage[0]->getPriceClass1();
+                } else if ($class == '2') {
+                    $voyage[0]->setPlaceNbClass2($voyage[0]->getPlaceNbClass2()-1);
+                    $price = $voyage[0]->getPriceClass2();
+                }
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($voyage[0]);
+                $entityManager->flush();
 
 
-            $booking = new Booking();
-            $booking->setLineTrain($voyage[0]);
-            $booking->setPrice($price);
-            $booking->setStatus(1);
-            $booking->setDateBooking(new DateTime());
-            $booking->setTravelers($travelers);
-            $booking->setToken($this->generateToken());
-            $booking->setIdUser($userConnected);
-            $booking->setPaymentIntent($dataSession["payment_intent"]);
+                $booking = new Booking();
+                $booking->setLineTrain($voyage[0]);
+                $booking->setPrice($price);
+                $booking->setStatus(1);
+                $booking->setDateBooking(new DateTime());
+                $booking->setTravelers($travelers);
+                $booking->setToken($this->generateToken());
+                $booking->setIdUser($userConnected);
+                $booking->setPaymentIntent($dataSession["payment_intent"]);
 
 
 
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($booking);
-            $entityManager->flush();
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($booking);
+                $entityManager->flush();
 
-            //Get all Booking
-            $allBooking = new Booking();
-            $allBooking = $bookingRepository->findBy(array("lineTrain" => $voyage[0]->getId()));
+                //Get all Booking
+                $allBooking = new Booking();
+                $allBooking = $bookingRepository->findBy(array("lineTrain" => $voyage[0]->getId()));
 
-            $wagon = New Wagon();
-            $wagon = $wagonRepository->findBy(array('train' => $voyage[0]->getTrain()->getId(), 'type' => 'Voyageur'));
-            $wagonIdx = null;
-            for ($i = 0; $i < sizeof($wagon); $i++){
-                $wagonIdx = $i;
-            }
-            if (sizeof($allBooking) < $wagon[$wagonIdx]->getPlaceNb()){
-                for( $i = 0; $i < sizeof($travelers); $i++){
-                    $seat = New BookingSeat();
-                    $seat->setBooking($booking);
+                $wagon = New Wagon();
+                $wagon = $wagonRepository->findBy(array('train' => $voyage[0]->getTrain()->getId(), 'type' => 'Voyageur'));
+                $wagonIdx = null;
+                for ($i = 0; $i < sizeof($wagon); $i++){
+                    $wagonIdx = $i;
+                }
+                if (sizeof($allBooking) < $wagon[$wagonIdx]->getPlaceNb()){
+                    for( $i = 0; $i < sizeof($travelers); $i++){
+                        $seat = New BookingSeat();
+                        $seat->setBooking($booking);
 
-                    $seat->setSeat($seatRepository->findOneBy(array("wagon" => $wagon[$wagonIdx]->getId(),"number" => sizeof($allBooking)+($i+1))));
-                    $seat->setFirstname($travelers[$i][0]);
-                    $seat->setLastname($travelers[$i][1]);
-                    $entityManager = $this->getDoctrine()->getManager();
-                    $entityManager->persist($seat);
-                    $entityManager->flush();
+                        $seat->setSeat($seatRepository->findOneBy(array("wagon" => $wagon[$wagonIdx]->getId(),"number" => sizeof($allBooking)+($i+1))));
+                        $seat->setFirstname($travelers[$i][0]);
+                        $seat->setLastname($travelers[$i][1]);
+                        $entityManager = $this->getDoctrine()->getManager();
+                        $entityManager->persist($seat);
+                        $entityManager->flush();
+                    }
+
+
+                }else{
+                    return $this->render('Front/home/error.html.twig');
                 }
 
-
-            }else{
-                return $this->render('Front/home/error.html.twig');
             }
+
+            $session->remove('shopping');
+            return $this->render('Front/home/success.html.twig');
+        }else{
+            // TU REDIRIGES VERS CANCEL
+            return $this->render('Front/home/error.html.twig');
 
         }
 
-        $session->remove('shopping');
-        return $this->render('Front/home/success.html.twig');
+
+
+
     }
 
     #[Route('/payment', name: 'payment', methods: ['GET','POST'])]
