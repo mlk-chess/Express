@@ -11,6 +11,10 @@
         .errorMessage {
             color: red;
         }
+
+        footer {
+            bottom: 0;
+        }
     </style>
 {% endblock %}
 
@@ -35,7 +39,7 @@
                         <div class="errorMessage">{{ form_errors(resetForm.plainPassword.second) }}</div>
 
                         <div class="d-flex justify-content-center my-4">
-                            <button class="btn btn-lg btn-primary">Réinitialisation</button>
+                            <button class="btn btn-lg btn-orange">Réinitialisation</button>
                         </div>
                     {{ form_end(resetForm) }}
                 </div>

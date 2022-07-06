@@ -7,6 +7,10 @@
         .logo {
             width: 200px;
         }
+
+        footer {
+            bottom: 0;
+        }
     </style>
 {% endblock %}
 
@@ -18,7 +22,7 @@
         <div class="d-flex justify-content-center mt-2 mb-5">
             <div class="card card-login">
                 <div class="d-flex mt-3 ms-3">
-                    <a href="/"><button class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i> Retourner à l'accueil</button></a>
+                    <a href="/"><button class="btn btn-sncf"><i class="fa-solid fa-arrow-left"></i> Retourner à l'accueil</button></a>
                 </div>
 
                 <div class="text-center">
@@ -30,7 +34,7 @@
                         {{ form_row(requestForm.email) }}
 
                     <div class="d-flex justify-content-center my-4">
-                        <button class="btn btn-lg btn-primary">Envoyer</button>
+                        <button class="btn btn-lg btn-orange">Envoyer</button>
                     </div>
                     {{ form_end(requestForm) }}
                 </div>
