@@ -62,7 +62,7 @@ class UserType extends AbstractType
                 'help' => 'Le numéro doit être égal à 10 caractères'
             ])
             ->add('newsletter', CheckboxType::class, [
-                'label'    => 'Nous vous enverrons des e-mails occasionnels sur les promotions, les nouvelles importantes et les mises à jour importantes pour vous tenir au courant.',
+                'label'    => "S'abonner à la Newsletter",
                 'required' => true,
             ]);
         ;
