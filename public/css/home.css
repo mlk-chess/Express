@@ -14,6 +14,16 @@
     cursor: pointer;
 }
 
+#map {
+    height: 450px;
+    width: 100%;
+}
+
+.list-stations {
+    position: absolute;
+    z-index: 5;
+}
+
 .mycluster {
     height: 40px;
     width: 40px;
@@ -43,7 +53,41 @@
 
 #banner {
     width: 100%;
-    height: 300px;
-    object-fit: cover;
+    height: 26em;
 }
 
+#container-input {
+    margin-top: -13.5em;
+}
+
+.orange-color {
+    color: #ea5330 !important;
+}
+
+.orange-color:hover {
+    color: #7f102e !important;
+}
+
+.btn-orange {
+    background-color: #ea5330 !important;
+    color: white !important;
+}
+
+.btn-orange:hover {
+    background-color: #9e143a;
+    color: white;
+}
+
+.btn-sncf {
+    background-color: #b51742;
+    color: white;
+}
+
+.btn-sncf:hover {
+    background-color: #7f102e;
+    color: white;
+}
+
+#btn-result {
+    display: none;
+}

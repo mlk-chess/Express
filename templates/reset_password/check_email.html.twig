@@ -2,6 +2,14 @@
 
 {% block title %}Réinitialisation du mot de passe{% endblock %}
 
+{% block stylesheets %}
+    <style>
+        footer {
+            bottom: 0;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <p>
         Si un compte correspondant à votre adresse e-mail existe, alors un e-mail vient d'être envoyé qui contient un lien que vous pouvez utiliser pour réinitialiser votre mot de passe. Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
@@ -9,6 +17,6 @@
     <p>Si vous ne recevez pas d'e-mail, vérifiez votre dossier de courrier indésirable ou <a href="{{ path('app_forgot_password_request') }}">réessayez</a>.</p>
 
     <div class="d-flex justify-content-center mt-5">
-        <a href="/"><button class="btn btn-lg btn-primary">Retour sur le site</button></a>
+        <a href="/"><button class="btn btn-lg btn-sncf">Retour sur le site</button></a>
     </div>
 {% endblock %}

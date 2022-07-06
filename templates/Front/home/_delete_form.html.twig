@@ -1,4 +1,4 @@
-<form method="post" action="{{ path('shopping_delete', {'id': travel[2]}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+<form method="post" action="{{ path('shopping_delete', {'id': travel[2]}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer ce voyage ?');">
     <input type="hidden" name="id" value="{{ travel[2] }}">
-    <button class="btn btn-danger">Supprimer</button>
+    <button class="btn btn-sncf">Supprimer</button>
 </form>
