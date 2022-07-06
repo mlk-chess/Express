@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ChatbotRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -41,6 +43,16 @@ class Chatbot
      * @ORM\Column(type="integer")
      */
     private $status;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ChatbotMessages::class, mappedBy="chatbot_id")
+     */
+    private $chatbotMessages;
+
+    public function __construct()
+    {
+        $this->chatbotMessages = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -108,4 +120,37 @@ class Chatbot
         return $this;
     }
 
+    /**
+     * @return Collection<int, ChatbotMessages>
+     */
+    public function getChatbotMessages(): Collection
+    {
+        return $this->chatbotMessages;
+    }
+
+    public function addChatbotMessage(ChatbotMessages $chatbotMessage): self
+    {
+        if (!$this->chatbotMessages->contains($chatbotMessage)) {
+            $this->chatbotMessages[] = $chatbotMessage;
+            $chatbotMessage->setChatbotId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChatbotMessage(ChatbotMessages $chatbotMessage): self
+    {
+        if ($this->chatbotMessages->removeElement($chatbotMessage)) {
+            // set the owning side to null (unless already changed)
+            if ($chatbotMessage->getChatbotId() === $this) {
+                $chatbotMessage->setChatbotId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string{
+        return $this->client_name;
+    }
 }

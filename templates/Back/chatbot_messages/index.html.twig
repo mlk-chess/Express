@@ -1,0 +1,35 @@
+{% extends 'base_back.html.twig' %}
+
+{% block title %}Chatbot Messages{% endblock %}
+
+{% block body %}
+    <h1>Messages</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Message</th>
+                <th>Email du client</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for chatbot_message in chatbot_messages %}
+            <tr>
+                <td>{{ chatbot_message.id }}</td>
+                <td>{{ chatbot_message.message }}</td>
+                <td>{{ chatbot_message.chatbotId.clientEmail }}</td>
+                <td>
+                    <a class="btn btn-info" href="{{ path('app_chatbot_messages_show', {'id': chatbot_message.id}) }}">Info</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">Aucune données disponible</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

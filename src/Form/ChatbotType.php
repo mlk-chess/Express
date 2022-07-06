@@ -4,21 +4,19 @@ namespace App\Form;
 
 use App\Entity\Chatbot;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ChatbotStatusType extends AbstractType
+class ChatbotType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('status', ChoiceType::class,  [
-            'choices'  => [
-                'Opened' => 0,
-                'In Progress' => 1,
-                'Closed' => 2,
-            ],
-        ]);
+        $builder
+            ->add('client_name')
+            ->add('client_problem')
+            ->add('description')
+            ->add('client_email')
+            ->add('status')
         ;
     }
 
