@@ -40,6 +40,9 @@ class CreateUserCommand extends Command
         $this
             ->addArgument('email', InputArgument::OPTIONAL, 'Email of your new user')
             ->addOption('admin-user', null, InputOption::VALUE_NONE, 'active admin user')
+            ->addOption('user', null, InputOption::VALUE_NONE, 'active user')
+            ->addOption('company', null, InputOption::VALUE_NONE, 'active company')
+            ->addOption('controller', null, InputOption::VALUE_NONE, 'active controller')
         ;
     }
 
@@ -71,9 +74,11 @@ class CreateUserCommand extends Command
 
         if ($input->getOption('admin-user')) {
             $user->setRoles(['ROLE_ADMIN']);
-        }else{
-            $user->setRoles([""]);
-        }
+        }else if ($input->getOption('user')){
+            $user->setRoles(["ROLE_CUSTOMER"]);
+        }else if ($input->getOption('company')){
+            $user->setRoles(["ROLE_COMPANY"]);
+        }else $user->setRoles(["ROLE_CONTROLLER"]);
 
         
 
