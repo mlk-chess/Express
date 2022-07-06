@@ -15,7 +15,17 @@ class ApiMailerService
             ->htmlTemplate('Emails/'.$template)
             ->context($context)
             ->subject($subject);
+        return $email;
+    }
 
+    static function send_email_technician($addr_tech, $name_tech, $to, $subject, $template, $context)
+    {
+        $email = (new TemplatedEmail())
+            ->from(new Address($addr_tech, $name_tech))
+            ->to($to)
+            ->htmlTemplate('Emails/'.$template)
+            ->context($context)
+            ->subject($subject);
         return $email;
     }
 }

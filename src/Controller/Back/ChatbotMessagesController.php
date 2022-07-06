@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 #[Route('/admin/messages')]
 class ChatbotMessagesController extends AbstractController
@@ -40,7 +41,9 @@ class ChatbotMessagesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $chatbotMessagesRepository->add($chatbotMessage);
-            $email = ApiMailerService::send_email(
+            $email = ApiMailerService::send_email_technician(
+                $this->getUser()->getEmail(),
+                "[Express - MorphyBot] Résolution de votre problème par un technicien",
                 $chatbot->getClientEmail(),
                 "[Express] Problème #" . $chatbot->getId(),
                 "admin-morphy-bot.html.twig",
@@ -51,7 +54,7 @@ class ChatbotMessagesController extends AbstractController
             );
 
             $mailer->send($email);
-            return $this->redirectToRoute('app_chatbot_messages_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_chatbot_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('Back/chatbot_messages/new.html.twig', [

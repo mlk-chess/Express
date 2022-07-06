@@ -18,8 +18,15 @@
     </tr>
     <tr>
         <th>Problème</th>
-        <td>{{ chatbot.clientProblem }}</td>
-    </tr>
+        {% if chatbot.clientProblem == 0 %}
+            <td>Réservation</td>
+        {% elseif chatbot.clientProblem == 1 %}
+            <td>Paiement</td>
+        {% elseif chatbot.clientProblem == 2 %}
+            <td>Bug site</td>
+        {% else %}
+            <td>Autre ...</td>
+        {% endif %}    </tr>
     <tr>
         <th>Description du problème</th>
         <td>{{ chatbot.description }}</td>
@@ -30,15 +37,22 @@
     </tr>
     <tr>
         <th>Status</th>
-        <td>{{ chatbot.status }}</td>
-    </tr>
+        {% if chatbot.status == 0 %}
+            <td>Opened</td>
+        {% elseif chatbot.status == 1 %}
+            <td>In progress</td>
+        {% else %}
+            <td>Closed</td>
+        {% endif %}    </tr>
     </tbody>
 </table>
 
+    <div style="display: flex; ">
 <a class="btn" href="{{ path('app_chatbot_index') }}">Retourner à la liste</a>
 
-<a class="btn btn-warning" href="{{ path('app_chatbot_edit', {'id': chatbot.id}) }}">Modifier</a>
+<a class="btn btn-warning" href="{{ path('app_chatbot_edit', {'id': chatbot.id}) }}">Modifier le status</a>
 
 {{ include('Back/chatbot/_delete_form.html.twig') }}
 
+    </div>
 {% endblock %}

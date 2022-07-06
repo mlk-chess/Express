@@ -5,33 +5,56 @@
 {% block body %}
     <h1>Messages</h1>
 
-    <table class="table">
+    <table class="table" id="datatable">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Client_name</th>
-                <th>Client_problem</th>
+                <th>Nom du client</th>
+                <th>Problème du client</th>
                 <th>Description</th>
-                <th>Client_email</th>
+                <th>Email du client</th>
                 <th>Status</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for chatbot in chatbots %}
+            {% if chatbot.status != -1 %}
             <tr>
                 <td>{{ chatbot.id }}</td>
                 <td>{{ chatbot.clientName }}</td>
-                <td>{{ chatbot.clientProblem }}</td>
+
+                {% if chatbot.clientProblem == 0 %}
+                    <td>Réservation</td>
+                {% elseif chatbot.clientProblem == 1 %}
+                    <td>Paiement</td>
+                {% elseif chatbot.clientProblem == 2 %}
+                    <td>Bug site</td>
+                {% else %}
+                    <td>Autre ...</td>
+                {% endif %}
+
                 <td>{{ chatbot.description }}</td>
                 <td>{{ chatbot.clientEmail }}</td>
-                <td>{{ chatbot.status }}</td>
-                <td>
+
+
+                {% if chatbot.status == 0 %}
+                    <td>Opened</td>
+                {% elseif chatbot.status == 1 %}
+                    <td>In progress</td>
+                {% else %}
+                    <td>Closed</td>
+                {% endif %}
+
+
+                    <td>
                     <a type="button" class="btn btn-info" href="{{ path('app_chatbot_show', {'id': chatbot.id}) }}">Info</a>
                     <a type="button" class="btn btn-warning" href="{{ path('app_chatbot_edit', {'id': chatbot.id}) }}">Changer le status</a>
                     <a type="button" class="btn btn-dark" href="{{ path('app_chatbot_messages_new', {'id': chatbot.id}) }}">Envoyer un mail</a>
                 </td>
             </tr>
+            {% endif %}
+
         {% else %}
             <tr>
                 <td colspan="7">Aucune données disponible</td>
@@ -40,4 +63,10 @@
         </tbody>
     </table>
 
+    <script>
+
+        $(document).ready( function () {
+            $('#datatable').DataTable();
+        } );
+    </script>
 {% endblock %}

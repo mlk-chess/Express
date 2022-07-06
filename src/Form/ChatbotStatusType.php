@@ -14,7 +14,6 @@ class ChatbotStatusType extends AbstractType
     {
         $builder->add('status', ChoiceType::class,  [
             'choices'  => [
-                'Change status' => null,
                 'Opened' => 0,
                 'In Progress' => 1,
                 'Closed' => 2,

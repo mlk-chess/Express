@@ -66,6 +66,10 @@
                         <div class="errorMessage">{{ form_errors(form.city) }}</div>
                         <div class="errorMessage">{{ form_errors(form.zipCode) }}</div>
 
+                        {{ form_label(form.address) }}
+                        {{ form_widget(form.address) }}
+                        <div class="error" style="color: red">{{ form_errors(form.address) }}</div>
+
 
                         {{ form_label(form.phoneNumber) }}
                         {{ form_widget(form.phoneNumber) }}
