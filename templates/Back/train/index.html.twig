@@ -6,12 +6,12 @@
     <div class="d-flex justify-content-between mb-5">
         <h1>Liste des trains</h1>
         <div>
-        <a class="btn btn-outline-primary" href="{{ path('admin_train_new') }}">Nouveau train</a>
+        <a class="btn btn-primary-express" href="{{ path('admin_train_new') }}">Nouveau train</a>
 
         </div>
     </div>
 
-    <table class="display" id="table_train">
+    <table class="hover row-border" id="table_train">
         <thead>
             <tr>
                 <th>Nom</th>
@@ -30,16 +30,14 @@
                     <div class="row">
                         <div class="d-flex flex-row bd-highlight">
                               
-                            <a class="btn btn-primary" href="{{ path('admin_train_show', {'id': train.id}) }}">Voir</a>
+                            <a class="btn btn-primary-express" href="{{ path('admin_train_show', {'id': train.id}) }}">Voir</a>
                         
 
                             <form method="post" action="{{ path('admin_train_edit', {'id': train.id}) }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ train.id) }}">
-                                <button class="mx-2 btn btn-primary">Editer</button>
+                                <button class="mx-2 btn btn-primary-express">Modifier</button>
                             </form>
-                                  
-                            
-                          
+
                                
                         </div>
                     </div>

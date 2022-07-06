@@ -14,6 +14,14 @@
     </div>
     {% endif %}
 
+    {% if success %}
+    <div class="alert alert-success" role="alert">
+        {% for succ in success %}
+            <li>{{ succ }}</li>
+        {%  endfor %}
+    </div>
+    {% endif %}
+
     {{ include('Back/train/_form.html.twig', {'button_label': 'Modifier'}) }}
 
 {% endblock %}
