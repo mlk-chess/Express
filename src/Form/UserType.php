@@ -63,7 +63,6 @@ class UserType extends AbstractType
             ])
             ->add('newsletter', CheckboxType::class, [
                 'label'    => "S'abonner à la Newsletter",
-                'required' => true,
             ]);
         ;
     }

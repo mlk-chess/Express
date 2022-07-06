@@ -19,7 +19,7 @@ class NewsletterController extends AbstractController
     #[Route('/', name: 'app_newsletter_index', methods: ['GET'])]
     public function index(NewsletterRepository $newsletterRepository): Response
     {
-        return $this->render('back/newsletter/index.html.twig', [
+        return $this->render('Back/newsletter/index.html.twig', [
             'newsletters' => $newsletterRepository->findAll(),
         ]);
     }
@@ -52,7 +52,7 @@ class NewsletterController extends AbstractController
             return $this->redirectToRoute('app_newsletter_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('back/newsletter/new.html.twig', [
+        return $this->renderForm('Back/newsletter/new.html.twig', [
             'newsletter' => $newsletter,
             'form' => $form,
         ]);
