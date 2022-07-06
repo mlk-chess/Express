@@ -7,7 +7,7 @@
     <div class='d-flex justify-content-between'>
         <h1 class="f-12">Créer une ligne</h1>
         <div>
-            <a class="btn btn-primary" href="{{ path('admin_line_index') }}">Liste des lignes</a>
+            <a class="btn btn-primary-express" href="{{ path('admin_line_index') }}">Liste des lignes</a>
         </div> 
     </div>
 
@@ -15,6 +15,14 @@
     <div class="alert alert-danger" role="alert">
         {% for error in errors %}
             <li>{{ error }}</li>
+        {%  endfor %}
+    </div>
+    {% endif %}
+
+    {% if success %}
+    <div class="alert alert-success" role="alert">
+        {% for succ in success %}
+            <li>{{ succ }}</li>
         {%  endfor %}
     </div>
     {% endif %}
