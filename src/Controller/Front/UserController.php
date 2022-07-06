@@ -47,7 +47,7 @@ class UserController extends AbstractController
         } else throw new \Exception("Erreur...");
 
 
-        if (in_array("COMPANY", $user->getRoles()))
+        if (in_array("ROLE_COMPANY", $user->getRoles()))
             return new Response("Votre e-mail a été validé, vous devez attendre que l'administrateur du site confirme votre inscription, vous recevrez un mail. (Cela peut prendre de 24h à 48h)");
         else
             return new Response("Votre e-mail a été validé");

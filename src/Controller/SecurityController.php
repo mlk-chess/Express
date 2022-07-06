@@ -34,7 +34,7 @@ class SecurityController extends AbstractController
     {
         $user = new User();
         $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
-        $user->setRoles(['COMPANY']);
+        $user->setRoles(['ROLE_COMPANY']);
         $user->setToken($token);
         $form = $this->createForm(TrainCompanyType::class, $user);
         $form->handleRequest($request);
