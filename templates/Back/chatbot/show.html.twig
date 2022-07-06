@@ -1,0 +1,58 @@
+{% extends 'base_back.html.twig' %}
+
+{% block title %}Chatbot - Admin{% endblock %}
+
+{% block body %}
+
+<h1>Chatbot</h1>
+
+<table class="table">
+    <tbody>
+    <tr>
+        <th>Id</th>
+        <td>{{ chatbot.id }}</td>
+    </tr>
+    <tr>
+        <th>Nom du client</th>
+        <td>{{ chatbot.clientName }}</td>
+    </tr>
+    <tr>
+        <th>Problème</th>
+        {% if chatbot.clientProblem == 0 %}
+            <td>Réservation</td>
+        {% elseif chatbot.clientProblem == 1 %}
+            <td>Paiement</td>
+        {% elseif chatbot.clientProblem == 2 %}
+            <td>Bug site</td>
+        {% else %}
+            <td>Autre ...</td>
+        {% endif %}    </tr>
+    <tr>
+        <th>Description du problème</th>
+        <td>{{ chatbot.description }}</td>
+    </tr>
+    <tr>
+        <th>Email du client</th>
+        <td>{{ chatbot.clientEmail }}</td>
+    </tr>
+    <tr>
+        <th>Status</th>
+        {% if chatbot.status == 0 %}
+            <td>Opened</td>
+        {% elseif chatbot.status == 1 %}
+            <td>In progress</td>
+        {% else %}
+            <td>Closed</td>
+        {% endif %}    </tr>
+    </tbody>
+</table>
+
+    <div style="display: flex; ">
+<a class="btn" href="{{ path('app_chatbot_index') }}">Retourner à la liste</a>
+
+<a class="btn btn-warning" href="{{ path('app_chatbot_edit', {'id': chatbot.id}) }}">Modifier le status</a>
+
+{{ include('Back/chatbot/_delete_form.html.twig') }}
+
+    </div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base_back.html.twig' %}
+
+{% block title %}Chatbot - Admin{% endblock %}
+
+{% block body %}
+    <h1>Modifier le status</h1>
+
+    {{ include('Back/chatbot/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+
+    <a href="{{ path('app_chatbot_index') }}">Retourner à la liste</a>
+
+    {{ include('Back/chatbot/_delete_form.html.twig') }}
+{% endblock %}
