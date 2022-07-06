@@ -3,7 +3,9 @@
 namespace App\Controller\Back;
 
 use App\Entity\Booking;
+use App\Entity\BookingSeat;
 use App\Repository\BookingRepository;
+use App\Repository\BookingSeatRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,7 +63,7 @@ class BookingController extends AbstractController
     }
 
     #[Route('/{id}', name: 'delete_booking', methods: ['POST'])]
-    public function delete(Request $request, Booking $booking, BookingRepository $bookingRepository): Response
+    public function delete(Request $request, Booking $booking, BookingRepository $bookingRepository, BookingSeatRepository $bookingSeatRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$booking->getId(), $request->request->get('_token'))) {
 
@@ -75,6 +77,7 @@ class BookingController extends AbstractController
             ]);
             $entityManager->persist($booking);
             $entityManager->flush();
+
         }
 
         return $this->redirectToRoute('booking', [], Response::HTTP_SEE_OTHER);

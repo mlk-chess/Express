@@ -3,7 +3,9 @@
 namespace App\Controller\Front;
 
 use App\Entity\Booking;
+use App\Entity\BookingSeat;
 use App\Repository\BookingRepository;
+use App\Repository\BookingSeatRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +33,7 @@ class BookingController extends AbstractController
 
 
         return $this->render('Front/trip/index.html.twig', [
-            'bookings' => $bookingRepository->findBy(array('idUser' => $userConnected->getId())),
+            'bookings' => $bookingRepository->findBy(array('idUser' => $userConnected->getId()), array('id' =>'DESC')),
         ]);
     }
 
@@ -43,7 +45,7 @@ class BookingController extends AbstractController
         ]);
     }
     #[Route('voyage/delete/{id}', name: 'delete_booking', methods: ['POST'])]
-    public function delete(Request $request, Booking $booking, BookingRepository $bookingRepository): Response
+    public function delete(Request $request, Booking $booking, BookingRepository $bookingRepository, BookingSeatRepository $bookingSeatRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$booking->getId(), $request->request->get('_token'))) {
 
@@ -58,6 +60,13 @@ class BookingController extends AbstractController
             ]);
             $entityManager->persist($booking);
             $entityManager->flush();
+
+            $seat = New BookingSeat();
+            $seat = $bookingSeatRepository->findBy(array("booking" => $booking->getId()));
+            for($i = 0; $i < sizeof($seat); $i++){
+                $entityManager->remove($seat[$i]);
+                $entityManager->flush();
+            }
         }
 
         return $this->redirectToRoute('mesVoyages', [], Response::HTTP_SEE_OTHER);
