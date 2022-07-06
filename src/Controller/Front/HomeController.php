@@ -261,16 +261,19 @@ class HomeController extends AbstractController
 
             }
             if (sizeof($allBooking) < $wagon[$wagonIdx]->getPlaceNb()){
-                $seat = New BookingSeat();
-                $seat->setBooking($booking);
-                $seat->setSeat($seatRepository->findOneBy(array("wagon" => $wagon[$wagonIdx]->getId(),"number" => sizeof($allBooking)+1)));
-                 $seat->setFirstname($travelers);
-                $seat->setLastname($travelers);
+                for( $i = 0; $i < sizeof($travelers); $i++){
+                    $seat = New BookingSeat();
+                    $seat->setBooking($booking);
+
+                    $seat->setSeat($seatRepository->findOneBy(array("wagon" => $wagon[$wagonIdx]->getId(),"number" => sizeof($allBooking)+($i+1))));
+                    $seat->setFirstname($travelers[$i][0]);
+                    $seat->setLastname($travelers[$i][1]);
+                    $entityManager = $this->getDoctrine()->getManager();
+                    $entityManager->persist($seat);
+                    $entityManager->flush();
+                }
 
 
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($seat);
-                $entityManager->flush();
             }else{
                 return $this->render('Front/home/error.html.twig');
             }
