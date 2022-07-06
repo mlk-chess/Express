@@ -71,6 +71,16 @@ function loadMarkers(){
         markersCluster.addLayer(marker);
     }
     map.addLayer(markersCluster);
+
+    $("#headingOne").children().attr({
+        'aria-expanded': false,
+        'class': 'accordion-button collapsed'
+    });
+    $("#collapseOne").attr('class', 'accordion-collapse collapse');
+
+    if ($("#resultSearch").val() !== undefined) {
+        document.getElementById('btn-result').style.display = 'block';
+    }
 }
 
 

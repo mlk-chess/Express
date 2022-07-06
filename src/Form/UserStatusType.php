@@ -14,7 +14,6 @@ class UserStatusType extends AbstractType
     {
         $builder->add('status', ChoiceType::class,  [
                 'choices'  => [
-                    'Change status' => null,
                     'Activate account' => 2,
                     'Deactivate Account' => 0,
                 ],
