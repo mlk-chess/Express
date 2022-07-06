@@ -3,7 +3,9 @@
 namespace App\Controller\Front;
 
 use App\Entity\Booking;
+use App\Entity\BookingSeat;
 use App\Repository\BookingRepository;
+use App\Repository\BookingSeatRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,21 +45,28 @@ class BookingController extends AbstractController
         ]);
     }
     #[Route('voyage/delete/{id}', name: 'delete_booking', methods: ['POST'])]
-    public function delete(Request $request, Booking $booking, BookingRepository $bookingRepository): Response
+    public function delete(Request $request, Booking $booking, BookingRepository $bookingRepository, BookingSeatRepository $bookingSeatRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$booking->getId(), $request->request->get('_token'))) {
 
             $entityManager = $this->getDoctrine()->getManager();
 
             $booking->setStatus(-1);
-            $stripe = new \Stripe\StripeClient(
+            /*$stripe = new \Stripe\StripeClient(
                 'sk_test_51Kk6uiCJ5s87DbRlsu9UTG7t0PbKcXlXM7bxLdibROOksHgDXIg1gXtp0SFv7o0MZxTcCTOLmEzjK1AVvdCR9LXg00vHipH4ZP'
             );
             $stripe->refunds->create([
                 'payment_intent' => $booking->getPaymentIntent(),
             ]);
             $entityManager->persist($booking);
-            $entityManager->flush();
+            $entityManager->flush();*/
+
+            $seat = New BookingSeat();
+            $seat = $bookingSeatRepository->findBy(array("booking" => $booking->getId()));
+            for($i = 0; $i < sizeof($seat); $i++){
+                $entityManager->remove($seat[$i]);
+                $entityManager->flush();
+            }
         }
 
         return $this->redirectToRoute('mesVoyages', [], Response::HTTP_SEE_OTHER);

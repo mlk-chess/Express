@@ -264,9 +264,8 @@ class HomeController extends AbstractController
                 $seat = New BookingSeat();
                 $seat->setBooking($booking);
                 $seat->setSeat($seatRepository->findOneBy(array("wagon" => $wagon[$wagonIdx]->getId(),"number" => sizeof($allBooking)+1)));
-                dd($travelers);
-                $seat->setFirstname("aa");
-                $seat->setLastname('dds');
+                 $seat->setFirstname($travelers);
+                $seat->setLastname($travelers);
 
 
                 $entityManager = $this->getDoctrine()->getManager();
