@@ -15,11 +15,13 @@ class HomeType extends AbstractType
         $builder
             ->add('departureStationInput', HiddenType::class, [
                 'attr' => ['id' => 'departureStationInput'],
-                'required' => true
+                'required' => true,
+                'label' => false
             ])
             ->add('arrivalStationInput', HiddenType::class, [
                 'attr' => ['id' => 'arrivalStationInput'],
-                'required' => true
+                'required' => true,
+                'label' => false
             ])
             ->add('date', DateType::class, [
                 'label' => 'Le : ',

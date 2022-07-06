@@ -1,6 +1,24 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <div class="d-flex justify-content-end">
-        <button class="btn btn-secondary mt-5">{{ button_label|default('Rechercher') }}</button>
+    {{ form_label(form.departureStationInput) }}
+    {{ form_widget(form.departureStationInput) }}
+
+    {{ form_label(form.arrivalStationInput) }}
+    {{ form_widget(form.arrivalStationInput) }}
+
+    <div class="row">
+        <div class="col col-lg-6">
+            {{ form_label(form.date, 'Le : ') }}
+            {{ form_widget(form.date) }}
+        </div>
+        <div class="col col-lg-6">
+            {{ form_label(form.time, 'A partir de : ') }}
+            {{ form_widget(form.time) }}
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-around">
+        <button class="btn btn-sncf mt-5">{{ button_label|default('Rechercher') }}</button>
+
+        <a class="btn btn-sncf mt-5" id="btn-result" href="#start-result">Voir les résultats</a>
     </div>
 {{ form_end(form) }}
