@@ -1,0 +1,24 @@
+{% extends 'base_back.html.twig' %}
+
+{% block title %}Admin - Newsletter{% endblock %}
+
+
+{% block body %}
+    <h1>Newsletter</h1>
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ newsletter.id }}</td>
+        </tr>
+        <tr>
+            <th>Message</th>
+            <td>{{ newsletter.message | raw }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a class="btn btn-primary-express" href="{{ path('app_newsletter_index') }}">Retourner à la liste</a>
+
+{% endblock %}

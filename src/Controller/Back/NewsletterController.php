@@ -17,10 +17,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class NewsletterController extends AbstractController
 {
     #[Route('/', name: 'app_newsletter_index', methods: ['GET'])]
-    public function index(NewsletterRepository $newsletterRepository): Response
+    public function index(NewsletterRepository $newsletterRepository, UserRepository $userRepository): Response
     {
         return $this->render('Back/newsletter/index.html.twig', [
             'newsletters' => $newsletterRepository->findAll(),
+            'users' => $userRepository->findBy(["newsletter" => 1]),
         ]);
     }
 
@@ -58,4 +59,20 @@ class NewsletterController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}', name: 'admin_newsletter_show', methods: ['GET'])]
+    public function show(Newsletter $newsletter): Response
+    {
+        return $this->render('Back/newsletter/show.html.twig', [
+            'newsletter' => $newsletter,
+        ]);
+    }
+    #[Route('/{id}', name: 'app_newsletter_delete', methods: ['POST'])]
+    public function delete(Request $request, Newsletter $newsletter, NewsletterRepository $newsletterRepository): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$newsletter->getId(), $request->request->get('_token'))) {
+            $newsletterRepository->remove($newsletter);
+        }
+
+        return $this->redirectToRoute('app_newsletter_index', [], Response::HTTP_SEE_OTHER);
+    }
 }
