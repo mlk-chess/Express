@@ -32,11 +32,11 @@
                 {% for booking in bookings %}
                     <tr>
                         <td class="center">{{ booking.id }}</td>
-                        <td class="center">{{ booking.lineTrain.dateDeparture |date('d-m-Y')}}</td>
+                        <td class="center">{{ booking.lineTrain.dateDeparture |date('d-m-Y')}} {{ booking.lineTrain.timeDeparture | date('G:i:s' , "Europe/Paris" )}}</td>
                         <td class="center">{{ booking.lineTrain.line.nameStationDeparture }}</td>
                         <td class="center">{{ booking.lineTrain.line.nameStationArrival }}</td>
                         <td class="center">{{ booking.travelers | length }}</td>
-                        <td class="center">{{ booking.price }} €</td>
+                        <td class="center">{{ booking.price * booking.travelers | length }} €</td>
                         <td>{% if booking.status == -1%}
                                 <i class="fa-solid fa-xmark-large" style="color: red"></i> Annulé
                             {% else %}
