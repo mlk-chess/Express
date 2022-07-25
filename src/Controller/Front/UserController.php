@@ -85,18 +85,23 @@ class UserController extends AbstractController
             return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
 
         } else if ($formPwd->isSubmitted() && $formPwd->isValid()) {
-            $data->setPassword($passwordHasher->hashPassword($data, $data->getPlainPassword()));
-            $this->getDoctrine()->getManager()->flush();
-            $this->addFlash('green', "Le mot de passe a bien été modifié");
-            $email = ApiMailerService::send_email(
-                $userConnected->getEmail(),
-                "[PA Express] Votre mot de passe a été modifié !",
-                "change-pwd-profile.html.twig",
-                [
-                    "username" => $userConnected->getEmail(),
-                ]
-            );
-            $mailer->send($email);
+            if (strlen($data->getPlainPassword()) >= 8){
+                $data->setPassword($passwordHasher->hashPassword($data, $data->getPlainPassword()));
+                $this->getDoctrine()->getManager()->flush();
+                $this->addFlash('green', "Le mot de passe a bien été modifié");
+                $email = ApiMailerService::send_email(
+                    $userConnected->getEmail(),
+                    "[PA Express] Votre mot de passe a été modifié !",
+                    "change-pwd-profile.html.twig",
+                    [
+                        "username" => $userConnected->getEmail(),
+                    ]
+                );
+                $mailer->send($email);
+
+            }else{
+                return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
+            }
 
 
             return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
