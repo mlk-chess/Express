@@ -20,11 +20,11 @@ class UserPwdType extends AbstractType
                     'type' => PasswordType::class,
                     'first_options' => [
                         'label' => 'Votre mot de passe',
-                        'attr' => ['class' => 'form-control mb-3']
+                        'attr' => ['class' => 'form-control mb-3', 'minlength' => 6]
                     ],
                     'second_options' => [
                         'label' => 'Confirmer votre mot de passe',
-                        'attr' => ['class' => 'form-control mb-3']
+                        'attr' => ['class' => 'form-control mb-3', 'minlength' => 6]
                     ],
                     'invalid_message' => 'Le mot de passe de confirmation ne correspond pas',
                 ]);
