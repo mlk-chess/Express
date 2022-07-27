@@ -261,6 +261,7 @@ class HomeController extends AbstractController
                 $idVoyage = $dataSession[$i][0];
                 $class = $dataSession[$i][1];
                 $travelers = $dataSession[$i][2];
+
                 $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
                 $price = null;
                 if ($class == '1') {
@@ -294,19 +295,24 @@ class HomeController extends AbstractController
                 //Get all Booking
                 $allBooking = new Booking();
                 $allBooking = $bookingRepository->findBy(array("lineTrain" => $voyage[0]->getId()));
-
                 $wagon = New Wagon();
                 $wagon = $wagonRepository->findBy(array('train' => $voyage[0]->getTrain()->getId(), 'type' => 'Voyageur'));
                 $wagonIdx = null;
                 for ($i = 0; $i < sizeof($wagon); $i++){
                     $wagonIdx = $i;
                 }
-                if (sizeof($allBooking) < $wagon[$wagonIdx]->getPlaceNb()){
+                $nbTravellersBook = 0;
+                for ($i = 0; $i < sizeof($allBooking); $i++) {
+                    $nbTravellersBook += sizeof($allBooking[$i]->getTravelers());
+                }
+                    if ($nbTravellersBook < $wagon[$wagonIdx]->getPlaceNb()){
+                        $idx = 1;
                     for( $i = 0; $i < sizeof($travelers); $i++){
                         $seat = New BookingSeat();
                         $seat->setBooking($booking);
-
-                        $seat->setSeat($seatRepository->findOneBy(array("wagon" => $wagon[$wagonIdx]->getId(),"number" => sizeof($allBooking))));
+                        $place = $nbTravellersBook - $i;
+                        $seat->setSeat($seatRepository->findOneBy(array("wagon" => $wagon[$wagonIdx]->getId(),"number" => $place)));
+                        $idx +=1;
                         $seat->setFirstname($travelers[$i][0]);
                         $seat->setLastname($travelers[$i][1]);
                         $entityManager = $this->getDoctrine()->getManager();
@@ -316,7 +322,8 @@ class HomeController extends AbstractController
 
 
                 }else{
-                    return $this->render('Front/home/error.html.twig');
+                        $session->remove('shopping');
+                        return $this->render('Front/home/error.html.twig');
                 }
             }
 
