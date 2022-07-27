@@ -149,6 +149,10 @@ class LineTrainController extends AbstractController
                 }
             }
 
+            if ($lineTrain->getPriceClass1() < 1 || $lineTrain->getPriceClass2() < 1 ){
+                $errors[] = "Le prix ne peut pas être inférieur à 1€ !";
+            }
+
             if ($isBetween) $errors[] = "Le train est indisponible à cette date !";
 
             if ($lineTrain->getDateDeparture() > $lineTrain->getDateArrival()) {
@@ -311,26 +315,6 @@ class LineTrainController extends AbstractController
             'success' => $success
         ]);
     }
-
-    // #[Route('/{id}', name: 'line_train_delete', methods: ['POST'])]
-    // public function delete(Request $request, LineTrain $lineTrain, BookingRepository $bookingRepository): Response
-    // {
-    //     if ($this->isCsrfTokenValid('delete' . $lineTrain->getId(), $request->request->get('_token'))) {
-
-    //         $booking = $bookingRepository->findBy(['lineTrain' => $lineTrain->getId()]);
-
-    //         if (empty($booking)) {
-    //             $entityManager = $this->getDoctrine()->getManager();
-    //             $entityManager->remove($lineTrain);
-    //             $entityManager->flush();
-    //             $this->addFlash('green', "Voyage supprimé !");
-    //         } else {
-    //             $this->addFlash('red', "Impossible de supprimer ce voyage !");
-    //         }
-    //     }
-
-    //     return $this->redirectToRoute('line_train_index', [], Response::HTTP_SEE_OTHER);
-    // }
 
     #[Route('/plan/{id}', name: 'line_train_plan', methods: ['GET'])]
     public function plan(Request $request, int $id, BookingSeatRepository $bookingSeatRepository, LineTrainRepository $lineTrainRepository): Response
