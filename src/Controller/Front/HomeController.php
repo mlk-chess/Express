@@ -367,18 +367,19 @@ class HomeController extends AbstractController
             $voyage = $lineTrainRepository->findBy(array('id' => $idVoyage));
 
             if ($class == '1'){
-                if ($voyage[0]->getPlaceNbClass1()-1 < 0){
+                if ($voyage[0]->getPlaceNbClass1()-count($travelers) < 0){
+                    $session->remove('shopping');
                     return $this->render('Front/home/error.html.twig');
                 }else{
-                    $voyage[0]->setPlaceNbClass1($voyage[0]->getPlaceNbClass1()-1);
+                    $voyage[0]->setPlaceNbClass1($voyage[0]->getPlaceNbClass1()-count($travelers));
                 }
                 $placeClass1 += 1;
                 $price += ($voyage[0]->getPriceClass1()*count($travelers));
             }else if($class == '2'){
-                if ($voyage[0]->getPlaceNbClass2()-1 < 0 || $voyage[0]->getPlaceNbClass2() == 0){
+                if ($voyage[0]->getPlaceNbClass2()-count($travelers) < 0 || $voyage[0]->getPlaceNbClass2() == 0){
                     return $this->render('Front/home/error.html.twig');
                 }else{
-                    $voyage[0]->setPlaceNbClass2($voyage[0]->getPlaceNbClass2()-1);
+                    $voyage[0]->setPlaceNbClass2($voyage[0]->getPlaceNbClass2()-count($travelers));
                 }
                 $placeClass2 += 1;
                 $price += ($voyage[0]->getPriceClass2()*count($travelers));
