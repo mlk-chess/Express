@@ -138,7 +138,7 @@ class HomeController extends AbstractController
     {
         $session = $this->requestStack->getSession();
         $dataSession = $session->get('shopping');
-
+        unset($dataSession["payment_intent"]);
         $entityManager = $this->getDoctrine()->getManager();
         $repository = $entityManager->getRepository(LineTrain::class);
 
@@ -345,7 +345,7 @@ class HomeController extends AbstractController
         }else{
             $protocol = "http";
         }
-        $YOUR_DOMAIN = 'http://pa-express.ddns.net/';
+        $YOUR_DOMAIN = 'http://pa-express.ddns.net';
         $session = $this->requestStack->getSession();
         $dataSession = $session->get('shopping');
         $price = 0;
