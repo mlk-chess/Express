@@ -11,10 +11,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 
 
 #[Route('/booking')]
+#[IsGranted('ROLE_ADMIN')]
 class BookingController extends AbstractController
 {
     #[Route('/', name: 'booking', methods: ['GET'])]

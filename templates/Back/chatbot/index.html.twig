@@ -3,17 +3,18 @@
 {% block title %}Chatbot - Admin{% endblock %}
 
 {% block body %}
+<div class="p-3">
     <h1>Messages</h1>
-
+    <div class="card p-4 mt-5 mb-3">
     <table class="table" id="datatable">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Nom du client</th>
+                <th>Client</th>
                 <th>Problème du client</th>
                 <th>Description</th>
-                <th>Email du client</th>
-                <th>Status</th>
+                <th>Email</th>
+                <th>Statut</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -47,10 +48,10 @@
                 {% endif %}
 
 
-                    <td>
-                    <a type="button" class="btn btn-info" href="{{ path('app_chatbot_show', {'id': chatbot.id}) }}">Info</a>
-                    <a type="button" class="btn btn-warning" href="{{ path('app_chatbot_edit', {'id': chatbot.id}) }}">Changer le status</a>
-                    <a type="button" class="btn btn-dark" href="{{ path('app_chatbot_messages_new', {'id': chatbot.id}) }}">Envoyer un mail</a>
+                <td class="">
+                    <a type="button" class="btn btn-primary-express" href="{{ path('app_chatbot_show', {'id': chatbot.id}) }}">Détails</a>
+                    <a type="button" class="btn btn-primary-express" href="{{ path('app_chatbot_edit', {'id': chatbot.id}) }}">Statut</a>
+                    <a type="button" class="btn btn-primary-express" href="{{ path('app_chatbot_messages_new', {'id': chatbot.id}) }}">Envoyer un mail</a>
                 </td>
             </tr>
             {% endif %}
@@ -62,6 +63,8 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
+</div>
 
     <script>
 

@@ -3,7 +3,11 @@
 {% block title %}PA EXPRESS{% endblock %}
 
 {% block body %}
+<div class="p-3">
     <h1>Modification de l'utilisateur</h1>
 
+<div class="p-4 mt-4 card w-75">
     {{ include('Back/user/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+</div>
+</div>
 {% endblock %}

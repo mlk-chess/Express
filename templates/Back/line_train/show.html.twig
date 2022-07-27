@@ -83,11 +83,12 @@
     </div>
 
 
-
+    {% if is_granted('ROLE_COMPANY') %}
     <div class="d-flex mt-3">
         <a class="btn btn-primary-express"href="{{ path('admin_line_train_edit', {'id': line_train.id}) }}">Modifier</a>
        
     </div>
+    {%endif%}
 </div>
 
 {% endblock %}

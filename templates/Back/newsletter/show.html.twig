@@ -1,24 +1,40 @@
 {% extends 'base_back.html.twig' %}
 
 {% block title %}Admin - Newsletter{% endblock %}
+{% block stylesheets %}
 
+    <style>
+    .title{ 
+        font-weight:bold !important;
+        font-size:20px;
+    }
+
+    .subtitle{
+        font-size:14px;
+    }
+    </style>
+{% endblock%}
 
 {% block body %}
+<div class="p-3">
     <h1>Newsletter</h1>
 
-    <table class="table">
-        <tbody>
-        <tr>
-            <th>Id</th>
-            <td>{{ newsletter.id }}</td>
-        </tr>
-        <tr>
-            <th>Message</th>
-            <td>{{ newsletter.message | raw }}</td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="card p-4 mt-4 w-75">
+        
+        <div class="">
+            <div class="title">Id</div>
+            <div class="subtitle">{{ newsletter.id }}</div>
+        </div>
+        <hr>
+        <div class="">
+            <div class="title">Message</div>
+            <div class="subtitle">{{ newsletter.message | raw }}</div>
+        </div>
+        
+    </div>
 
-    <a class="btn btn-primary-express" href="{{ path('app_newsletter_index') }}">Retourner à la liste</a>
+
+    <a class="btn btn-primary-express mt-3" href="{{ path('app_newsletter_index') }}">Retourner à la liste</a>
+</div>
 
 {% endblock %}

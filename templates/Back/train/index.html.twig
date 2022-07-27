@@ -8,8 +8,9 @@
     <div class="d-flex justify-content-between mb-5">
         <h1>Liste des trains</h1>
         <div>
+        {% if is_granted('ROLE_COMPANY') %}
         <a class="btn btn-primary-express" href="{{ path('admin_train_new') }}">Nouveau train</a>
-
+        {% endif %}
         </div>
     </div>
 
@@ -42,12 +43,12 @@
                               
                             <a class="btn btn-primary-express" href="{{ path('admin_train_show', {'id': train.id}) }}">Voir</a>
                         
-
+                            {% if is_granted('ROLE_COMPANY') %}
                             <form method="post" action="{{ path('admin_train_edit', {'id': train.id}) }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ train.id) }}">
                                 <button class="mx-2 btn btn-primary-express">Modifier</button>
                             </form>
-
+                            {% endif %}
                                
                         </div>
                     </div>

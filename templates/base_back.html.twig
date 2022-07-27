@@ -118,11 +118,12 @@
     >
         <div class="position-sticky">
             <div class="list-group list-group-flush mt-4 mx-3 mt-4">
-                
+                {% if is_granted('ROLE_ADMIN') %}
                 <a href="/admin/user" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fa-solid fa-user me-3 fa-fw "></i>
                     <span>Utilisateur</span>
                 </a>
+                {%endif%}
                 <a href="/admin/line" class="list-group-item list-group-item-action py-2 ripple">
                     <i class="fa-solid fa-location-dot me-3 fa-fw"></i>
                     <span>Ligne</span>

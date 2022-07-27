@@ -3,9 +3,13 @@
 {% block title %}Admin - Newsletter{% endblock %}
 
 {% block body %}
+<div class="pt-3">
     <h1>Créer une newsletter</h1>
 
+    <div class="p-4 mt-4 card">
     {{ include('back/newsletter/_form.html.twig') }}
+    </div>
 
-    <a class="btn btn-primary-express" href="{{ path('app_newsletter_index') }}">Retourner à la liste</a>
+   
+</div>
 {% endblock %}

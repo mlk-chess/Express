@@ -41,7 +41,7 @@
 
         
     </div>
-
+    {% if is_granted('ROLE_COMPANY') %}
     <div class="d-flex mt-4">
         <form method="post" action="{{ path('admin_wagon_edit', {'id': wagon.id}) }}">
             <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ wagon.id) }}">
@@ -51,11 +51,11 @@
 
 
         <div class="mx-2">
-   
             <a class="btn btn-primary-express mx-2"href="{{ path('admin_wagon_disable', {'id': wagon.id}) }}">Désactiver ce wagon</a>
        
         </div>
     </div>
+    {%endif%}
 
 </div>
   

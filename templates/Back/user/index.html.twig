@@ -3,15 +3,20 @@
 {% block title %}PA EXPRESS{% endblock %}
 
 {% block body %}
-    <h1>Utilisateurs</h1>
 
-    <table class="table">
+<div class="p-3">
+    <h1 class="mb-3">Utilisateurs</h1>
+    <a href="{{ path('admin_user_new') }}" class="btn btn-primary-express">Nouvel utilisateur</a>
+    <a href="{{ path('admin_user_company_new') }}" class="btn btn-primary-express">Nouvelle société</a>
+    <a href="{{ path('admin_user_controller_new') }}" class="btn btn-primary-express">Nouveau contrôleur</a>
+    <div class="card p-4 mt-5 mb-3">
+    <table class="hover row-border" id="table_user">
         <thead>
             <tr>
                 <th>Email</th>
-                <th>Roles</th>
-                <th>Company Name</th>
-                <th>Status</th>
+                <th>Rôles</th>
+                <th>Nom de la société</th>
+                <th>Statut</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -34,8 +39,8 @@
                     <td>Désactivé</td>
                 {% endif %}
                 <td>
-                    <a href="{{ user.companyName is empty ? path('admin_user_edit', {'id': user.id}) : path('admin_user_edit_company', {'id': user.id}) }}" class="btn btn-primary">Editer</a>
-                    <a href="{{ path('admin_user_edit_status', {'id': user.id}) }}" class="btn btn-warning">Changer le statut</a>
+                    <a class="btn btn-primary-express" href="{{ user.companyName is empty ? path('admin_user_edit', {'id': user.id}) : path('admin_user_edit_company', {'id': user.id}) }}" >Editer</a>
+                    <a class="btn btn-primary-express" href="{{ path('admin_user_edit_status', {'id': user.id}) }}" >Changer le statut</a>
 
                 </td>
             </tr>
@@ -48,8 +53,16 @@
 
         </tbody>
     </table>
+    </div>
 
-    <a href="{{ path('admin_user_new') }}" class="btn btn-primary">Nouvel utilisateur</a>
-    <a href="{{ path('admin_user_company_new') }}" class="btn btn-primary">Nouvelle société</a>
-    <a href="{{ path('admin_user_controller_new') }}" class="btn btn-primary">Nouveau controlleur</a>
+</div>
 {% endblock %}
+
+{% block javascripts %}
+<script>
+
+$(document).ready( function () {
+    $('#table_user').DataTable();
+});
+</script>
+{% endblock%}
