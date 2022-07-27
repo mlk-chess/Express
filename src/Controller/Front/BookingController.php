@@ -40,9 +40,17 @@ class BookingController extends AbstractController
     #[Route('voyage/{id}', name: 'booking_show', methods: ['GET'])]
     public function show(Booking $booking): Response
     {
-        return $this->render('Front/trip/show.html.twig', [
-            'booking' => $booking,
-        ]);
+
+        $userConnected = $this->get('security.token_storage')->getToken()->getUser();
+        if ($booking->getIdUser()->getId() == $this->getUser()->getId()){
+            return $this->render('Front/trip/show.html.twig', [
+                'booking' => $booking,
+            ]);
+        }else{
+            return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
+        }
+        return $this->render('bundles/TwigBundle/Exception/error.html.twig');
+
     }
     #[Route('voyage/delete/{id}', name: 'delete_booking', methods: ['POST'])]
     public function delete(Request $request, Booking $booking, BookingRepository $bookingRepository, BookingSeatRepository $bookingSeatRepository): Response

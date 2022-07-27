@@ -296,7 +296,7 @@ class HomeController extends AbstractController
                         $seat = New BookingSeat();
                         $seat->setBooking($booking);
 
-                        $seat->setSeat($seatRepository->findOneBy(array("wagon" => $wagon[$wagonIdx]->getId(),"number" => sizeof($allBooking)+($i+1))));
+                        $seat->setSeat($seatRepository->findOneBy(array("wagon" => $wagon[$wagonIdx]->getId(),"number" => sizeof($allBooking))));
                         $seat->setFirstname($travelers[$i][0]);
                         $seat->setLastname($travelers[$i][1]);
                         $entityManager = $this->getDoctrine()->getManager();
@@ -308,7 +308,6 @@ class HomeController extends AbstractController
                 }else{
                     return $this->render('Front/home/error.html.twig');
                 }
-
             }
 
             $session->remove('shopping');
@@ -340,8 +339,13 @@ class HomeController extends AbstractController
         \Stripe\Stripe::setApiKey('sk_test_51Kk6uiCJ5s87DbRlsu9UTG7t0PbKcXlXM7bxLdibROOksHgDXIg1gXtp0SFv7o0MZxTcCTOLmEzjK1AVvdCR9LXg00vHipH4ZP');
 
         header('Content-Type: application/json');
-
-        $YOUR_DOMAIN = 'http://localhost:8090/';
+        if (isset($_SERVER['HTTPS']) &&
+            ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'){
+            $protocol = "https";
+        }else{
+            $protocol = "http";
+        }
+        $YOUR_DOMAIN = 'http://pa-express.ddns.net/';
         $session = $this->requestStack->getSession();
         $dataSession = $session->get('shopping');
         $price = 0;
