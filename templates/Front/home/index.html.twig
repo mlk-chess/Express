@@ -112,45 +112,51 @@
 
                         <div class="col-6 col-sm-2">
                             {% if travel.getPlaceNbClass1 == 0 %}
-                                <div class="border shadow-sm rounded px-3 bg-white button-price">
+                                <div class="border shadow-sm rounded px-3 bg-white cardSelectClass">
                                     <p class="text-center pt-3">Classe 1</p>
                                     <p class="text-center">Aucune place</p>
                                 </div>
                             {% else %}
-                                <div onclick="selectOption(
-                                {{ travel.id }},
-                                        1,
-                                {{ travel.getPriceClass1 }},
-                                {{ travel.getTimeDeparture()|date('H') }} +'h'+{{ travel.getTimeDeparture()|date('i') }},
-                                {{ travel.getTimeArrival()|date('H') }} +'h'+{{ travel.getTimeArrival()|date('i') }},
-                                        '{{ travel.getLine().getNameStationDeparture() }}',
-                                        '{{ travel.getLine().getNameStationArrival() }}'
-                                        )" class="border shadow-sm rounded px-3 bg-white button-price"
+                                <div class="border shadow-sm rounded px-3 bg-white cardSelectClass"
                                      data-bs-toggle="modal" data-bs-target="#modalOptions">
-                                    <p class="text-center pt-3">Classe 1</p>
-                                    <p class="text-center">{{ travel.getPriceClass1 }} €</p>
+                                    <p class="text-center pt-2">Classe 1 / {{ travel.getPriceClass1 }} €</p>
+
+                                    <div class="d-flex justify-content-center mb-2">
+                                        <button onclick="selectOption(
+                                        {{ travel.id }},
+                                                1,
+                                        {{ travel.getPriceClass1 }},
+                                        {{ travel.getTimeDeparture()|date('H') }} +'h'+{{ travel.getTimeDeparture()|date('i') }},
+                                        {{ travel.getTimeArrival()|date('H') }} +'h'+{{ travel.getTimeArrival()|date('i') }},
+                                                '{{ travel.getLine().getNameStationDeparture() }}',
+                                                '{{ travel.getLine().getNameStationArrival() }}'
+                                                )" class="btn btn-sncf">Choisir</button>
+                                    </div>
                                 </div>
                             {% endif %}
                         </div>
                         <div class="col-6 col-sm-2">
                             {% if travel.getPlaceNbClass2 == 0 %}
-                                <div class="border shadow-sm rounded px-3 bg-white button-price">
+                                <div class="border shadow-sm rounded px-3 bg-white cardSelectClass">
                                     <p class="text-center pt-3">Classe 2</p>
                                     <p class="text-center">Aucune place</p>
                                 </div>
                             {% else %}
-                                <div onclick="selectOption(
-                                {{ travel.id }},
-                                        2,
-                                {{ travel.getPriceClass2 }},
-                                        '{{ travel.getDateDeparture()|date('d-m-Y') }}',
-                                {{ travel.getTimeDeparture()|date('H') }} +'h'+{{ travel.getTimeDeparture()|date('i') }},
-                                        '{{ travel.getLine().getNameStationDeparture() }}',
-                                        '{{ travel.getLine().getNameStationArrival() }}'
-                                        )" class="border shadow-sm rounded px-3 ms-3 bg-white button-price"
+                                <div class="border shadow-sm rounded px-3 ms-3 bg-white cardSelectClass"
                                      data-bs-toggle="modal" data-bs-target="#modalOptions">
-                                    <p class="text-center pt-3">Classe 2</p>
-                                    <p class="text-center">{{ travel.getPriceClass2 }} €</p>
+                                    <p class="text-center pt-2">Classe 2 / {{ travel.getPriceClass2 }} €</p>
+
+                                    <div class="d-flex justify-content-center mb-2">
+                                        <button onclick="selectOption(
+                                        {{ travel.id }},
+                                                2,
+                                        {{ travel.getPriceClass2 }},
+                                                '{{ travel.getDateDeparture()|date('d-m-Y') }}',
+                                        {{ travel.getTimeDeparture()|date('H') }} +'h'+{{ travel.getTimeDeparture()|date('i') }},
+                                                '{{ travel.getLine().getNameStationDeparture() }}',
+                                                '{{ travel.getLine().getNameStationArrival() }}'
+                                                )" class="btn btn-sncf">Choisir</button>
+                                    </div>
                                 </div>
                             {% endif %}
                         </div>
