@@ -230,8 +230,7 @@ class HomeController extends AbstractController
     public function cancel(Request $request): Response
     {
         $session = $this->requestStack->getSession();
-        $dataSession = $session->get('shopping');
-
+        $session->remove('shopping');
         return $this->render('Front/home/error.html.twig');
 
     }
@@ -324,9 +323,9 @@ class HomeController extends AbstractController
             $session->remove('shopping');
             return $this->render('Front/home/success.html.twig');
         }else{
+            $session->remove('shopping');
             // TU REDIRIGES VERS CANCEL
-            return $this->render('Front/home/error.html.twig');
-
+            return $this->redirectToRoute('cancel', [], Response::HTTP_SEE_OTHER);
         }
     }
 
