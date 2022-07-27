@@ -4,6 +4,7 @@
 
 {% block body %}
 
+<div class="pt-3">
     <div class='d-flex justify-content-between'>
         <h1 class="f-12">Créer une ligne</h1>
         <div>
@@ -26,10 +27,12 @@
         {%  endfor %}
     </div>
     {% endif %}
-    
+
+<div class="p-4 mt-4 card">
     <div class="w-75">
         {{ include('Back/line/_form.html.twig') }}
     </div>
-
+</div>
+</div>
   
 {% endblock %}

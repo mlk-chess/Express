@@ -51,9 +51,10 @@
 
 
 {% block body %}
-    <h1>Planning</h1>
+<div class="p-4">
+    <h1 class="">Planning</h1>
 
-    <div id="calendar"></div>
+    <div class="mt-5" id="calendar"></div>
 
 
     <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -77,6 +78,7 @@
             </div>
         </div>
   
+</div>
 </div>
 {% endblock %}
 
@@ -116,7 +118,7 @@
                             html += 
                             `<div class="row mt-2">
                                 <div class="col-sm-12">
-                                    <div class="d-flex justify-content-between border shadow-sm rounded px-3 me-4 bg-white pt-3">
+                                    <div class="d-flex justify-content-between border shadow-sm rounded px-3 me-4 bg-white pt-3" style="border-left:3px solid #5d8bff !important">
                                         <div class="d-flex flex-column">
                                             <h4 class="fw-bold">${element[6]} <i class="fa-solid fa-arrow-right"></i> ${element[7]} </h4>
                                             <div class="">

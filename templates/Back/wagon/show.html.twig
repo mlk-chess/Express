@@ -2,30 +2,47 @@
 
 {% block title %}Wagon{% endblock %}
 
+{% block stylesheets %}
+
+    <style>
+    .title{ 
+        font-weight:bold !important;
+        font-size:20px;
+    }
+
+    .subtitle{
+        font-size:14px;
+    }
+    </style>
+{% endblock%}
+
 {% block body %}
+<div class="p-3">
     <h1>Wagon</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ wagon.id }}</td>
-            </tr>
-            <tr>
-                <th>Classe</th>
-                <td>{{ wagon.class }}</td>
-            </tr>
-            <tr>
-                <th>Type</th>
-                <td>{{ wagon.type }}</td>
-            </tr>
-            <tr>
-                <th>Nombre de places</th>
-                <td>{{ wagon.placeNb }}</td>
-            </tr>
-        </tbody>
-    </table>
-    <div class="d-flex">
+
+    <div class="card p-4 mt-4 w-75">
+        
+        <div class="">
+            <div class="title">Classe</div>
+            <div class="subtitle">{{ wagon.class }}</div>
+        </div>
+        <hr>
+        <div class="">
+            <div class="title">Type</div>
+            <div class="subtitle">{{ wagon.type }}</div>
+        </div>
+        <hr>
+        <div class="">
+            <div class="title">Nombre de places</div>
+            <div class="subtitle">{{ wagon.placeNb }}</div>
+        </div>
+    
+
+        
+    </div>
+
+    <div class="d-flex mt-4">
         <form method="post" action="{{ path('admin_wagon_edit', {'id': wagon.id}) }}">
             <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ wagon.id) }}">
             <button class="btn btn-primary-express">Modifier</button>
@@ -40,7 +57,7 @@
         </div>
     </div>
 
-
+</div>
   
     
 {% endblock %}

@@ -4,7 +4,9 @@
 
 {% block body %}
 
+<div class="p-3">
     <h1>{{ train }}</h1>
+    
 
     {% if errors %}
     <div class="alert alert-danger" role="alert">
@@ -21,7 +23,8 @@
         {%  endfor %}
     </div>
     {% endif %}
-
+<div class="p-4 mt-4 card">
     {{ include('Back/train/_form.html.twig', {'button_label': 'Modifier'}) }}
-
+    </div>
+</div>
 {% endblock %}

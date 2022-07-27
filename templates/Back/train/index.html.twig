@@ -3,6 +3,8 @@
 {% block title %}Trains{% endblock %}
 
 {% block body %}
+
+<div class="p-3">
     <div class="d-flex justify-content-between mb-5">
         <h1>Liste des trains</h1>
         <div>
@@ -11,6 +13,14 @@
         </div>
     </div>
 
+    <div class="card shadow-sm" style="width: 15rem; border-left:3px solid #5d8bff">
+        <div class="card-body">
+            <h2 class="card-title">{{ trains|length }}</h2>
+                    train(s)
+        </div>
+    </div>
+
+    <div class="card p-4 mt-5">
     <table class="hover row-border" id="table_train">
         <thead>
             <tr>
@@ -52,8 +62,9 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
 
-
+</div>
    
 {% endblock %}
 

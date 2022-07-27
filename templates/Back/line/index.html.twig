@@ -3,46 +3,67 @@
 {% block title %}Lignes{% endblock %}
 
 {% block body %}
-    <div class="d-flex justify-content-between mb-5">
-        <h1>Les lignes</h1>
-        <div>
-            <a href="{{ path('admin_line_new') }}" class="btn-primary-express list-group-item list-group-item-action py-2 ripple">
-                    <span>Créer une nouvelle ligne</span>
-            </a>
+    <div class="p-3">
+        <div class="d-flex justify-content-between mb-2">
+            <h1>Les lignes</h1>
+            <div>
+                <a href="{{ path('admin_line_new') }}" class="btn-primary-express list-group-item list-group-item-action py-2 ripple">
+                        <span>Nouvelle ligne</span>
+                </a>
+            </div>
+          
         </div>
+
+        <div class="d-flex mb-5">
+            <div class="card shadow-sm" style="width: 15rem; border-left:3px solid #5d8bff">
+                <div class="card-body">
+                    <h2 class="card-title">{{ nbLinesEnable }}</h2>
+                    Ligne(s) activées
+                </div>
+            </div>
+
+            <div class="card shadow-sm mx-4" style="width: 15rem;  border-left:3px solid #5d8bff">
+                <div class="card-body">
+                    <h2 class="card-title">{{ nbLinesDisable }}</h2>
+                    Ligne(s) désactivées
+                </div>
+            </div>
+        </div>
+     
+        
+    <div class="card p-4">
+        <table id="table_line" class="row-border hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Gare de départ</th>
+                    <th>Gare d'arrivée</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for line in lines %}
+                <tr>
+                    <td>{{ line.id }}</td>
+                    <td>{{ line.nameStationDeparture }}</td>
+                    <td>{{ line.nameStationArrival }}</td>
+                    <td>
+                        <a class="btn btn-primary-express" href="{{ path('admin_line_show', {'id': line.id}) }}">Voir</a>
+                        <a class="btn btn-primary-express" href="{{ path('admin_line_edit', {'id': line.id}) }}">Modifier</a>
+                        {% if line.status == 0 %}
+                        <a class="btn btn-primary-express" href="{{ path('admin_line_enable', {'id': line.id}) }}">Activer</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8">Aucune donnée</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
-
-    <table id="table_line" class="row-border hover">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Gare de départ</th>
-                <th>Gare d'arrivée</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for line in lines %}
-            <tr>
-                <td>{{ line.id }}</td>
-                <td>{{ line.nameStationDeparture }}</td>
-                <td>{{ line.nameStationArrival }}</td>
-                <td>
-                    <a class="btn btn-primary-express" href="{{ path('admin_line_show', {'id': line.id}) }}">Voir</a>
-                    <a class="btn btn-primary-express" href="{{ path('admin_line_edit', {'id': line.id}) }}">Modifier</a>
-                    {% if line.status == 0 %}
-                    <a class="btn btn-primary-express" href="{{ path('admin_line_enable', {'id': line.id}) }}">Activer</a>
-                    {% endif %}
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">Aucune donnée</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
+</div>
      <script>
 
         $(document).ready( function () {

@@ -2,52 +2,70 @@
 
 {% block title %}Ligne{% endblock %}
 
+
+{% block stylesheets %}
+
+    <style>
+    .title{ 
+        font-weight:bold !important;
+        font-size:20px;
+    }
+
+    .subtitle{
+        font-size:14px;
+    }
+    </style>
+{% endblock%}
 {% block body %}
+<div class="p-3">
     <div class="d-flex justify-content-between">
-        <h1>Ligne : {{ line.nameStationDeparture }} - {{ line.nameStationArrival }}</h1>
+        <h1 class="fs-3">{{ line.nameStationDeparture }} - {{ line.nameStationArrival }}</h1>
         <div>
-            <a class="btn btn-primary" href="{{ path('admin_line_index') }}">Retour</a>
+            <a class="btn btn-primary-express" href="{{ path('admin_line_index') }}">Retour</a>
         </div>
     </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ line.id }}</td>
-            </tr>
-            <tr>
-                <th>Gare de départ | Longitude</th>
-                <td>{{ line.longitudeDeparture }}</td>
-            </tr>
-            <tr>
-                <th>Gare de départ | Latitude</th>
-                <td>{{ line.latitudeDeparture }}</td>
-            </tr>
-            <tr>
-                <th>Gare d'arrivée | Longitude</th>
-                <td>{{ line.longitudeArrival }}</td>
-            </tr>
-            <tr>
-                <th>Gare d'arrivée | Latitude</th>
-                <td>{{ line.latitudeArrival }}</td>
-            </tr>
-            <tr>
-                <th>Gare de départ</th>
-                <td>{{ line.nameStationDeparture }}</td>
-            </tr>
-            <tr>
-                <th>Gare d'arrivée</th>
-                <td>{{ line.nameStationArrival }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="card p-4 mt-4 w-75">
+        
+        <div class="">
+            <div class="title">Gare de départ - Longitude</div>
+            <div class="subtitle">{{ line.longitudeDeparture }}</div>
+        </div>
+        <hr>
+        <div class="">
+            <div class="title">Gare de départ - Latitude</div>
+            <div class="subtitle">{{ line.latitudeDeparture }}</div>
+        </div>
+        <hr>
+        <div class="">
+            <div class="title">Gare d'arrivée - Longitude</div>
+            <div class="subtitle">{{ line.longitudeArrival }}</div>
+        </div>
+        <hr>
+        <div class="">
+            <div class="title">Gare d'arrivée - Latitude</div>
+            <div class="subtitle">{{ line.latitudeArrival }}</div>
+        </div>
+        <hr>
 
-   
-    <div class="d-flex">
-        <a class="btn btn-primary-express mx-2"href="{{ path('admin_line_edit', {'id': line.id}) }}">Modifier</a>
-        <a class="btn btn-primary-express mx-2"href="{{ path('admin_line_disable', {'id': line.id}) }}">Désactiver cette ligne</a>
+        <div class="">
+            <div class="title">Gare de départ</div>
+            <div class="subtitle">{{ line.nameStationDeparture }}</div>
+        </div>
+        <hr>
+
+        <div class="">
+            <div class="title">Gare d'arrivée</div>
+            <div class="subtitle">{{ line.nameStationArrival }}</div>
+        </div>
+        
     </div>
 
+   
+    <div class="d-flex mt-3">
+        <a class="btn btn-primary-express"href="{{ path('admin_line_edit', {'id': line.id}) }}">Modifier</a>
+        <a class="btn btn-primary-express mx-2"href="{{ path('admin_line_disable', {'id': line.id}) }}">Désactiver cette ligne</a>
+    </div>
+</div>
 
 {% endblock %}

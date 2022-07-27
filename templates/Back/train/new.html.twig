@@ -3,7 +3,7 @@
 {% block title %}Train{% endblock %}
 
 {% block body %}
-
+<div class="p-3">
     <div class='d-flex justify-content-between'>    
         <h1 class="f-12">Créer un train</h1>
         <div>
@@ -27,8 +27,10 @@
     </div>
     {% endif %}
     
-
+<div class="p-4 mt-4 card">
+<div class="w-75">
     {{ include('Back/train/_form.html.twig') }}
-
-
+</div>
+    </div>
+</div>
 {% endblock %}

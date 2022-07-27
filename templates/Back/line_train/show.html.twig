@@ -2,8 +2,22 @@
 
 {% block title %}LineTrain{% endblock %}
 
-{% block body %}
+{% block stylesheets %}
 
+    <style>
+    .title{ 
+        font-weight:bold !important;
+        font-size:20px;
+    }
+
+    .subtitle{
+        font-size:14px;
+    }
+    </style>
+{% endblock%}
+
+{% block body %}
+<div class="p-3">
 
     <div class="d-flex justify-content-between">
         <h1>Voyage</h1>
@@ -12,56 +26,68 @@
         </div>
     </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ line_train.id }}</td>
-            </tr>
+     
+    <div class="card p-4 mt-4 w-75">
+        
+        <div class="">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="title">Départ</div>
+                    <div class="subtitle">{{ line_train.line.nameStationDeparture }}</div>
+                </div>
+           
+                <div class="">
+                    <div class="title">Arrivée</div>
+                    <div class="subtitle">{{ line_train.line.nameStationArrival }}</div>
+                </div>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="title">Date départ</div>
+                    <div class="subtitle">{{ line_train.getDateDeparture()|date('d-m-Y')}} - {{line_train.getTimeDeparture()|date('H:i:s') }} </div>
+                </div>
+        
+                <div class="">
+                    <div class="title">Date d'arrivée</div>
+                    <div class="subtitle">{{ line_train.getDateArrival()|date('d-m-Y')}} - {{line_train.getTimeArrival()|date('H:i:s') }}</div>
+                </div>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="title">Nombre de place classe 1</div>
+                    <div class="subtitle">{{ line_train.placeNbClass1 }}</div>
+                </div>
+           
+                <div class="">
+                    <div class="title">Nombre de place classe 2</div>
+                    <div class="subtitle">{{ line_train.placeNbClass2 }}</div>
+                </div>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="title">Prix classe 1</div>
+                    <div class="subtitle">{{ line_train.priceClass1 }} €</div>
+                </div>
+            
+           
+                <div class="">
+                    <div class="title">Prix classe 2</div>
+                    <div class="subtitle">{{ line_train.priceClass2 }} €</div>
+                </div>
+            </div>
+        </div>
+      
+    </div>
 
-            <tr>
-                <th>Départ</th>
-                <td>{{ line_train.line.nameStationDeparture }}</td>
-            </tr>
 
-            <tr>
-                <th>Arrivée</th>
-                <td>{{ line_train.line.nameStationArrival }}</td>
-            </tr>
-            <tr>
-                <th>Date départ</th>
-                <td>{{ line_train.getDateDeparture()|date('d-m-Y')}} - {{line_train.getTimeDeparture()|date('H:i:s') }} </td>
-            </tr>
-            <tr>
-                <th>Date d'arrivée</th>
-                <td>{{ line_train.getDateArrival()|date('d-m-Y')}} - {{line_train.getTimeArrival()|date('H:i:s') }} </td>
-            </tr>
 
-            <tr>
-                <th>Nombre de place classe 1</th>
-                <td>{{ line_train.placeNbClass1 }}</td>
-            </tr>
-
-            <tr>
-                <th>Nombre de place classe 2</th>
-                <td>{{ line_train.placeNbClass2 }}</td>
-            </tr>
-
-            <tr>
-                <th>Prix classe 1</th>
-                <td>{{ line_train.priceClass1 }} €</td>
-            </tr>
-
-              <tr>
-                <th>Prix classe 2</th>
-                <td>{{ line_train.priceClass2 }} €</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="d-flex">
-        <a class="btn btn-primary-express mx-2"href="{{ path('admin_line_train_edit', {'id': line_train.id}) }}">Modifier</a>
+    <div class="d-flex mt-3">
+        <a class="btn btn-primary-express"href="{{ path('admin_line_train_edit', {'id': line_train.id}) }}">Modifier</a>
        
     </div>
+</div>
 
 {% endblock %}
