@@ -9,6 +9,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\SettingsType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Form\UserPwdType;
 use App\Service\ApiMailerService;
 
@@ -17,6 +18,7 @@ use App\Service\ApiMailerService;
 class SettingsController extends AbstractController
 {
     #[Route('/settings', name: 'app_settings')]
+    #[IsGranted('ROLE_ADMIN')]
     public function index(Request $request, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
     {
         $userConnected = $this->get('security.token_storage')->getToken()->getUser();

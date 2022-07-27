@@ -3,7 +3,7 @@
 {% block title %}Admin - Newsletter{% endblock %}
 
 {% block body %}
-
+<div class="p-4">
     <div class="d-flex justify-content-between mb-5">
         <h1>Newsletter</h1>
 
@@ -13,7 +13,8 @@
     </div>
 
     <h4>Abonnés à la newsletter</h4>
-    <table class="table" id="datatable-user">
+    <div class="card p-4 mt-3">
+    <table class="row-border hover" id="datatable-user">
         <thead>
         <tr>
             <th>Id</th>
@@ -35,10 +36,12 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
 
     <div class="mt-5">
         <h4>Dernières Newsletter</h4>
-        <table class="table" id="datatable">
+        <div class="card p-4 mt-3">
+        <table class="row-border hover" id="datatable">
             <thead>
             <tr>
                 <th>Id</th>
@@ -51,8 +54,8 @@
                 <tr>
                     <td>{{ newsletter.id }}</td>
                     <td>{{ newsletter.message | raw }}</td>
-                    <td>
-                        <a class="btn btn-primary-express"
+                    <td class="d-flex">
+                        <a class="btn btn-primary-express mx-2"
                            href="{{ path('admin_newsletter_show', {'id': newsletter.id}) }}">Voir</a>
 
                         {{ include('Back/newsletter/_delete_form.html.twig') }}
@@ -66,14 +69,16 @@
             {% endfor %}
             </tbody>
         </table>
+        </div>
+    </div>
     </div>
     <script>
 
-        $(document).ready(function () {
-            $('#datatable').DataTable();
-            $('#datatable-user').DataTable();
-        });
-    </script>
+$(document).ready( function () {
+    $('#datatable-user').DataTable();
+    $('#datatable').DataTable();
+} );
+</script>
 
 {% endblock %}
 

@@ -21,6 +21,8 @@ class LineController extends AbstractController
         
         return $this->render('Back/line/index.html.twig', [
             'lines' => $lineRepository->findAll(),
+            'nbLinesEnable' => count($lineRepository->findBy(["status" => 1])),
+            'nbLinesDisable' => count($lineRepository->findBy(["status" => 0]))
 
         ]);
     }

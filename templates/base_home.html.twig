@@ -92,7 +92,7 @@
                                 {% if is_granted('ROLE_CONTROLLER') %}
                                     <li><a class="dropdown-item" href="/qrcode">Scanneur</a></li>
                                 {% endif %}
-                                {% if is_granted('ROLE_ADMIN') || is_granted('ROLE_COMPANY') %}
+                                {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_COMPANY') %}
                                     <li><a class="dropdown-item" href="/admin/line">Administration</a></li>
                                 {% endif %}
                                 <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>

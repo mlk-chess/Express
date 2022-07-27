@@ -14,8 +14,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 #[Route('/admin/messages')]
+#[IsGranted('ROLE_ADMIN')]
 class ChatbotMessagesController extends AbstractController
 {
     #[Route('/', name: 'app_chatbot_messages_index', methods: ['GET'])]

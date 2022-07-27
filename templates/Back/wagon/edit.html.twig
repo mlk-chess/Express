@@ -4,6 +4,7 @@
 
 
 {% block body %}
+<div class="p-3">
   <div class='d-flex justify-content-between'>    
         <h1 class="f-12">Modification</h1>
         <div>
@@ -19,8 +20,9 @@
     </div>
     {% endif %}
 
+<div class="p-4 mt-4 card">
     {{ include('Back/wagon/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
 
-   
-
+</div>
+</div>
 {% endblock %}

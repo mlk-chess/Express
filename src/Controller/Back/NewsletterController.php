@@ -12,8 +12,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 #[Route('/admin/newsletter')]
+#[IsGranted('ROLE_ADMIN')]
 class NewsletterController extends AbstractController
 {
     #[Route('/', name: 'app_newsletter_index', methods: ['GET'])]
