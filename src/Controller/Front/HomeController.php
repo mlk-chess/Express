@@ -138,15 +138,16 @@ class HomeController extends AbstractController
     {
         $session = $this->requestStack->getSession();
         $dataSession = $session->get('shopping');
-        unset($dataSession["payment_intent"]);
+
         $entityManager = $this->getDoctrine()->getManager();
         $repository = $entityManager->getRepository(LineTrain::class);
 
         $travels = [];
         $total = 0;
         $travelers = [];
-
         if($dataSession != null) {
+            unset($dataSession["payment_intent"]);
+
             foreach ($dataSession as $key => $value) {
                 $query = $repository->createQueryBuilder('lt')
                     ->select('lt, line')
@@ -223,6 +224,16 @@ class HomeController extends AbstractController
             return new JsonResponse(true);
         }
         throw $this->createNotFoundException('Not exist');
+    }
+
+    #[Route('/cancel', name: 'cancel', methods: ['GET','POST'])]
+    public function cancel(Request $request): Response
+    {
+        $session = $this->requestStack->getSession();
+        $dataSession = $session->get('shopping');
+
+        return $this->render('Front/home/error.html.twig');
+
     }
     #[Route('/success', name: 'success', methods: ['GET','POST'])]
     public function success(Request $request, LineTrainRepository $lineTrainRepository,BookingRepository $bookingRepository, BookingSeatRepository $bookingSeatRepository, SeatRepository $seatRepository, WagonRepository $wagonRepository): Response
@@ -317,10 +328,6 @@ class HomeController extends AbstractController
             return $this->render('Front/home/error.html.twig');
 
         }
-
-
-
-
     }
 
     #[Route('/payment', name: 'payment', methods: ['GET','POST'])]
@@ -351,6 +358,8 @@ class HomeController extends AbstractController
         $price = 0;
         $placeClass1 = 0;
         $placeClass2 = 0;
+
+        unset($dataSession["payment_intent"]);
         for ($i = 0; $i < sizeof($dataSession); $i++){
             $idVoyage = $dataSession[$i][0];
             $class = $dataSession[$i][1];
