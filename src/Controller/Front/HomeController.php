@@ -345,7 +345,7 @@ class HomeController extends AbstractController
         }else{
             $protocol = "http";
         }
-        $YOUR_DOMAIN = 'http://pa-express.ddns.net';
+        $YOUR_DOMAIN = 'http://pa-express.ddns.net/';
         $session = $this->requestStack->getSession();
         $dataSession = $session->get('shopping');
         $price = 0;
