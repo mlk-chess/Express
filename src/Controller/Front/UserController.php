@@ -85,7 +85,7 @@ class UserController extends AbstractController
             return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
 
         } else if ($formPwd->isSubmitted() && $formPwd->isValid()) {
-            if (strlen($data->getPlainPassword()) >= 8){
+            if (strlen($data->getPlainPassword()) >= 6){
                 $data->setPassword($passwordHasher->hashPassword($data, $data->getPlainPassword()));
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash('green', "Le mot de passe a bien été modifié");
