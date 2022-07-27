@@ -37,11 +37,6 @@
     margin-left: -20px;
 }
 
-.button-price:hover {
-    background-color: #eeeaea !important;
-    cursor: pointer;
-}
-
 #deleteTraveler {
     display: none;
 }
@@ -94,4 +89,8 @@
 
 .nav-item li .orange-color {
     background-color: white;
+}
+
+.cardSelectClass {
+    height: calc(100% + 0.4px);
 }
